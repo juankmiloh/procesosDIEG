@@ -1,1 +1,1 @@
-"# procesosDIEG" 
+"# Software para el manejo de procesos de la DIEG"

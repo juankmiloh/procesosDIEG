@@ -2,6 +2,10 @@ import datetime
 from flask import abort
 from ..util import constants 
 
+def format_date(date):
+    # return date.strftime("%b %d %Y %H:%M:%S")
+    return date.strftime("%d %b, %Y")
+
 def to_date(date):
     try:
         return datetime.datetime.strptime(date, constants.BASIC_DATE_FORMAT).date()
