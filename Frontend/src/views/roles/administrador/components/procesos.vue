@@ -1,5 +1,6 @@
 <template>
   <div class="components-container">
+
     <!-- Cuadro de dialogo para agregar expediente -->
 
     <el-dialog
@@ -145,6 +146,7 @@
     </el-dialog>
 
     <!-- Dialogo que se aparece cuando se va a eliminar un expediente -->
+
     <el-dialog
       title="Advertencia"
       :visible.sync="deleteDialogVisible"
@@ -164,6 +166,7 @@
     </el-dialog>
 
     <!-- Boton para agregar nuevo expediente al aplicativo -->
+
     <div style="border: 1px solid #d8ebff; text-align: center; padding: 20px">
       <el-button
         size="medium"
@@ -273,10 +276,7 @@ export default {
       /* Datos para captar la creación */
       formAgregar: CONSTANTS.formAgregar,
       rulesFormAgregar: CONSTANTS.rulesFormAgregar,
-      formUsuario: {
-        usuario: '',
-        expediente: ''
-      },
+      formUsuario: CONSTANTS.formUsuario,
       /* Aqui se guarda el valor escrito en el cuadro de texto para la busqueda */
       busquedaExpediente: '',
       /* Si es o no visible el fomulario de agregar */
@@ -318,50 +318,42 @@ export default {
     },
     async getServicios() {
       await getListServicios().then((response) => {
-        console.log('Servicios -> ', response)
         this.datosServicios = response
       })
     },
-    /* Metodo para realizar la busqueda de los filtro ubicado en las columnas */
+    /* Metodo para realizar la busqueda de los filtros ubicado en las columnas */
     filterHandler(value, row, column) {
       const property = column['property']
       return row[property] === value
     },
     /* Evento click boton permisos */
     handlePermisos(data) {
-      console.log(data)
       this.formUsuario.expediente = data.expediente
       this.formUsuario.usuario = data.idusuario
       this.msgUsuarioVisible = true
     },
     /* Evento clic boton permisos */
     handleDelete(data) {
-      console.log(data.idproceso)
       this.delIdproceso = data.idproceso
       this.delExpediente = data.expediente
       this.deleteDialogVisible = true
     },
     async borrarExpediente() {
       this.loading = true
-      console.log('Expediente a borrar -> ', this.delIdproceso)
       await deleteProceso(this.delIdproceso).then((response) => {
-        console.log('RESPONSE PROCESO BORRADO -> ', response)
         this.getProcesos()
       })
       this.deleteDialogVisible = false
     },
     async asignarUsuario() {
-      console.log(this.formUsuario)
       this.loading = true
       await updateProcesoUsuario(this.formUsuario).then((response) => {
-        console.log('RESPONSE PROCESO ACTUALIZADO -> ', response)
         this.getProcesos()
       })
     },
     async selectServicio(idservicio) {
       if (idservicio) {
         await getListEmpresas(idservicio).then((response) => {
-          console.log('EMPRESAS -> ', response.items)
           this.datosEmpresas = response.items
           this.disableEmpresas = false
         })
@@ -372,14 +364,12 @@ export default {
       this.disableEmpresas = true
     },
     async agregarExpediente(formName) {
-      console.log('formName -> ', formName)
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.msgAgregarVisible = false
           console.log(this.formAgregar)
           this.loading = true
           createProceso(this.formAgregar).then((response) => {
-            console.log('RESPONSE PROCESO AGREGADO -> ', response)
             this.getProcesos()
             this.$refs['formAgregar'].resetFields()
           })
@@ -405,7 +395,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.control-modal {
-  width: 25em;
-}
+  .control-modal {
+    width: 25em;
+  }
 </style>

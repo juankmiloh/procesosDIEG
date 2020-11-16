@@ -73,5 +73,9 @@ export const CONSTANTS = {
         empresa: '',
         usuario: '',
         fecha_caducidad: null
+    },
+    formUsuario: {
+        usuario: '',
+        expediente: ''
     }
 };

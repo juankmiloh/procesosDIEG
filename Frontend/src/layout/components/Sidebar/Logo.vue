@@ -1,20 +1,24 @@
 <template>
   <div class="sidebar-logo-container" :class="{'collapse':collapse}">
     <transition name="sidebarLogoFade">
-      <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
-        <!-- <img v-if="logo" :src="logo" class="sidebar-logo"> -->
+      <!-- <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/"> -->
+      <a v-if="collapse" key="collapse" class="sidebar-logo-link" href="http://localhost:4200/home">
+        <img v-if="logo" :src="logo" class="sidebar-logo">
+        <h1 v-else class="sidebar-title">{{ title }} </h1>
+      </a>
+      <!-- </router-link> -->
+      <!-- <router-link v-else key="expand" class="sidebar-logo-link" to="/"> -->
+      <a v-else key="expand" router-link class="sidebar-logo-link" href="http://localhost:4200/home">
+        <img v-if="logo" :src="logo" class="sidebar-logo">
         <h1 class="sidebar-title">{{ title }} </h1>
-      </router-link>
-      <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-        <!-- <img v-if="logo" :src="logo" class="sidebar-logo"> -->
-        <h1 class="sidebar-title">{{ title }} </h1>
-      </router-link>
+      </a>
+      <!-- </router-link> -->
     </transition>
   </div>
 </template>
 
 <script>
-import logTarifarito from "../../../assets/logo_buho.png"
+import logPage from '../../../assets/mazo.png'
 
 export default {
   name: 'SidebarLogo',
@@ -27,7 +31,7 @@ export default {
   data() {
     return {
       title: 'Procesos DIEG',
-      logo: logTarifarito
+      logo: logPage
     }
   }
 }
