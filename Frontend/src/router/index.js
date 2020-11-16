@@ -212,12 +212,12 @@ export const asyncRoutes = [
       }, */
     // vistas adminsitrador
     {
-        path: '/administrador',
+        path: '/procesos',
         component: Layout,
         children: [{
-            path: 'procesos',
+            path: 'expedientes',
             component: () =>
-                import ('@/views/roles/administrador'),
+                import ('@/views/roles'),
             name: 'procesos',
             meta: { title: 'Procesos', icon: 'example', noCache: true, roles: ['administrador'] }
         }]
