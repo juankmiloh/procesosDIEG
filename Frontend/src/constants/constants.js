@@ -31,4 +31,47 @@ export const CONSTANTS = {
             prop: 'usuario'
         }
     ],
+    filters: [
+        { text: 'Energía', value: 'Energía' },
+        { text: 'Gas', value: 'Gas' },
+        { text: 'GLP', value: 'GLP' },
+    ],
+    rulesFormAgregar: {
+        radicado: [
+            { required: true, message: 'Ingrese un expediente' },
+            {
+                min: 14,
+                max: 14,
+                message: 'La longitud del expediente debe ser de 14 caracteres'
+            }
+        ],
+        servicio: [{
+            required: true,
+            message: 'Seleccione un servicio',
+            trigger: 'change'
+        }],
+        empresa: [{
+            required: true,
+            message: 'Seleccione una empresa',
+            trigger: 'change'
+        }],
+        usuario: [{
+            required: true,
+            message: 'Seleccione un usuario',
+            trigger: 'change'
+        }],
+        fecha_caducidad: [{
+            type: 'date',
+            required: true,
+            message: 'Ingrese una fecha válida',
+            trigger: 'change'
+        }]
+    },
+    formAgregar: {
+        radicado: '',
+        servicio: '',
+        empresa: '',
+        usuario: '',
+        fecha_caducidad: null
+    }
 };

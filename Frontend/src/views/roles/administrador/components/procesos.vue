@@ -2,17 +2,40 @@
   <div class="components-container">
     <!-- Cuadro de dialogo para agregar expediente -->
 
-    <el-dialog title="Agregar Expediente" :visible.sync="msgAgregarVisible">
-      <el-form :model="formAgregar">
-        <el-form-item label="Expediente" :label-width="formLabelWidth">
+    <el-dialog
+      title="Agregar Expediente"
+      :visible.sync="msgAgregarVisible"
+      :before-close="closeModalAgregar"
+      width="35em"
+    >
+      <el-form
+        ref="formAgregar"
+        :model="formAgregar"
+        :rules="rulesFormAgregar"
+        label-width="120px"
+        class="demo-ruleForm"
+      >
+        <el-form-item label="Expediente" prop="radicado">
           <el-input
             v-model="formAgregar.radicado"
             autocomplete="off"
-            placeholder="Ingrese el número del expediente"
+            placeholder="Ingrese No. del expediente"
+            maxlength="14"
+            show-word-limit
+            clearable
+            class="control-modal"
           />
         </el-form-item>
-        <el-form-item label="Servicio" :label-width="formLabelWidth">
-          <el-select v-model="formAgregar.servicio" placeholder="Seleccione el servicio" @change="selectServicio($event)">
+        <el-form-item label="Servicio" prop="servicio">
+          <el-select
+            v-model="formAgregar.servicio"
+            filterable
+            placeholder="Seleccione el servicio"
+            class="control-modal"
+            clearable
+            @change="selectServicio($event)"
+            @clear="clearSelect()"
+          >
             <el-option
               v-for="item in datosServicios"
               :key="item.idservicio"
@@ -21,8 +44,15 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="Empresa" :label-width="formLabelWidth">
-          <el-select v-model="formAgregar.empresa" :disabled="disableEmpresas" placeholder="Seleccione una empresa">
+        <el-form-item label="Empresa" prop="empresa">
+          <el-select
+            v-model="formAgregar.empresa"
+            filterable
+            :disabled="disableEmpresas"
+            placeholder="Seleccione una empresa"
+            class="control-modal"
+            clearable
+          >
             <el-option
               v-for="item in datosEmpresas"
               :key="item.id_empresa"
@@ -31,8 +61,14 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="Usuario" :label-width="formLabelWidth">
-          <el-select v-model="formAgregar.usuario" placeholder="Seleccione un usuario">
+        <el-form-item label="Usuario" prop="usuario">
+          <el-select
+            v-model="formAgregar.usuario"
+            filterable
+            placeholder="Seleccione un usuario"
+            class="control-modal"
+            clearable
+          >
             <el-option
               v-for="item in datosUsuarios"
               :key="item.idusuario"
@@ -41,29 +77,52 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="Caducidad" :label-width="formLabelWidth">
+        <el-form-item label="Caducidad" prop="fecha_caducidad" clearable>
           <el-date-picker
             v-model="formAgregar.fecha_caducidad"
             type="date"
             placeholder="Seleccione la fecha"
+            class="control-modal"
           />
         </el-form-item>
+        <el-form-item>
+          <el-button
+            @click="
+              resetForm('formAgregar');
+              msgAgregarVisible = false;
+            "
+          >Cancelar</el-button>
+          <el-button
+            type="primary"
+            @click="agregarExpediente('formAgregar')"
+          >Agregar</el-button>
+        </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="msgAgregarVisible = false">Cancelar</el-button>
-        <el-button type="primary" @click="agregarExpediente(); msgAgregarVisible = false">Agregar</el-button>
-      </span>
     </el-dialog>
 
     <!-- Cuadro de dialogo para asignar abogado -->
 
-    <el-dialog title="Asignar Usuario" :visible.sync="msgUsuarioVisible">
-      <el-form :model="formUsuario">
-        <el-form-item label="Expediente" :label-width="formLabelWidth">
-          <input v-model="formUsuario.expediente" disabled>
+    <el-dialog title="Asignar Usuario" :visible.sync="msgUsuarioVisible" width="35em">
+      <el-form :model="formUsuario" label-width="120px" class="demo-ruleForm">
+        <el-form-item label="Expediente" prop="radicado">
+          <el-input
+            v-model="formUsuario.expediente"
+            autocomplete="off"
+            placeholder="Ingrese No. del expediente"
+            maxlength="14"
+            show-word-limit
+            clearable
+            class="control-modal"
+            readonly
+          />
         </el-form-item>
-        <el-form-item label="Usuario" :label-width="formLabelWidth">
-          <el-select v-model="formUsuario.usuario" placeholder="Seleccione un usuario">
+        <el-form-item label="Usuario">
+          <el-select
+            v-model="formUsuario.usuario"
+            filterable
+            placeholder="Seleccione un usuario"
+            class="control-modal"
+          >
             <el-option
               v-for="item in datosUsuarios"
               :key="item.idusuario"
@@ -72,21 +131,17 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item>
+          <el-button @click="msgUsuarioVisible = false">Cancelar</el-button>
+          <el-button
+            type="primary"
+            @click="
+              msgUsuarioVisible = false;
+              asignarUsuario();
+            "
+          >Asignar</el-button>
+        </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button
-          @click="
-            msgUsuarioVisible = false;
-          "
-        >Cancelar</el-button>
-        <el-button
-          type="primary"
-          @click="
-            msgUsuarioVisible = false;
-            asignarUsuario();
-          "
-        >Asignar</el-button>
-      </span>
     </el-dialog>
 
     <!-- Dialogo que se aparece cuando se va a eliminar un expediente -->
@@ -96,85 +151,128 @@
       width="35%"
       center
     >
-      <center><span>¿Realmente desea eliminar el expediente <b>No. {{ delExpediente }}</b>?</span></center>
+      <center>
+        <span>¿Realmente desea eliminar el expediente <b>No. {{ delExpediente }}</b>?</span>
+      </center>
       <span slot="footer" class="dialog-footer">
         <el-button @click="deleteDialogVisible = false">Cancelar</el-button>
-        <el-button type="primary" @click="borrarExpediente">Confirmar</el-button>
+        <el-button
+          type="primary"
+          @click="borrarExpediente"
+        >Confirmar</el-button>
       </span>
     </el-dialog>
 
     <!-- Boton para agregar nuevo expediente al aplicativo -->
-
-    <el-button size="mini" type="primary" icon="el-icon-circle-plus" @click="clickAgregar(); msgAgregarVisible = true">Agregar expediente</el-button>
+    <div style="border: 1px solid #d8ebff; text-align: center; padding: 20px">
+      <el-button
+        size="medium"
+        type="primary"
+        icon="el-icon-circle-plus"
+        round
+        @click="
+          clickAgregar();
+          msgAgregarVisible = true;
+        "
+      >Agregar expediente</el-button>
+    </div>
 
     <!-- Tabla donde se lista, ordena y realiza busqueda de los expedientes -->
 
-    <el-table
-      v-loading="loading"
-      :data="datosProcesos.filter(data => !busquedaExpediente || data.expediente.toLowerCase().includes(busquedaExpediente.toLowerCase()))"
-      style="width: 100%"
-    >
-      <el-table-column
-        v-for="column in tableColumns"
-        :key="column.label"
-        :label="column.label"
-        :prop="column.prop"
-        align="center"
-        sortable
-      />
-      <el-table-column
-        prop="servicio"
-        label="Servicio"
-        align="center"
-        sortable
-        :filters="[{text:'Energía', value:'Energía'},{text:'Gas', value:'Gas'},{text:'GLP', value:'GLP'}]"
-        :filter-method="filterHandler"
-      />
-      <el-table-column align="left">
-        <template slot="header" slot-scope="scope">
-          <el-input v-model="busquedaExpediente" size="mini" placeholder="No. Expediente" />
-        </template>
-        <template slot-scope="scope">
-          <el-button style="border: 1px solid #409EFF;" size="mini" @click="handlePermisos(scope.row)"><b>Permisos</b></el-button>
-          <el-button
-            size="mini"
-            type="danger"
-            icon="el-icon-delete-solid"
-            @click="handleDelete(scope.row)"
-          />
-        </template>
-      </el-table-column>
-    </el-table>
+    <div style="border: 1px solid #d8ebff">
+      <el-table
+        v-loading="loading"
+        :data="
+          datosProcesos.filter(
+            (data) =>
+              !busquedaExpediente ||
+              data.expediente
+                .toLowerCase()
+                .includes(busquedaExpediente.toLowerCase())
+          )
+        "
+        style="width: 100%"
+        border
+      >
+        <el-table-column
+          v-for="column in tableColumns"
+          :key="column.label"
+          :label="column.label"
+          :prop="column.prop"
+          align="center"
+          :width="column.prop === 'expediente' ? 150 : column.prop === 'caducidad' ? 120 : column.prop === 'usuario' ? 130 : ''"
+          sortable
+        />
+        <el-table-column
+          prop="servicio"
+          label="Servicio"
+          align="center"
+          sortable
+          width="120"
+          :filters="filtersServicio"
+          :filter-method="filterHandler"
+        />
+        <el-table-column align="center" width="230">
+          <!-- eslint-disable-next-line -->
+          <template slot="header" slot-scope="scope">
+            <el-input
+              v-model="busquedaExpediente"
+              size="mini"
+              placeholder="No. Expediente"
+            />
+          </template>
+          <template slot-scope="scope">
+            <el-button
+              style="border: 1px solid #409EFF"
+              size="mini"
+              @click="handlePermisos(scope.row)"
+            ><b>Permisos</b></el-button>
+            <el-button
+              size="mini"
+              type="success"
+              @click="handlePermisos(scope.row)"
+            ><b>Ver</b></el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              icon="el-icon-delete-solid"
+              @click="handleDelete(scope.row)"
+            />
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import { CONSTANTS } from '@/constants/constants'
-import { getListProcesos, createProceso, updateProcesoUsuario, deleteProceso } from '@/api/procesosDIEG/procesos'
+import {
+  getListProcesos,
+  createProceso,
+  updateProcesoUsuario,
+  deleteProceso
+} from '@/api/procesosDIEG/procesos'
 import { getListUsuarios } from '@/api/procesosDIEG/usuarios'
 import { getListServicios } from '@/api/procesosDIEG/servicios'
 import { getListEmpresas } from '@/api/procesosDIEG/empresas'
 
 export default {
   name: 'ViewProcesos',
-  components: { },
+  components: {},
   data() {
     return {
       /* Datos para mostrar en la tabla */
       tableColumns: CONSTANTS.tableColumns,
+      filtersServicio: CONSTANTS.filters,
       datosProcesos: [],
       datosUsuarios: [],
       datosServicios: [],
       datosEmpresas: [],
       /* Datos para captar la creación */
-      formAgregar: {
-        radicado: '',
-        empresa: '',
-        servicio: '',
-        usuario: '',
-        fecha_caducidad: null
-      },
+      formAgregar: CONSTANTS.formAgregar,
+      rulesFormAgregar: CONSTANTS.rulesFormAgregar,
       formUsuario: {
         usuario: '',
         expediente: ''
@@ -186,9 +284,6 @@ export default {
       /* Si es o no visible el formulario de asginación de usuario */
       msgUsuarioVisible: false,
       /* Si es o no visible el cuadro de confirmación de eliminación */
-      /* quitarVisible: false,*/
-      /* Tamaño del formulario */
-      formLabelWidth: '120px',
       deleteDialogVisible: false,
       delExpediente: '',
       delIdproceso: '',
@@ -264,29 +359,53 @@ export default {
       })
     },
     async selectServicio(idservicio) {
-      console.log(idservicio)
-      await getListEmpresas(idservicio).then((response) => {
-        console.log('EMPRESAS -> ', response.items)
-        this.datosEmpresas = response.items
-        this.disableEmpresas = false
-      })
+      if (idservicio) {
+        await getListEmpresas(idservicio).then((response) => {
+          console.log('EMPRESAS -> ', response.items)
+          this.datosEmpresas = response.items
+          this.disableEmpresas = false
+        })
+      }
     },
     clickAgregar() {
       this.formAgregar = {}
       this.disableEmpresas = true
     },
-    async agregarExpediente() {
-      console.log(this.formAgregar)
-      this.loading = true
-      await createProceso(this.formAgregar).then((response) => {
-        console.log('RESPONSE PROCESO AGREGADO -> ', response)
-        this.getProcesos()
+    async agregarExpediente(formName) {
+      console.log('formName -> ', formName)
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.msgAgregarVisible = false
+          console.log(this.formAgregar)
+          this.loading = true
+          createProceso(this.formAgregar).then((response) => {
+            console.log('RESPONSE PROCESO AGREGADO -> ', response)
+            this.getProcesos()
+            this.$refs['formAgregar'].resetFields()
+          })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
       })
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields()
+    },
+    clearSelect() {
+      this.formAgregar.empresa = ''
+      this.disableEmpresas = true
+    },
+    closeModalAgregar() {
+      this.$refs['formAgregar'].resetFields()
+      this.msgAgregarVisible = false
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-
+.control-modal {
+  width: 25em;
+}
 </style>

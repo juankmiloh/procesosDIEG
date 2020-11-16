@@ -24,7 +24,8 @@ class EmpresaRepository:
             FROM EMPRESA E, SERVICIO S
             WHERE
                 E.SERVICIO = S.idservicio
-                AND S.IDSERVICIO = :SERVICIO_ARG OR 0 = :SERVICIO_ARG;
+                AND S.IDSERVICIO = :SERVICIO_ARG OR 0 = :SERVICIO_ARG
+            ORDER BY E.NOMBRE ASC;
         '''
 
         return self.db.engine.execute(text(sql), SERVICIO_ARG=servicio).fetchall()

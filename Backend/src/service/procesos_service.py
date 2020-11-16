@@ -18,7 +18,7 @@ class ProcesosService:
                     'idproceso': result[0],
                     'expediente': result[1],
                     'caducidad': format_date(result[2]),
-                    'empresa': result[3],
+                    'empresa': result[3].capitalize(),
                     'estado': result[4],
                     'servicio': result[5],
                     'idusuario': result[6],

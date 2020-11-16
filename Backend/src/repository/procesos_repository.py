@@ -8,7 +8,6 @@ class ProcesosRepository:
     def get_procesos_bd(self):
         sql = '''
             SELECT 
-                DISTINCT
                 P.IDPROCESO,
                 P.RADICADOPROCESO AS EXPEDIENTE,
                 P.FECHACADUCIDAD AS CADUCIDAD,
@@ -20,11 +19,13 @@ class ProcesosRepository:
             FROM
                 EMPRESA EMP, SERVICIO S, PROCESO P, ESTADO E, USUARIOS U
             WHERE
-                P.EMPRESA = EMP.IDEMPRESA
+                P.ESTADO NOT IN (22)
+                AND P.EMPRESA = EMP.IDEMPRESA
+                AND EMP.SERVICIO = S.IDSERVICIO
                 AND P.IDSERVICIO = S.IDSERVICIO
                 AND P.ESTADO = E.IDESTADO
                 AND P.USUARIOASIGNADO = U.IDUSUARIO
-            ORDER BY P.IDPROCESO ASC;
+            ORDER BY P.FECHACADUCIDAD ASC;
         '''
         return self.db.engine.execute(text(sql)).fetchall()
     
@@ -45,7 +46,9 @@ class ProcesosRepository:
             FROM
                 EMPRESA EMP, SERVICIO S, PROCESO P, ESTADO E, USUARIOS U
             WHERE
-                P.EMPRESA = EMP.IDEMPRESA
+                P.ESTADO NOT IN (22)
+                AND P.EMPRESA = EMP.IDEMPRESA
+                AND EMP.SERVICIO = S.IDSERVICIO
                 AND P.IDSERVICIO = S.IDSERVICIO
                 AND P.ESTADO = E.IDESTADO
                 AND P.USUARIOASIGNADO = U.IDUSUARIO
@@ -83,7 +86,9 @@ class ProcesosRepository:
         print('* PROCESO A ELIMINAR -> ', idProceso)
         print('-------------------------------------')
         sql = '''
-            DELETE FROM PROCESO WHERE IDPROCESO = :IDPROCESO_ARG;
+            UPDATE PROCESO
+            SET ESTADO = 22
+            WHERE IDPROCESO = :IDPROCESO_ARG;
         '''
         resultsql = self.db.engine.execute(text(sql), IDPROCESO_ARG=idProceso)
 
