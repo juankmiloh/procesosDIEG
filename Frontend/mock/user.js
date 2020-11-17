@@ -1,3 +1,5 @@
+/* jshint esversion: 6 */
+/* eslint-disable */
 const tokens = {
     administrador: {
         token: 'administrador-token'
@@ -19,7 +21,10 @@ const tokens = {
     },
     visitor: {
         token: 'visitor-token'
-    }
+    },
+    juank: {
+        token: 'juank-token'
+    },
 }
 
 const users = {
@@ -64,57 +69,67 @@ const users = {
         introduction: 'I am an visitor',
         avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
         name: 'Normal Visitor'
+    },
+    'juank-token': {
+        roles: ['administrador'],
+        introduction: 'I am an visitor',
+        avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
+        name: 'Normal Visitor'
     }
 }
 
 export default [
     // user login
-    {
-        url: '/user/login',
-        type: 'post',
-        response: config => {
-            const { username } = config.body
-            const token = tokens[username]
+    // {
+    //     url: '/user/login',
+    //     type: 'post',
+    //     response: config => {
+    //         console.log('config login -> ', config);
+    //         const { username } = config.body
+    //         console.log({ username });
+    //         const token = tokens[username]
 
-            console.log(config);
+    //         console.log(config);
 
-            // mock error
-            if (!token) {
-                return {
-                    code: 60204,
-                    message: 'Usuario y contraseña incorrectos.'
-                }
-            }
+    //         // mock error
+    //         if (!token) {
+    //             return {
+    //                 code: 60204,
+    //                 message: 'Usuario y contraseña incorrectos.'
+    //             }
+    //         }
 
-            return {
-                code: 20000,
-                data: token
-            }
-        }
-    },
+    //         return {
+    //             code: 20000,
+    //             data: token
+    //         }
+    //     }
+    // },
 
     // get user info
-    {
-        url: '/user/info\.*',
-        type: 'get',
-        response: config => {
-            const { token } = config.query
-            const info = users[token]
+    // {
+    //     url: '/user/info\.*',
+    //     type: 'get',
+    //     response: config => {
+    //         const { token } = config.query
+    //         const info = users[token]
 
-            // mock error
-            if (!info) {
-                return {
-                    code: 50008,
-                    message: 'Error de inicio de sesión, no se pueden obtener los detalles del usuario.'
-                }
-            }
+    //         console.log('entro al token!');
 
-            return {
-                code: 20000,
-                data: info
-            }
-        }
-    },
+    //         // mock error
+    //         if (!info) {
+    //             return {
+    //                 code: 50008,
+    //                 message: 'Error de inicio de sesión, no se pueden obtener los detalles del usuario.'
+    //             }
+    //         }
+
+    //         return {
+    //             code: 20000,
+    //             data: info
+    //         }
+    //     }
+    // },
 
     // user logout
     {

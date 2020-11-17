@@ -5,6 +5,9 @@ class UsuariosRepository:
     def __init__(self, db):
         self.db = db
 
+    def autenticar_usuario(self, usuario):
+        return 0
+
     def get_usuarios_bd(self):
         sql = '''
             SELECT * FROM USUARIOS;

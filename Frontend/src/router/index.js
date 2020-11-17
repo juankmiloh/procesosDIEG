@@ -1,3 +1,5 @@
+/* jshint esversion: 6 */
+/* eslint-disable */
 import Vue from 'vue'
 import Router from 'vue-router'
 
@@ -219,7 +221,7 @@ export const asyncRoutes = [
             component: () =>
                 import ('@/views/roles'),
             name: 'procesos',
-            meta: { title: 'Procesos', icon: 'example', noCache: true, roles: ['administrador'] }
+            meta: { title: 'Procesos', icon: 'example', noCache: false, roles: ['administrador', 'juank'] }
         }]
     },
     // {

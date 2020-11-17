@@ -1,5 +1,6 @@
 <template>
   <div class="components-container">
+    <router-view />
 
     <!-- Cuadro de dialogo para agregar expediente -->
 
@@ -233,7 +234,7 @@
             <el-button
               size="mini"
               type="success"
-              @click="handlePermisos(scope.row)"
+              @click="handleProceso(scope.row)"
             ><b>Ver</b></el-button>
             <el-button
               size="mini"
@@ -260,6 +261,9 @@ import {
 import { getListUsuarios } from '@/api/procesosDIEG/usuarios'
 import { getListServicios } from '@/api/procesosDIEG/servicios'
 import { getListEmpresas } from '@/api/procesosDIEG/empresas'
+import { getRoles } from '@/api/role'
+import { addRole } from '@/api/role'
+import { login } from '@/api/user'
 
 export default {
   name: 'ViewProcesos',
@@ -299,9 +303,18 @@ export default {
   },
   methods: {
     async initView() {
+      this.getRolesMock()
       this.getProcesos()
       this.getUsuarios()
       this.getServicios()
+    },
+    async getRolesMock() {
+      await login({
+        username: 'administrdor',
+        password: ''
+      }).then((response) => {
+        console.log('Roles mock -> ', response)
+      })
     },
     async getProcesos() {
       await getListProcesos().then((response) => {
@@ -389,6 +402,9 @@ export default {
     closeModalAgregar() {
       this.$refs['formAgregar'].resetFields()
       this.msgAgregarVisible = false
+    },
+    handleProceso() {
+      this.$router.push({ path: this.redirect || '/' })
     }
   }
 }
