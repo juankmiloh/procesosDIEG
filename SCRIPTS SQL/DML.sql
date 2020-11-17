@@ -1,15 +1,15 @@
 ----------------------------
 -- DML TABLA ROL
 ----------------------------
-INSERT INTO ROL (DESCRIPCION) VALUES ('ADMINISTRADOR');
-INSERT INTO ROL (DESCRIPCION) VALUES ('ABOGADO');
+INSERT INTO ROL (DESCRIPCION) VALUES ('administrador');
+INSERT INTO ROL (DESCRIPCION) VALUES ('abogado');
 
 ----------------------------
 -- DML TABLA USUARIO
 ----------------------------
-INSERT INTO usuarios(nombre, apellido, rol, contrasena) VALUES ('Madia', 'Ortega', 1, '1234');
-INSERT INTO usuarios(nombre, apellido, rol, contrasena) VALUES ('Marco', 'Campaña', 2, '1234');
-INSERT INTO usuarios(nombre, apellido, rol, contrasena) VALUES ('Nathalia', 'Pinzon', 2, '1234');
+INSERT INTO USUARIOS(NOMBRE, APELLIDO, NICKNAME, DESCRIPCION, ROL, AVATAR, CONTRASENA, TOKEN) VALUES ('Madia', 'Ortega', 'mortega', 'Directora de investigaciones - Administrador', 1, 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif', '123456', 'mortega-token');
+INSERT INTO USUARIOS(NOMBRE, APELLIDO, NICKNAME, DESCRIPCION, ROL, AVATAR, CONTRASENA, TOKEN) VALUES ('Marco', 'Campaña', 'mcampana', 'Abogado DIEG', 2, 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif', '123456', 'mcampana-token');
+INSERT INTO USUARIOS(NOMBRE, APELLIDO, NICKNAME, DESCRIPCION, ROL, AVATAR, CONTRASENA, TOKEN) VALUES ('Nathalia', 'Pinzon', 'npinzon', 'Abogada DIEG', 2, 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif', '123456', 'npinzon-token');
 
 ----------------------------
 -- DML TABLA CAUSAL

@@ -10,14 +10,25 @@ from ..util.web_util import add_wrapper
 class UsuariosService:
 
     def login_usuario(self, usuarios_repository: UsuariosRepository, usuario):
-        # response = usuarios_repository.autenticar_usuario(usuario)
-        print('LOGIN USUARIO - >', usuario)
-        response = {'code':20000, 'data':{'token':'administrador-token'}}
+        response = {}
+        data = usuarios_repository.autenticar_usuario(usuario)
+        for result in data:
+            response = { 'code': 20000, 'data': { 'token': result[0] } }
         return response
 
     def info_usuario(self, usuarios_repository: UsuariosRepository, token):
-        print('TOKEN USUARIO -> ', token)
-        responseGetInfo = {"code":20000,"data":{"roles":["administrador"],"introduction":"Es un admin juank del sistema","avatar":"https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif","name":"Administrador"}}
+        responseGetInfo = {}
+        data = usuarios_repository.getData_usuario(token)
+        for result in data:
+            responseGetInfo = {
+                "code": 20000,
+                "data": {
+                    "roles": [result[0]],
+                    "introduction": result[1],
+                    "avatar": result[2],
+                    "name": result[3]
+                }
+            }
         return responseGetInfo
 
     def get_usuarios(self, usuarios_repository: UsuariosRepository):
@@ -34,6 +45,13 @@ class UsuariosService:
                 }
             )
         return usuarios
+
+    def get_nicknames(self, usuarios_repository: UsuariosRepository):
+        nicknames = []
+        data = usuarios_repository.get_nicknames_bd()
+        for result in data:
+            nicknames.append(result[0])
+        return nicknames
 
     def prueba_insert(self, prueba_repository: UsuariosRepository, nombre_estado):
         prueba_repository.prueba_insert_bd(nombre_estado)

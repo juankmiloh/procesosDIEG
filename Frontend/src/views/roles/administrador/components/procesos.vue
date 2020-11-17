@@ -9,6 +9,7 @@
       :visible.sync="msgAgregarVisible"
       :before-close="closeModalAgregar"
       width="35em"
+      center
     >
       <el-form
         ref="formAgregar"
@@ -104,7 +105,7 @@
 
     <!-- Cuadro de dialogo para asignar abogado -->
 
-    <el-dialog title="Asignar Usuario" :visible.sync="msgUsuarioVisible" width="35em">
+    <el-dialog title="Asignar Usuario" :visible.sync="msgUsuarioVisible" width="35em" center>
       <el-form :model="formUsuario" label-width="120px" class="demo-ruleForm">
         <el-form-item label="Expediente" prop="radicado">
           <el-input

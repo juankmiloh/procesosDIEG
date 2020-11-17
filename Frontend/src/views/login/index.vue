@@ -80,6 +80,7 @@
 import { validUsername } from '@/utils/validate'
 import logSuper from '@/assets/superservicios1.png'
 import logPage from '@/assets/mazo.png'
+import { getListNicknames } from '@/api/procesosDIEG/usuarios'
 
 export default {
   name: 'Login',
@@ -106,7 +107,6 @@ export default {
       loginForm: {
         username: '',
         password: ''
-        // password: '111111'
       },
       loginRules: {
         username: [
@@ -141,6 +141,7 @@ export default {
   },
   created() {
     // window.addEventListener('storage', this.afterQRScan)
+    this.getNicknames()
   },
   mounted() {
     if (this.loginForm.username === '') {
@@ -153,6 +154,12 @@ export default {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
+    async getNicknames() {
+      await getListNicknames().then((response) => {
+        const result = { data: response }
+        window.localStorage.setItem('usuarios', JSON.stringify(result))
+      })
+    },
     checkCapslock({ shiftKey, key } = {}) {
       if (key && key.length === 1) {
         if (
@@ -191,6 +198,10 @@ export default {
             })
             .catch((err) => {
               console.log('error login -> ', err)
+              this.$notify.error({
+                title: 'Error',
+                message: 'Usuario o contraseña inválidos'
+              })
               this.loading = false
             })
         } else {

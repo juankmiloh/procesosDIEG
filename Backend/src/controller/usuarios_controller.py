@@ -21,3 +21,7 @@ def userinfo(usuarios_service: UsuariosService, usuarios_repository: UsuariosRep
 @controller.route(API_ROOT_PATH + 'usuarios', methods=['GET'])
 def usuarios(usuarios_service: UsuariosService, usuarios_repository: UsuariosRepository):
     return json.dumps(usuarios_service.get_usuarios(usuarios_repository))
+
+@controller.route(API_ROOT_PATH + 'nicknames', methods=['GET'])
+def nicknames(usuarios_service: UsuariosService, usuarios_repository: UsuariosRepository):
+    return json.dumps(usuarios_service.get_nicknames(usuarios_repository))

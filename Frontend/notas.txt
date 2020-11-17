@@ -11,7 +11,7 @@
     rutas de vistas y/o permitir asociar vistas a los roles de usuario ->
         src\router\index.js
     archivo que permite manejar las conexiones con el API REST
-    request.js
+        src\utils\request.js
 
 *cambiar | modificar:
     logo -> 
@@ -41,7 +41,3 @@
         /mock/role/route.js
     que rol puede ver todas las vistas
         src\store\modules\permission.js
-    
-
-
-necesitamos un servicio que retorne los tokens - otro servicio que retorne los usuarios-tokens

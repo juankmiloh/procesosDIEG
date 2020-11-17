@@ -18,10 +18,10 @@ export function isExternal(path) {
  */
 export function validUsername(str) {
     // aqui van los usuarios creados en tokens
-    // localStorage.setItem('prueba_rol', 'roljuank');
-    // alert(localStorage.getItem('prueba_rol'));
-    const valid_map = ['administrador', 'usuario', 'juank'] // Cargar nombres de usuarios una vez entre al login
-    return valid_map.indexOf(str.trim()) >= 0
+    const usuarios = JSON.parse(window.localStorage.getItem('usuarios'));
+    console.log('USUARIOS -> ', usuarios.data);
+    const valid_map = usuarios.data; // Cargar nombres de usuarios una vez entre al login
+    return valid_map.indexOf(str.trim()) >= 0;
 }
 
 /**

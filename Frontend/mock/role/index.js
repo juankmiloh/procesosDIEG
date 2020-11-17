@@ -9,7 +9,7 @@ const routes = deepClone([...constantRoutes, ...asyncRoutes])
 // son los permisos del rol que se pueden modificar desde la vista -> '/permission/role' src\views\permission\role.vue
 const roles = [{
         key: '1',
-        name: 'adminsitrador',
+        name: 'administrador',
         description: 'Juan Camilo Realizará la administración del aplicativo',
         routes: routes
     },
