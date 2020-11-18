@@ -61,8 +61,8 @@ class ProcesosRepository:
         print('OBJ PROCESO -> ', proceso)
         print('-------------------------------------')
         sql = '''
-            INSERT INTO PROCESO(RADICADOPROCESO, USUARIOASIGNADO, EMPRESA, IDSERVICIO, ESTADO, FECHACADUCIDAD)
-            VALUES (:RADICADO_ARG, :USUARIO_ARG, :EMPRESA_ARG, :SERVICIO_ARG, :ESTADO_ARG, :CADUCIDAD_ARG);
+            INSERT INTO PROCESO(RADICADOPROCESO, USUARIOASIGNADO, EMPRESA, IDSERVICIO, ESTADO, FECHACADUCIDAD, FECHAREGISTRO)
+            VALUES (:RADICADO_ARG, :USUARIO_ARG, :EMPRESA_ARG, :SERVICIO_ARG, :ESTADO_ARG, :CADUCIDAD_ARG, CURRENT_TIMESTAMP);
         '''
         resultsql = self.db.engine.execute(text(sql), RADICADO_ARG=proceso["radicado"], USUARIO_ARG=proceso["usuario"], EMPRESA_ARG=proceso["empresa"], SERVICIO_ARG=proceso["servicio"], ESTADO_ARG=14, CADUCIDAD_ARG=proceso["fecha_caducidad"])
 

@@ -13,7 +13,7 @@ class UsuariosRepository:
                 NICKNAME = :USER_ARG
             AND CONTRASENA = :PASS_ARG;
         '''
-        return self.db.engine.execute(text(sql), USER_ARG=usuario["username"], PASS_ARG=usuario["password"]).fetchall()
+        return self.db.engine.execute(text(sql), USER_ARG=usuario["username"].lower(), PASS_ARG=usuario["password"]).fetchall()
 
     def getData_usuario(self, token):
         print('TOKEN USUARIO -> ', token)

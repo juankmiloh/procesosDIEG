@@ -1,15 +1,32 @@
 <template>
-  <div class="components-container">
-    <router-view />
+  <div v-loading="loading" class="createPost-container">
+    <sticky :z-index="10" class-name="sub-navbar">
+      <div style="border: 0px solid red; text-align: center;">
+
+        <!-- Boton para agregar nuevo expediente al aplicativo -->
+
+        <el-button
+          style="border: 1px solid #67c23a"
+          size="medium"
+          icon="el-icon-circle-plus"
+          round
+          @click="
+          clickAgregar();
+          msgAgregarVisible = true;
+        "
+        >Agregar expediente</el-button>
+      </div>
+    </sticky>
 
     <!-- Cuadro de dialogo para agregar expediente -->
 
     <el-dialog
+      v-el-drag-dialog
       title="Agregar Expediente"
       :visible.sync="msgAgregarVisible"
       :before-close="closeModalAgregar"
       width="35em"
-      center
+      custom-class="dialog-class-lista"
     >
       <el-form
         ref="formAgregar"
@@ -105,7 +122,7 @@
 
     <!-- Cuadro de dialogo para asignar abogado -->
 
-    <el-dialog title="Asignar Usuario" :visible.sync="msgUsuarioVisible" width="35em" center>
+    <el-dialog v-el-drag-dialog title="Asignar Usuario" :visible.sync="msgUsuarioVisible" width="35em" custom-class="dialog-class-lista" center>
       <el-form :model="formUsuario" label-width="120px" class="demo-ruleForm">
         <el-form-item label="Expediente" prop="radicado">
           <el-input
@@ -150,10 +167,12 @@
     <!-- Dialogo que se aparece cuando se va a eliminar un expediente -->
 
     <el-dialog
+      v-el-drag-dialog
       title="Advertencia"
       :visible.sync="deleteDialogVisible"
       width="35%"
       center
+      custom-class="dialog-class-lista"
     >
       <center>
         <span>¿Realmente desea eliminar el expediente <b>No. {{ delExpediente }}</b>?</span>
@@ -167,26 +186,11 @@
       </span>
     </el-dialog>
 
-    <!-- Boton para agregar nuevo expediente al aplicativo -->
-
-    <div style="border: 1px solid #d8ebff; text-align: center; padding: 20px">
-      <el-button
-        size="medium"
-        type="primary"
-        icon="el-icon-circle-plus"
-        round
-        @click="
-          clickAgregar();
-          msgAgregarVisible = true;
-        "
-      >Agregar expediente</el-button>
-    </div>
-
     <!-- Tabla donde se lista, ordena y realiza busqueda de los expedientes -->
 
-    <div style="border: 1px solid #d8ebff">
+    <div class="app-container">
       <el-table
-        v-loading="loading"
+        :z-index="0"
         :data="
           datosProcesos.filter(
             (data) =>
@@ -196,7 +200,7 @@
                 .includes(busquedaExpediente.toLowerCase())
           )
         "
-        style="width: 100%"
+        style="width: 100%; border: 1px solid #d8ebff;"
         border
       >
         <el-table-column
@@ -219,7 +223,7 @@
         />
         <el-table-column align="center" width="230">
           <!-- eslint-disable-next-line -->
-          <template slot="header" slot-scope="scope">
+              <template slot="header" slot-scope="scope">
             <el-input
               v-model="busquedaExpediente"
               size="mini"
@@ -232,11 +236,13 @@
               size="mini"
               @click="handlePermisos(scope.row)"
             ><b>Permisos</b></el-button>
+            <!-- <router-link :to="'/example/edit/'+scope.row.idproceso"> -->
             <el-button
               size="mini"
               type="success"
-              @click="handleProceso(scope.row)"
+              @click="handleProceso(scope.row.idproceso)"
             ><b>Ver</b></el-button>
+            <!-- </router-link> -->
             <el-button
               size="mini"
               type="danger"
@@ -262,15 +268,19 @@ import {
 import { getListUsuarios } from '@/api/procesosDIEG/usuarios'
 import { getListServicios } from '@/api/procesosDIEG/servicios'
 import { getListEmpresas } from '@/api/procesosDIEG/empresas'
-import { getRoles } from '@/api/role'
-import { addRole } from '@/api/role'
+// import { getRoles } from '@/api/role'
+// import { addRole } from '@/api/role'
 import { login } from '@/api/user'
+import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
+import Sticky from '@/components/Sticky' // 粘性header组件
 
 export default {
   name: 'ViewProcesos',
-  components: {},
+  directives: { elDragDialog },
+  components: { Sticky },
   data() {
     return {
+      dialogTableVisible: false,
       /* Datos para mostrar en la tabla */
       tableColumns: CONSTANTS.tableColumns,
       filtersServicio: CONSTANTS.filters,
@@ -308,6 +318,9 @@ export default {
       this.getProcesos()
       this.getUsuarios()
       this.getServicios()
+    },
+    handleDrag() {
+      this.$refs.select.blur()
     },
     async getRolesMock() {
       await login({
@@ -404,8 +417,8 @@ export default {
       this.$refs['formAgregar'].resetFields()
       this.msgAgregarVisible = false
     },
-    handleProceso() {
-      this.$router.push({ path: this.redirect || '/' })
+    handleProceso(idproceso) {
+      this.$router.push({ path: `/procesos/detalle/${idproceso}` })
     }
   }
 }
@@ -414,5 +427,11 @@ export default {
 <style lang="scss" scoped>
   .control-modal {
     width: 25em;
+  }
+</style>
+
+<style lang="scss">
+  .dialog-class-lista {
+    border-radius: 10px;
   }
 </style>

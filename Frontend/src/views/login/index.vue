@@ -86,7 +86,9 @@ export default {
   name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
+      const usernameLower = value.toLowerCase()
+      console.log('usernameLower -> ', usernameLower)
+      if (!validUsername(usernameLower)) {
         callback(new Error('Por favor ingrese un usuario válido'))
       } else {
         callback()
@@ -186,6 +188,7 @@ export default {
       })
     },
     handleLogin() {
+      // this.loginForm.username = this.loginForm.username.toLowerCase()
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
           this.loading = true

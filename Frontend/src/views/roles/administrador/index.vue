@@ -8,9 +8,8 @@
 // ///////////////////////////////////////////////////////////////////////////////////////
 /* Listado de importaciones de componentes */
 // ///////////////////////////////////////////////////////////////////////////////////////
-import viewProcesos from './components/procesos'
+import viewProcesos from '../../proceso/Lista'
 import viewEmpresas from './components/reporte_empresa'
-import viewProceso from './components/visualizar_proceso'
 import viewIndicadoresEmpresa from './components/indicadores_empresa'
 import viewIndicadoresProcesosActivos from './components/indicadores_pactivos'
 import viewIndicadoresProcesosTerminados from './components/indicadores_pterminados'
@@ -23,7 +22,6 @@ export default {
   components: {
     viewProcesos,
     viewEmpresas,
-    viewProceso,
     viewIndicadoresEmpresa,
     viewIndicadoresProcesosActivos,
     viewIndicadoresProcesosTerminados
@@ -45,8 +43,6 @@ export default {
       this.currentView = 'viewProcesos'
     } else if (view === '/administrador/reporte_empresa') {
       this.currentView = 'viewEmpresas'
-    } else if (view === '/administrador/proceso') {
-      this.currentView = 'viewProceso'
     } else if (view === '/administrador/indicadores_empresa') {
       this.currentView = 'viewIndicadoresEmpresa'
     } else if (view === '/administrador/indicadores_pactivos') {

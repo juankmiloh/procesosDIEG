@@ -1,18 +1,18 @@
 /* jshint esversion: 6 */
 /* eslint-disable */
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
 
-Vue.use(Router)
+Vue.use(Router);
 
 /* Layout */
-import Layout from '@/layout'
+import Layout from '@/layout';
 
 /* Router Modules */
-import componentsRouter from './modules/components'
-import chartsRouter from './modules/charts'
-import tableRouter from './modules/table'
-import nestedRouter from './modules/nested'
+import componentsRouter from './modules/components';
+import chartsRouter from './modules/charts';
+import tableRouter from './modules/table';
+import nestedRouter from './modules/nested';
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -217,13 +217,29 @@ export const asyncRoutes = [
         path: '/procesos',
         component: Layout,
         children: [{
-            path: 'expedientes',
-            component: () =>
-                import ('@/views/roles'),
-            name: 'procesos',
-            meta: { title: 'Procesos', icon: 'example', noCache: false, roles: ['administrador', 'juank'] }
-        }]
+                path: 'expedientes',
+                component: () =>
+                    import ('@/views/proceso/Lista'),
+                name: 'Procesos',
+                meta: { title: 'Procesos', icon: 'example', noCache: false, roles: ['administrador', 'abogado'] }
+            },
+            {
+                path: 'detalle/:id(\\d+)',
+                component: () =>
+                    import ('@/views/proceso/Detalle'),
+                name: 'DetalleProceso',
+                meta: { title: 'Detalle proceso', icon: 'example', noCache: false, activeMenu: '/procesos/expedientes', roles: ['administrador', 'abogado'] },
+                hidden: true
+            },
+        ]
     },
+    // {
+    //     path: '/procesos/detalle/:id(\\d+)',
+    //     component: Layout,
+    //     name: 'DetalleProceso',
+    //     meta: { title: 'Detalle proceso', icon: 'example', noCache: false, activeMenu: '/procesos/expedientes' },
+    //     hidden: true
+    // },
     // {
     //   path: '/administrador',
     //   component: Layout,
@@ -396,35 +412,37 @@ export const asyncRoutes = [
     // tableRouter,
 
     // {
-    //   path: '/example',
-    //   component: Layout,
-    //   redirect: '/example/list',
-    //   name: 'Example',
-    //   meta: {
-    //     title: 'Example',
-    //     icon: 'example'
-    //   },
-    //   children: [
-    //     {
-    //       path: 'create',
-    //       component: () => import('@/views/example/create'),
-    //       name: 'CreateArticle',
-    //       meta: { title: 'Create Article', icon: 'edit' }
+    //     path: '/example',
+    //     component: Layout,
+    //     redirect: '/example/list',
+    //     name: 'Example',
+    //     meta: {
+    //         title: 'Example',
+    //         icon: 'example'
     //     },
-    //     {
-    //       path: 'edit/:id(\\d+)',
-    //       component: () => import('@/views/example/edit'),
-    //       name: 'EditArticle',
-    //       meta: { title: 'Edit Article', noCache: true, activeMenu: '/example/list' },
-    //       hidden: false
-    //     },
-    //     {
-    //       path: 'list',
-    //       component: () => import('@/views/example/list'),
-    //       name: 'ArticleList',
-    //       meta: { title: 'Article List', icon: 'list' }
-    //     }
-    //   ]
+    //     children: [{
+    //             path: 'create',
+    //             component: () =>
+    //                 import ('@/views/example/create'),
+    //             name: 'CreateArticle',
+    //             meta: { title: 'Create Article', icon: 'edit' }
+    //         },
+    //         {
+    //             path: 'edit/:id(\\d+)',
+    //             component: () =>
+    //                 import ('@/views/example/edit'),
+    //             name: 'EditArticle',
+    //             meta: { title: 'Edit Article', noCache: true, activeMenu: '/example/list' },
+    //             hidden: true
+    //         },
+    //         {
+    //             path: 'list',
+    //             component: () =>
+    //                 import ('@/views/example/list'),
+    //             name: 'ArticleList',
+    //             meta: { title: 'Article List', icon: 'list' }
+    //         }
+    //     ]
     // },
 
     // {
@@ -606,4 +624,4 @@ export function resetRouter() {
     router.matcher = newRouter.matcher // reset router
 }
 
-export default router
+export default router;

@@ -169,6 +169,7 @@ export default {
   created() {
     if (this.isEdit) {
       const id = this.$route.params && this.$route.params.id
+      console.log('ID PARAMS -> ', id)
       this.fetchData(id)
     } else {
       this.postForm = Object.assign({}, defaultForm)
