@@ -9,3 +9,10 @@ export function getListEmpresas(idservicio) {
         params: { 'servicio': idservicio }
     });
 }
+
+export function getAllEmpresas() {
+    return request({
+        url: '/empresa',
+        method: 'get'
+    });
+}

@@ -1,6 +1,6 @@
 <template>
   <div v-loading="loading" class="createPost-container">
-    <sticky :z-index="10" class-name="sub-navbar">
+    <sticky class-name="sub-navbar">
       <div style="border: 0px solid red; text-align: center;">
 
         <!-- Boton para agregar nuevo expediente al aplicativo -->
@@ -69,7 +69,7 @@
             v-model="formAgregar.empresa"
             filterable
             :disabled="disableEmpresas"
-            placeholder="Seleccione una empresa"
+            placeholder="Seleccione un prestador"
             class="control-modal"
             clearable
           >
@@ -240,7 +240,7 @@
             <el-button
               size="mini"
               type="success"
-              @click="handleProceso(scope.row.idproceso)"
+              @click="handleProceso(scope.row)"
             ><b>Ver</b></el-button>
             <!-- </router-link> -->
             <el-button
@@ -268,6 +268,7 @@ import {
 import { getListUsuarios } from '@/api/procesosDIEG/usuarios'
 import { getListServicios } from '@/api/procesosDIEG/servicios'
 import { getListEmpresas } from '@/api/procesosDIEG/empresas'
+import { getAllEmpresas } from '@/api/procesosDIEG/empresas'
 // import { getRoles } from '@/api/role'
 // import { addRole } from '@/api/role'
 import { login } from '@/api/user'
@@ -288,6 +289,7 @@ export default {
       datosUsuarios: [],
       datosServicios: [],
       datosEmpresas: [],
+      allDataEmpresas: [],
       /* Datos para captar la creación */
       formAgregar: CONSTANTS.formAgregar,
       rulesFormAgregar: CONSTANTS.rulesFormAgregar,
@@ -313,39 +315,44 @@ export default {
     this.initView()
   },
   methods: {
-    async initView() {
+    initView() {
       this.getRolesMock()
       this.getProcesos()
       this.getUsuarios()
       this.getServicios()
-    },
-    handleDrag() {
-      this.$refs.select.blur()
+      this.getEmpresas()
     },
     async getRolesMock() {
       await login({
         username: 'administrdor',
         password: ''
       }).then((response) => {
-        console.log('Roles mock -> ', response)
+        // console.log('Roles mock -> ', response)
       })
     },
     async getProcesos() {
       await getListProcesos().then((response) => {
-        console.log('Procesos -> ', response)
+        // console.log('Procesos -> ', response)
         this.datosProcesos = response
         this.loading = false
       })
     },
     async getUsuarios() {
       await getListUsuarios().then((response) => {
-        console.log('Usuarios -> ', response)
+        // console.log('Usuarios -> ', response)
         this.datosUsuarios = response
       })
     },
     async getServicios() {
       await getListServicios().then((response) => {
         this.datosServicios = response
+      })
+    },
+    async getEmpresas() {
+      await getAllEmpresas().then((response) => {
+        this.allDataEmpresas = response.items
+        window.localStorage.setItem('empresas', JSON.stringify(this.allDataEmpresas))
+        // console.log(this.allDataEmpresas.items)
       })
     },
     /* Metodo para realizar la busqueda de los filtros ubicado en las columnas */
@@ -368,6 +375,12 @@ export default {
     async borrarExpediente() {
       this.loading = true
       await deleteProceso(this.delIdproceso).then((response) => {
+        this.$notify({
+          title: 'Información',
+          message: 'Se ha eliminado el expediente',
+          type: 'warning',
+          duration: 2000
+        })
         this.getProcesos()
       })
       this.deleteDialogVisible = false
@@ -375,6 +388,12 @@ export default {
     async asignarUsuario() {
       this.loading = true
       await updateProcesoUsuario(this.formUsuario).then((response) => {
+        this.$notify({
+          title: 'Bien hecho!',
+          message: 'Expediente actualizado con éxito',
+          type: 'success',
+          duration: 2000
+        })
         this.getProcesos()
       })
     },
@@ -394,9 +413,16 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.msgAgregarVisible = false
-          console.log(this.formAgregar)
+          // console.log(this.formAgregar)
           this.loading = true
+          console.log('FORMAGREGAR -> ', this.formAgregar)
           createProceso(this.formAgregar).then((response) => {
+            this.$notify({
+              title: 'Buen trabajo!',
+              message: 'Expediente agregado con éxito',
+              type: 'success',
+              duration: 2000
+            })
             this.getProcesos()
             this.$refs['formAgregar'].resetFields()
           })
@@ -417,8 +443,21 @@ export default {
       this.$refs['formAgregar'].resetFields()
       this.msgAgregarVisible = false
     },
-    handleProceso(idproceso) {
-      this.$router.push({ path: `/procesos/detalle/${idproceso}` })
+    handleProceso(proceso) {
+      console.log(`/procesos/detalle/${proceso.idproceso}/${JSON.stringify(proceso)}/${JSON.stringify(this.datosUsuarios)}/${JSON.stringify(this.datosServicios)}`)
+      this.$router.push({ path: `/procesos/detalle/${proceso.idproceso}/${JSON.stringify(proceso)}/${JSON.stringify(this.datosUsuarios)}/${JSON.stringify(this.datosServicios)}` })
+      // this.$router.push({ path: `/procesos/detalle/${idproceso}/${JSON.stringify(this.datosUsuarios)}/${JSON.stringify(this.datosServicios)}/${JSON.stringify(this.allDataEmpresas)}` })
+      // this.$router.push(
+      //   {
+      //     name: 'DetalleProceso',
+      //     params: {
+      //       id: idproceso,
+      //       usuarios: this.datosUsuarios,
+      //       servicios: this.datosServicios,
+      //       empresas: this.allDataEmpresas
+      //     }
+      //   }
+      // )
     }
   }
 }

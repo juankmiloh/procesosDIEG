@@ -224,7 +224,10 @@ export const asyncRoutes = [
                 meta: { title: 'Procesos', icon: 'example', noCache: false, roles: ['administrador', 'abogado'] }
             },
             {
-                path: 'detalle/:id(\\d+)',
+                // path: 'detalle/:id',
+                path: 'detalle/:id/:proceso/:usuarios/:servicios',
+                // path: 'detalle/:id/:usuarios/:servicios/:empresas',
+                // path: 'detalle',
                 component: () =>
                     import ('@/views/proceso/Detalle'),
                 name: 'DetalleProceso',

@@ -17,6 +17,14 @@ export function getProceso(id) {
     });
 }
 
+export function getProcesoInicial(id) {
+    return request({
+        url: '/proceso/detalle/inicial',
+        method: 'get',
+        params: { 'idProceso': id }
+    });
+}
+
 export function createProceso(data) {
     return request({
         url: '/procesos',
@@ -27,7 +35,15 @@ export function createProceso(data) {
 
 export function updateProcesoUsuario(data) {
     return request({
-        url: '/procesos',
+        url: '/procesos/usuarioupdate',
+        method: 'put',
+        data: data
+    });
+}
+
+export function updateProceso(data) {
+    return request({
+        url: '/procesos/update',
         method: 'put',
         data: data
     });

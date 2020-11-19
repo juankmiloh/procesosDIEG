@@ -19,10 +19,10 @@ export default {
       type: Number,
       default: 0
     },
-    zIndex: {
-      type: Number,
-      default: 1
-    },
+    // zIndex: {
+    //   type: Number,
+    //   default: 0
+    // },
     className: {
       type: String,
       default: ''
@@ -34,7 +34,8 @@ export default {
       position: '',
       width: undefined,
       height: undefined,
-      isSticky: false
+      isSticky: false,
+      zIndex: 0
     }
   },
   mounted() {
@@ -75,6 +76,13 @@ export default {
       const width = this.$el.getBoundingClientRect().width
       this.width = width || 'auto'
       const offsetTop = this.$el.getBoundingClientRect().top
+      // console.log('offsetTop -> ', offsetTop)
+      // Juan Camilo coloca esta validacion para controlar que el sticky no se muestre sobre el menu de los tagviews
+      if (offsetTop >= 84) {
+        this.zIndex = 0
+      } else {
+        this.zIndex = 10
+      }
       if (offsetTop < this.stickyTop) {
         this.sticky()
         return

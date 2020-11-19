@@ -81,6 +81,7 @@ import { validUsername } from '@/utils/validate'
 import logSuper from '@/assets/superservicios1.png'
 import logPage from '@/assets/mazo.png'
 import { getListNicknames } from '@/api/procesosDIEG/usuarios'
+import md5 from 'md5'
 
 export default {
   name: 'Login',
@@ -188,13 +189,20 @@ export default {
       })
     },
     handleLogin() {
-      // this.loginForm.username = this.loginForm.username.toLowerCase()
+      this.loginForm.password = md5(this.loginForm.password)
+      console.log('contrasena -> ', this.loginForm.password)
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
           this.loading = true
           this.$store
             .dispatch('user/login', this.loginForm)
             .then((data) => {
+              this.$notify({
+                title: 'Bienvenido!',
+                message: 'Se ha iniciado su sesión',
+                type: 'success',
+                duration: 2000
+              })
               console.log('data juan -> ', data)
               this.$router.push({ path: this.redirect || '/' })
               this.loading = false
@@ -203,9 +211,10 @@ export default {
               console.log('error login -> ', err)
               this.$notify.error({
                 title: 'Error',
-                message: 'Usuario o contraseña inválidos'
+                message: 'Contraseña incorrecta'
               })
               this.loading = false
+              this.loginForm.password = ''
             })
         } else {
           console.log('error submit!!')
