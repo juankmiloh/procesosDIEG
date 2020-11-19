@@ -117,6 +117,63 @@
       </div>
     </el-dialog>
 
+    <!-- Cuadro de dialogo para editar o asignar etapa -->
+
+    <el-dialog title="Etapas" :visible.sync="msgEtapaVisible">
+      <el-form :model="proceso.etapas[etapaEditar]">
+        <el-form-item label="Etapa" :label-width="formLabelWidth">
+          <el-select
+            v-model="proceso.etapas[etapaEditar].nombreEtapa"
+            placeholder="Seleccione la etapa siguiente"
+            :disabled="edicion"
+          >
+            <el-option label="Etapa 1" value="Etapa 1" />
+            <el-option label="Etapa 2" value="Etapa 2" />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="Radicado" :label-width="formLabelWidth">
+          <input
+            v-model="proceso.etapas[etapaEditar].radicadoEtapa"
+            :disabled="edicion"
+          >
+        </el-form-item>
+
+        <el-form-item label="Fecha Inicio" :label-width="formLabelWidth">
+          <el-date-picker
+            v-model="proceso.etapas[etapaEditar].fechaInicioEtapa"
+            type="date"
+            placeholder="Seleccione un dia"
+            :disabled="edicion"
+          />
+        </el-form-item>
+
+        <el-form-item label="Fecha Fin" :label-width="formLabelWidth">
+          <el-date-picker
+            v-model="proceso.etapas[etapaEditar].fechaFinEtapa"
+            type="date"
+            placeholder="Seleccione un dia"
+            :disabled="edicion"
+          />
+        </el-form-item>
+
+        <el-form-item label="Observación" :label-width="formLabelWidth">
+          <input
+            v-model="proceso.etapas[etapaEditar].observacionEtapa"
+            :disabled="edicion"
+          >
+        </el-form-item>
+      </el-form>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="msgEtapaVisible = false">Cancelar</el-button>
+        <el-button
+          type="primary"
+          @click="msgEtapaVisible = false"
+        >Aceptar</el-button>
+      </span>
+    </el-dialog>
+
     <!-- Formulario donde se cargan los datos del proceso -->
 
     <div class="app-container">
@@ -615,7 +672,6 @@ export default {
       if (idservicio) {
         await getListEmpresas(idservicio).then((response) => {
           this.datosEmpresas = response.items
-          // this.updateModel()
           console.log('THISFORMPROCESO empresas -> ', this.formProceso)
         })
       }

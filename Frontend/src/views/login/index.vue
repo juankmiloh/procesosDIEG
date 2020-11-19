@@ -82,6 +82,7 @@ import logSuper from '@/assets/superservicios1.png'
 import logPage from '@/assets/mazo.png'
 import { getListNicknames } from '@/api/procesosDIEG/usuarios'
 import md5 from 'md5'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Login',
