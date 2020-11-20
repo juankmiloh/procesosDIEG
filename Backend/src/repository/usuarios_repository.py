@@ -22,7 +22,8 @@ class UsuariosRepository:
                 R.DESCRIPCION,
                 U.DESCRIPCION,
                 U.AVATAR,
-                U.NICKNAME
+                U.NICKNAME,
+                U.NOMBRE AS USUARIO
             FROM USUARIOS U, ROL R
             WHERE 
                 U.ROL = R.IDROL
@@ -38,7 +39,7 @@ class UsuariosRepository:
     
     def get_nicknames_bd(self):
         sql = '''
-            SELECT NICKNAME FROM USUARIOS;
+            SELECT NOMBRE, APELLIDO, NICKNAME FROM USUARIOS;
         '''
         return self.db.engine.execute(text(sql)).fetchall()
 

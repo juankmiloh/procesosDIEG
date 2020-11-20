@@ -80,7 +80,7 @@ export default {
       role: Object.assign({}, defaultRole),
       routes: [],
       rolesList: [],
-      dialogVisible: false,
+      dialogVisible: true,
       dialogType: 'new',
       checkStrictly: false,
       defaultProps: {

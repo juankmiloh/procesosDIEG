@@ -26,7 +26,8 @@ class UsuariosService:
                     "roles": [result[0]],
                     "introduction": result[1],
                     "avatar": result[2],
-                    "name": result[3]
+                    "name": result[3],
+                    "usuario": result[4]
                 }
             }
         return responseGetInfo
@@ -47,11 +48,16 @@ class UsuariosService:
         return usuarios
 
     def get_nicknames(self, usuarios_repository: UsuariosRepository):
+        response = {}
         nicknames = []
+        users = []
         data = usuarios_repository.get_nicknames_bd()
         for result in data:
-            nicknames.append(result[0])
-        return nicknames
+            users.append({"nombre": result[0], "apellido": result[1], "nickname": result[2]})
+            nicknames.append(result[2])
+        response['users'] = users
+        response['nicknames'] = nicknames
+        return response
 
     def prueba_insert(self, prueba_repository: UsuariosRepository, nombre_estado):
         prueba_repository.prueba_insert_bd(nombre_estado)

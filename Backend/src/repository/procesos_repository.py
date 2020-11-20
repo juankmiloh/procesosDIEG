@@ -136,18 +136,32 @@ class ProcesosRepository:
         print('-------------------------------------')
 
         sql = '''
-            UPDATE PROCESO
-	        SET RADICADOPROCESO = :RADICADO_ARG, USUARIOASIGNADO = :USUARIO_ARG, EMPRESA = :EMPRESA_ARG, IDSERVICIO = :SERVICIO_ARG,
-             ESTADO = :ESTADO_ARG, TIPOSANCION = :TIPOSANCION_ARG, 
-            DESCISIONRECURSO = :DECISION_ARG, MONTOSANCION = :SANCION_ARG, FECHACADUCIDAD = :CADUCIDAD_ARG
-	        WHERE RADICADOPROCESO = :RADICADO_ARG;
+            UPDATE 
+                PROCESO
+	        SET 
+                RADICADOPROCESO = :RADICADO_ARG,
+                USUARIOASIGNADO = :USUARIO_ARG,
+                EMPRESA = :EMPRESA_ARG,
+                IDSERVICIO = :SERVICIO_ARG,
+                ESTADO = :ESTADO_ARG,
+                TIPOSANCION = :TIPOSANCION_ARG, 
+                DESCISIONRECURSO = :DECISION_ARG,
+                MONTOSANCION = :SANCION_ARG,
+                FECHACADUCIDAD = :CADUCIDAD_ARG
+	        WHERE
+                IDPROCESO = :IDPROCESO_ARG;
         '''
-        resultsql = self.db.engine.execute(text(sql), RADICADO_ARG=dataProceso["expediente"], USUARIO_ARG=dataProceso["usuario"], EMPRESA_ARG=dataProceso["empresa"], SERVICIO_ARG=dataProceso["servicio"], ESTADO_ARG=dataProceso["estado"], TIPOSANCION_ARG=dataProceso["tipo_sancion"], DECISION_ARG=dataProceso["decision"], SANCION_ARG=dataProceso["sancion"], CADUCIDAD_ARG=dataProceso["caducidad"])
+        resultsql = self.db.engine.execute(text(sql), IDPROCESO_ARG=dataProceso["idproceso"], RADICADO_ARG=dataProceso["expediente"], USUARIO_ARG=dataProceso["usuario"], EMPRESA_ARG=dataProceso["empresa"], SERVICIO_ARG=dataProceso["servicio"], ESTADO_ARG=dataProceso["estado"], TIPOSANCION_ARG=dataProceso["tipo_sancion"], DECISION_ARG=dataProceso["decision"], SANCION_ARG=dataProceso["sancion"], CADUCIDAD_ARG=dataProceso["caducidad"])
 
         sql = '''
-            UPDATE PROCESO_CAUSAL
-            SET IDCAUSAL = :CAUSAL_ARG, FECHAHECHOS = :FECHAHECHOS_ARG, DESCRIPCION = :DESCRIPCION_ARG
-            WHERE IDPROCESO = :IDPROCESO_ARG;
+            UPDATE 
+                PROCESO_CAUSAL
+            SET
+                IDCAUSAL = :CAUSAL_ARG,
+                FECHAHECHOS = :FECHAHECHOS_ARG,
+                DESCRIPCION = :DESCRIPCION_ARG
+            WHERE
+                IDPROCESO = :IDPROCESO_ARG;
         '''
         resultsql = self.db.engine.execute(text(sql), IDPROCESO_ARG=dataProceso["idproceso"], CAUSAL_ARG=dataProceso["causa"], FECHAHECHOS_ARG=dataProceso["fecha_hechos"], DESCRIPCION_ARG=dataProceso["descripcion"])
 

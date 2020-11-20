@@ -150,68 +150,70 @@ export const constantRoutes = [{
     //     }
     //   ]
     // },
-    // {
-    //   path: '/profile',
-    //   component: Layout,
-    //   redirect: '/profile/index',
-    //   hidden: true,
-    //   children: [
-    //     {
-    //       path: 'index',
-    //       component: () => import('@/views/profile/index'),
-    //       name: 'Profile',
-    //       meta: { title: 'Profile', icon: 'user', noCache: true }
-    //     }
-    //   ]
-    // }
+    {
+        path: '/profile',
+        component: Layout,
+        redirect: '/profile/index',
+        hidden: true,
+        children: [{
+            path: 'index',
+            component: () =>
+                import ('@/views/profile/index'),
+            name: 'Profile',
+            meta: { title: 'Perfil', icon: 'user', noCache: true }
+        }]
+    }
 ]
 
 /**
  * asyncRoutes
  * the routes that need to be dynamically loaded based on user roles
  */
-export const asyncRoutes = [
-    /*   {
-         path: '/permission',
+export const asyncRoutes = [{
+        path: '/permission',
         component: Layout,
         redirect: '/permission/role',
         alwaysShow: true, // will always show the root menu
         name: 'Permission',
         meta: {
-          title: 'Permisos',
-          icon: 'lock',
-          roles: ['administrador', 'usuario'] // you can set roles in root nav
+            title: 'Permisos',
+            icon: 'lock',
+            roles: ['administrador'] // you can set roles in root nav
         },
-        children: [  */
-    // {
-    //   path: 'page',
-    //   component: () => import('@/views/permission/page'),
-    //   name: 'PagePermission',
-    //   meta: {
-    //     title: 'Page Permission',
-    //     roles: ['admin', 'juan', 'editor'] // or you can only set roles in sub nav
-    //   }
-    // },
-    // {
-    //   path: 'directive',
-    //   component: () => import('@/views/permission/directive'),
-    //   name: 'DirectivePermission',
-    //   meta: {
-    //     title: 'Directive Permission'
-    //     // if do not set roles, means: this page does not require permission
-    //   }
-    // },
-    /*       {
-            path: 'role',
-            component: () => import('@/views/permission/role'),
-            name: 'RolePermission',
-            meta: {
-              title: 'Roles',
-              roles: ['administrador', 'usuario']
+        children: [
+            // {
+            //       path: 'page',
+            //       component: () =>
+            //           import ('@/views/permission/page'),
+            //       name: 'PagePermission',
+            //       meta: {
+            //           title: 'Page Permission',
+            //           roles: ['administrador', 'abogado'] // or you can only set roles in sub nav
+            //       }
+            //   },
+            // {
+            //     path: 'directive',
+            //     component: () =>
+            //         import ('@/views/permission/directive'),
+            //     name: 'DirectivePermission',
+            //     meta: {
+            //         title: 'Directive Permission'
+            //             // if do not set roles, means: this page does not require permission
+            //     }
+            // },
+            {
+                path: 'role',
+                component: () =>
+                    import ('@/views/permission/role'),
+                name: 'RolePermission',
+                meta: {
+                    title: 'Roles',
+                    roles: ['administrador']
+                }
             }
-          }
         ]
-      }, */
+    },
+
     // vistas adminsitrador
     {
         path: '/procesos',
@@ -225,7 +227,7 @@ export const asyncRoutes = [
             },
             {
                 // path: 'detalle/:id',
-                path: 'detalle/:id/:proceso/:usuarios/:servicios',
+                path: 'detalle/:id/:servicios/:usuarios',
                 // path: 'detalle/:id/:usuarios/:servicios/:empresas',
                 // path: 'detalle',
                 component: () =>
@@ -304,108 +306,16 @@ export const asyncRoutes = [
     //   ]
     // },
 
-    // vistas usuario
-    /*  {
-       path: '/verificacion',
-       component: Layout,
-       // redirect: 'noRedirect',
-       redirect: '#',
-       name: 'verificacion',
-       meta: {
-         title: 'Verificación CU',
-         icon: 'edit',
-         roles: ['revisor']
-       },
-       children: [
-         {
-           path: 'costo-unitario',
-           component: () => import('@/views/roles'),
-           name: 'costo-unitario',
-           meta: { title: 'Costo Unitario', icon: 'example', noCache: true, roles: ['revisor'] }
-         },
-         {
-           path: 'componentes',
-           component: () => import('@/views/roles'), // Parent router-view
-           name: 'componentes',
-           meta: { title: 'Componentes', icon: 'nested', roles: ['revisor'] },
-           redirect: '#',
-           children: [
-             {
-               path: 'd097',
-               component: () => import('@/views/roles'),
-               name: 'd097',
-               meta: { title: 'D - CREG 097', icon: 'clipboard', roles: ['revisor'] }
-             },
-             {
-               path: 'd015',
-               component: () => import('@/views/roles'),
-               name: 'd015',
-               meta: { title: 'D - CREG 015', icon: 'clipboard', roles: ['revisor'] }
-             }
-           ]
-         }
-       ]
-     },
-     {
-       path: '/verificar-tarifas',
-       component: Layout,
-       children: [
-         {
-           path: 'tarifas',
-           component: () => import('@/views/roles'),
-           name: 'tarifas',
-           meta: { title: 'Verificación Tarifas', icon: 'edit', noCache: true, roles: ['revisor'] }
-         }
-       ]
-     },
-     {
-       path: '/analisis-sensibilidad',
-       component: Layout,
-       children: [
-         {
-           path: 'sensibilidad',
-           component: () => import('@/views/roles'),
-           name: 'sensibilidad',
-           meta: { title: 'Análisis de sensibilidad', icon: 'skill', noCache: true, roles: ['revisor'] }
-         }
-       ]
-     },
-     {
-       path: '/historico-verificaciones',
-       component: Layout,
-       children: [
-         {
-           path: 'verificaciones',
-           component: () => import('@/views/roles'),
-           name: 'verificaciones',
-           meta: { title: 'Histórico Verificaciones', icon: 'tree-table', noCache: true, roles: ['revisor'] }
-         }
-       ]
-     },
-     {
-       path: '/reportes-revisor',
-       component: Layout,
-       children: [
-         {
-           path: 'reportes',
-           component: () => import('@/views/roles'),
-           name: 'reportes',
-           meta: { title: 'Reportes', icon: 'form', noCache: true, roles: ['revisor'] }
-         }
-       ]
-     }, */
-
     // {
-    //   path: '/icon',
-    //   component: Layout,
-    //   children: [
-    //     {
-    //       path: 'index',
-    //       component: () => import('@/views/icons/index'),
-    //       name: 'Icons',
-    //       meta: { title: 'Icons', icon: 'icon', noCache: true }
-    //     }
-    //   ]
+    //     path: '/icon',
+    //     component: Layout,
+    //     children: [{
+    //         path: 'index',
+    //         component: () =>
+    //             import ('@/views/icons/index'),
+    //         name: 'Icons',
+    //         meta: { title: 'Icons', icon: 'icon', noCache: true }
+    //     }]
     // },
 
     // /** when your routing map is too long, you can split it into small modules **/

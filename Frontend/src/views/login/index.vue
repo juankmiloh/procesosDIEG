@@ -89,7 +89,7 @@ export default {
   data() {
     const validateUsername = (rule, value, callback) => {
       const usernameLower = value.toLowerCase()
-      console.log('usernameLower -> ', usernameLower)
+      // console.log('usernameLower -> ', usernameLower)
       if (!validUsername(usernameLower)) {
         callback(new Error('Por favor ingrese un usuario válido'))
       } else {
@@ -109,8 +109,8 @@ export default {
       logSuper: logSuper,
       logPage: logPage,
       loginForm: {
-        username: '',
-        password: ''
+        username: 'mortega',
+        password: '123456'
       },
       loginRules: {
         username: [
@@ -127,8 +127,12 @@ export default {
       otherQuery: {},
       cardStyle: {
         background: '#e9ecef'
-      }
+      },
+      listUsers: []
     }
+  },
+  computed: {
+    ...mapGetters(['name', 'roles', 'usuario'])
   },
   watch: {
     $route: {
@@ -160,7 +164,9 @@ export default {
   methods: {
     async getNicknames() {
       await getListNicknames().then((response) => {
-        const result = { data: response }
+        this.listUsers = response.users
+        // console.log('NICkNAMES -> ', this.listUsers)
+        const result = { data: response.nicknames }
         window.localStorage.setItem('usuarios', JSON.stringify(result))
       })
     },
@@ -191,22 +197,23 @@ export default {
     },
     handleLogin() {
       this.loginForm.password = md5(this.loginForm.password)
-      console.log('contrasena -> ', this.loginForm.password)
+      // console.log('contrasena -> ', this.loginForm.password)
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
           this.loading = true
           this.$store
             .dispatch('user/login', this.loginForm)
             .then((data) => {
+              const userLogged = this.listUsers.find(user => user.nickname === this.loginForm.username.toLowerCase()).nombre
               this.$notify({
-                title: 'Bienvenido!',
-                message: 'Se ha iniciado su sesión',
-                type: 'success',
-                duration: 2000
+                title: `Hola ${userLogged}`,
+                message: `Se ha iniciado tu sesión exitosamente!`,
+                position: 'bottom-right',
+                type: 'success'
               })
-              console.log('data juan -> ', data)
               this.$router.push({ path: this.redirect || '/' })
               this.loading = false
+              this.loginForm.password = ''
             })
             .catch((err) => {
               console.log('error login -> ', err)

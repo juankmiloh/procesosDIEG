@@ -1,20 +1,25 @@
 <template>
-  <div v-loading="loading" class="createPost-container">
+  <div class="createPost-container">
     <sticky class-name="sub-navbar">
       <div style="border: 0px solid red; text-align: center;">
 
         <!-- Boton para agregar nuevo expediente al aplicativo -->
 
-        <el-button
-          style="border: 1px solid #67c23a"
-          size="medium"
-          icon="el-icon-circle-plus"
-          round
-          @click="
-          clickAgregar();
-          msgAgregarVisible = true;
-        "
-        >Agregar expediente</el-button>
+        <transition name="el-zoom-in-bottom">
+          <div v-show="!loading" class="transition-box">
+            <el-button
+              v-show="!loading"
+              style="border: 1px solid #67c23a"
+              size="medium"
+              icon="el-icon-circle-plus"
+              round
+              @click="
+                clickAgregar();
+                msgAgregarVisible = true;
+              "
+            >Agregar expediente</el-button>
+          </div>
+        </transition>
       </div>
     </sticky>
 
@@ -190,6 +195,7 @@
 
     <div class="app-container">
       <el-table
+        v-loading="loading"
         :z-index="0"
         :data="
           datosProcesos.filter(
@@ -444,8 +450,8 @@ export default {
       this.msgAgregarVisible = false
     },
     handleProceso(proceso) {
-      console.log(`/procesos/detalle/${proceso.idproceso}/${JSON.stringify(proceso)}/${JSON.stringify(this.datosUsuarios)}/${JSON.stringify(this.datosServicios)}`)
-      this.$router.push({ path: `/procesos/detalle/${proceso.idproceso}/${JSON.stringify(proceso)}/${JSON.stringify(this.datosUsuarios)}/${JSON.stringify(this.datosServicios)}` })
+      // console.log(`/procesos/detalle/${proceso.idproceso}/${JSON.stringify(proceso)}/${JSON.stringify(this.datosUsuarios)}/${JSON.stringify(this.datosServicios)}`)
+      this.$router.push({ path: `/procesos/detalle/${proceso.idproceso}/${JSON.stringify(this.datosServicios)}/${JSON.stringify(this.datosUsuarios)}` })
       // this.$router.push({ path: `/procesos/detalle/${idproceso}/${JSON.stringify(this.datosUsuarios)}/${JSON.stringify(this.datosServicios)}/${JSON.stringify(this.allDataEmpresas)}` })
       // this.$router.push(
       //   {

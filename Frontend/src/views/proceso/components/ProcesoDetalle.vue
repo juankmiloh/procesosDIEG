@@ -1,19 +1,19 @@
 <template>
-  <div
-    v-loading="loading"
-    class="createPost-container"
-    style="background: #f7fbff"
-  >
+  <div class="createPost-container" style="background: #f7fbff">
     <sticky class-name="sub-navbar">
       <div style="border: 0px solid red">
+
         <!-- Boton para abrir modal de etapas -->
-        <el-button
-          style="border: 2px solid #67c23a"
-          size="medium"
-          icon="el-icon-top-right"
-          round
-          @click="msgEtapasVisible = true"
-        >Ingresar a las etapas</el-button>
+        <transition name="el-zoom-in-center">
+          <el-button
+            v-show="!loading"
+            style="border: 2px solid #67c23a"
+            size="medium"
+            icon="el-icon-top-right"
+            round
+            @click="msgEtapasVisible = true"
+          >Ingresar a las etapas</el-button>
+        </transition>
       </div>
     </sticky>
 
@@ -176,7 +176,7 @@
 
     <!-- Formulario donde se cargan los datos del proceso -->
 
-    <div class="app-container">
+    <div v-loading="loading" class="app-container">
       <el-row :gutter="10">
 
         <!-- Card datos proceso -->
@@ -196,7 +196,7 @@
                   maxlength="14"
                   show-word-limit
                   class="control-modal"
-                  disabled
+                  :disabled="editar"
                 />
               </el-form-item>
 
@@ -207,7 +207,6 @@
                   placeholder="Seleccione el servicio"
                   class="control-modal"
                   :disabled="editar"
-                  @clear="clearSelect()"
                   @change="selectServicio($event)"
                 >
                   <el-option
@@ -407,7 +406,7 @@
               <el-col :md="24" style="border: 0px solid blue">
                 <el-card class="box-card" shadow="never" style="background: none; border: 0; text-align: center;">
                   <el-button
-                    style="border: 1px solid #67c23a; width: 10em;"
+                    style="border: 0px solid #67c23a; width: 10em;"
                     :type="editar ? 'primary' : 'danger'"
                     :icon="editar ? 'el-icon-edit' : 'el-icon-error'"
                     @click="editar = !editar; editarForm()"
@@ -451,7 +450,6 @@ export default {
   data() {
     return {
       id: '',
-      datosProceso: Object.assign({}),
       datosUsuarios: [],
       datosServicios: [],
       datosEmpresas: [],
@@ -577,6 +575,7 @@ export default {
   },
   created() {
     if (this.isDetail) {
+      this.loading = true
       // console.log('PARAMETROS URL -> ', this.$route.params)
       this.id = this.$route.params.id
       this.initView()
@@ -618,7 +617,6 @@ export default {
       })
     },
     async fetchData(id) {
-      this.datosProceso = JSON.parse(this.$route.params.proceso)
       this.datosUsuarios = JSON.parse(this.$route.params.usuarios)
       this.datosServicios = JSON.parse(this.$route.params.servicios)
       const empresas = JSON.parse(window.localStorage.getItem('empresas'))
@@ -641,6 +639,7 @@ export default {
         this.setTagsViewTitle()
         // set page title
         this.setPageTitle()
+        this.loading = false
       }).catch((err) => {
         console.log(err)
       })
@@ -709,6 +708,7 @@ export default {
               this.$notify({
                 title: 'Bien hecho!',
                 message: 'Expediente actualizado con éxito',
+                position: 'bottom-right',
                 type: 'success',
                 duration: 2000
               })
