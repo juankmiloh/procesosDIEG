@@ -1,5 +1,5 @@
 <template>
-  <div class="createPost-container" style="background: #f7fbff">
+  <div class="createPost-container" style="background: #f7fbff; height: 89vh;">
     <sticky class-name="sub-navbar">
       <div style="border: 0px solid red">
 
@@ -119,61 +119,6 @@
 
     <!-- Cuadro de dialogo para editar o asignar etapa -->
 
-    <el-dialog title="Etapas" :visible.sync="msgEtapaVisible">
-      <el-form :model="proceso.etapas[etapaEditar]">
-        <el-form-item label="Etapa" :label-width="formLabelWidth">
-          <el-select
-            v-model="proceso.etapas[etapaEditar].nombreEtapa"
-            placeholder="Seleccione la etapa siguiente"
-            :disabled="edicion"
-          >
-            <el-option label="Etapa 1" value="Etapa 1" />
-            <el-option label="Etapa 2" value="Etapa 2" />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="Radicado" :label-width="formLabelWidth">
-          <input
-            v-model="proceso.etapas[etapaEditar].radicadoEtapa"
-            :disabled="edicion"
-          >
-        </el-form-item>
-
-        <el-form-item label="Fecha Inicio" :label-width="formLabelWidth">
-          <el-date-picker
-            v-model="proceso.etapas[etapaEditar].fechaInicioEtapa"
-            type="date"
-            placeholder="Seleccione un dia"
-            :disabled="edicion"
-          />
-        </el-form-item>
-
-        <el-form-item label="Fecha Fin" :label-width="formLabelWidth">
-          <el-date-picker
-            v-model="proceso.etapas[etapaEditar].fechaFinEtapa"
-            type="date"
-            placeholder="Seleccione un dia"
-            :disabled="edicion"
-          />
-        </el-form-item>
-
-        <el-form-item label="Observación" :label-width="formLabelWidth">
-          <input
-            v-model="proceso.etapas[etapaEditar].observacionEtapa"
-            :disabled="edicion"
-          >
-        </el-form-item>
-      </el-form>
-
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="msgEtapaVisible = false">Cancelar</el-button>
-        <el-button
-          type="primary"
-          @click="msgEtapaVisible = false"
-        >Aceptar</el-button>
-      </span>
-    </el-dialog>
-
     <!-- Formulario donde se cargan los datos del proceso -->
 
     <div v-loading="loading" class="app-container">
@@ -196,7 +141,6 @@
                   maxlength="14"
                   show-word-limit
                   class="control-modal"
-                  :disabled="editar"
                 />
               </el-form-item>
 
@@ -206,7 +150,7 @@
                   filterable
                   placeholder="Seleccione el servicio"
                   class="control-modal"
-                  :disabled="editar"
+                  :disabled="!editar"
                   @change="selectServicio($event)"
                 >
                   <el-option
@@ -218,13 +162,13 @@
                 </el-select>
               </el-form-item>
 
-              <el-form-item label="Empresa" prop="empres">
+              <el-form-item label="Empresa" prop="empresa">
                 <el-select
                   v-model="formProceso.empresa"
                   filterable
                   placeholder="Seleccione un prestador"
                   class="control-modal"
-                  :disabled="editar"
+                  :disabled="!editar"
                 >
                   <el-option
                     v-for="item in datosEmpresas"
@@ -241,7 +185,7 @@
                   filterable
                   placeholder="Seleccione un usuario"
                   class="control-modal"
-                  :disabled="editar"
+                  :disabled="!editar"
                 >
                   <el-option
                     v-for="item in datosUsuarios"
@@ -264,6 +208,7 @@
                     :key="item.idestado"
                     :label="item.nombre"
                     :value="item.idestado"
+                    :disabled="!editar"
                   />
                 </el-select>
               </el-form-item>
@@ -272,7 +217,7 @@
                 <el-select
                   v-model="formProceso.tipo_sancion"
                   filterable
-                  placeholder="Seleccione tipo de sanción"
+                  placeholder="Seleccione sanción"
                   class="control-modal"
                 >
                   <el-option
@@ -295,7 +240,7 @@
                 <el-select
                   v-model="formProceso.decision"
                   filterable
-                  placeholder="Seleccione tipo de decisión"
+                  placeholder="Seleccione decisión"
                   class="control-modal"
                 >
                   <el-option
@@ -366,7 +311,7 @@
                       type="date"
                       placeholder="Seleccione una fecha"
                       class="control-modal"
-                      :disabled="editar"
+                      :disabled="!editar"
                     />
                   </el-form-item>
                 </el-card>
@@ -385,7 +330,7 @@
                       autocomplete="off"
                       placeholder="Etapa actual"
                       style="width: 18em;"
-                      disabled
+                      readonly
                     />
                   </el-form-item>
 
@@ -395,7 +340,7 @@
                       autocomplete="off"
                       placeholder="Siguiente etapa"
                       style="width: 18em;"
-                      disabled
+                      readonly
                     />
                   </el-form-item>
                 </el-card>
@@ -407,16 +352,16 @@
                 <el-card class="box-card" shadow="never" style="background: none; border: 0; text-align: center;">
                   <el-button
                     style="border: 0px solid #67c23a; width: 10em;"
-                    :type="editar ? 'primary' : 'danger'"
-                    :icon="editar ? 'el-icon-edit' : 'el-icon-error'"
+                    :type="editar ? 'danger' : 'primary'"
+                    :icon="editar ? 'el-icon-error' : 'el-icon-edit'"
                     @click="editar = !editar; editarForm()"
                   >{{ textEditar }}</el-button>
                   <el-button
-                    style="border: 1px solid #67c23a; width: 10em;"
-                    type="success"
-                    icon="el-icon-check"
+                    style="width: 10em;"
+                    :type="editar ? 'primary' : 'success'"
+                    :icon="editar ? 'el-icon-circle-check' : 'el-icon-check'"
                     @click="submitForm('formProceso')"
-                  >Actualizar</el-button>
+                  >{{ textActualizar }}</el-button>
                 </el-card>
               </el-col>
             </el-row>
@@ -437,6 +382,7 @@ import { getListCausal } from '@/api/procesosDIEG/causal'
 import { updateProceso } from '@/api/procesosDIEG/procesos'
 import { getListEmpresas } from '@/api/procesosDIEG/empresas'
 import Sticky from '@/components/Sticky' // 粘性header组件
+import { CONSTANTS } from '@/constants/constants'
 
 export default {
   name: 'ProcesoDetalle',
@@ -465,109 +411,13 @@ export default {
       /* Si es o no visible el cuadro de dialogo de las etapas */
       msgEtapasVisible: false,
       /* Si es o no para editar */
-      editar: true,
+      editar: false,
       textEditar: 'Editar',
-      form: Object.assign({}),
+      textActualizar: 'Actualizar',
       loading: false,
       userListOptions: [],
       tempRoute: {},
-      proceso: {
-        etapas: [
-          {
-            nombreEtapa: 'Radicación',
-            radicadoEtapa: '2000XXXXXX',
-            fechaInicioEtapa: '2017-12-20',
-            fechaFinEtapa: '2018-01-20',
-            observacionEtapa: ''
-          },
-          {
-            nombreEtapa: 'Memorando',
-            radicadoEtapa: '2000XXXXXX',
-            fechaInicioEtapa: '2018-01-20',
-            fechaFinEtapa: '2018-01-30',
-            observacionEtapa: ''
-          },
-          {
-            nombreEtapa: 'Informe de Gestión',
-            radicadoEtapa: '2000XXXXXX',
-            fechaInicioEtapa: '2018-01-30',
-            fechaFinEtapa: '2018-07-30',
-            observacionEtapa:
-              'Se requrio explicación mediante radicado 2000XYX'
-          },
-          {
-            nombreEtapa: 'Indagación Preeliminar - Auto',
-            radicadoEtapa: '2000XXXXXX',
-            fechaInicioEtapa: '2018-07-30',
-            fechaFinEtapa: '2018-09-30',
-            observacionEtapa: ''
-          },
-          {
-            nombreEtapa: 'Probatoria - Auto de pruebas',
-            radicadoEtapa: '2000XXXXXX',
-            fechaInicioEtapa: '2018-09-30',
-            fechaFinEtapa: '2018-12-02',
-            observacionEtapa: ''
-          },
-          {
-            nombreEtapa: 'Translado de alegatos - Auto',
-            radicadoEtapa: '2000XXXXXX',
-            fechaInicioEtapa: '2018-12-02',
-            fechaFinEtapa: '2019-02-03',
-            observacionEtapa:
-              'Se dio translado a todos por parte de gestión documental'
-          },
-          {
-            nombreEtapa: 'Translado de alegatos - Alegatos',
-            radicadoEtapa: '2000XXXXXX',
-            fechaInicioEtapa: '2019-02-03',
-            fechaFinEtapa: '2019-02-12',
-            observacionEtapa: ''
-          },
-          {
-            nombreEtapa: 'Pliego de cargos',
-            radicadoEtapa: '2000XXXXXX',
-            fechaInicioEtapa: '2019-02-12',
-            fechaFinEtapa: '2019-04-15',
-            observacionEtapa: ''
-          },
-          {
-            nombreEtapa: 'Descargos',
-            radicadoEtapa: '2000XXXXXX',
-            fechaInicioEtapa: '2019-04-15',
-            fechaFinEtapa: '2019-04-30',
-            observacionEtapa: ''
-          },
-          {
-            nombreEtapa: 'Sancion',
-            radicadoEtapa: '2000XXXXXX',
-            fechaInicioEtapa: '2019-04-30',
-            fechaFinEtapa: '2019-06-01',
-            observacionEtapa: 'Sanción por monto de $ 1.000.000'
-          },
-          {
-            nombreEtapa: 'Recurso de reposición - Radicación',
-            radicadoEtapa: '2000XXXXXX',
-            fechaInicioEtapa: '2019-06-01',
-            fechaFinEtapa: '2019-06-10',
-            observacionEtapa: ''
-          },
-          {
-            nombreEtapa: 'Resolución recurso',
-            radicadoEtapa: '2000XXXXXX',
-            fechaInicioEtapa: '2019-06-10',
-            fechaFinEtapa: '2019-11-01',
-            observacionEtapa: ''
-          }
-          // {
-          //   nombreEtapa: 'Firmeza',
-          //   radicadoEtapa: '2000XXXXXX',
-          //   fechaInicioEtapa: '2019-11-01',
-          //   fechaFinEtapa: '2019-12-18',
-          //   observacionEtapa: 'En espera a tutela'
-          // }
-        ]
-      }
+      proceso: CONSTANTS.etapas
     }
   },
   computed: {
@@ -580,8 +430,6 @@ export default {
       this.id = this.$route.params.id
       this.initView()
       this.fetchData(this.id)
-    } else {
-      this.formProceso = Object.assign({})
     }
 
     // Why need to make a copy of this.$route here?
@@ -625,14 +473,12 @@ export default {
         if (response.length > 0) {
           this.formProceso = response[0]
           this.datosEmpresas = empresas.filter(empresa => empresa.servicio === this.formProceso.servicio)
-          this.updateModelInicial()
           this.updateModel()
         } else {
           await getProcesoInicial(id).then((response) => {
-            console.log('RESPONSE inicial -> ', response)
+            // console.log('RESPONSE inicial -> ', response)
             this.formProceso = response[0]
             this.datosEmpresas = empresas.filter(empresa => empresa.servicio === this.formProceso.servicio)
-            this.updateModelInicial()
           })
         }
         // set tagsview title
@@ -643,6 +489,8 @@ export default {
       }).catch((err) => {
         console.log(err)
       })
+      this.updateModelInicial()
+      if (!this.formProceso.hasOwnProperty('descripcion')) { this.formProceso.descripcion = '' }
     },
     updateModelInicial() {
       this.formProceso.estado = this.datosEstado.find(estado => estado.nombre === this.formProceso.estado).idestado
@@ -667,24 +515,15 @@ export default {
       document.title = `${title} - ${this.formProceso.expediente}`
     },
     async selectServicio(idservicio) {
-      this.formProceso.empresa = ''
+      if (this.editar) { this.formProceso.empresa = '' }
       if (idservicio) {
         await getListEmpresas(idservicio).then((response) => {
           this.datosEmpresas = response.items
-          console.log('THISFORMPROCESO empresas -> ', this.formProceso)
         })
       }
     },
     editarForm() {
       if (this.editar) {
-        this.$notify({
-          title: 'info',
-          message: 'Has desactivado el modo edición!',
-          type: 'info',
-          duration: 2000
-        })
-        this.textEditar = 'Editar'
-      } else {
         this.$notify({
           title: 'Advertencia',
           message: 'Has activado el modo edición!',
@@ -692,30 +531,53 @@ export default {
           duration: 2000
         })
         this.textEditar = 'Cancelar'
+        this.textActualizar = 'Aceptar'
+        window.localStorage.setItem('form_save', JSON.stringify(this.formProceso))
+      } else {
+        this.$notify({
+          title: 'info',
+          message: 'Has desactivado el modo edición!',
+          type: 'info',
+          duration: 2000
+        })
+        this.textEditar = 'Editar'
+        this.textActualizar = 'Actualizar'
+        this.formProceso = JSON.parse(window.localStorage.getItem('form_save'))
+        this.selectServicio(this.formProceso.servicio) // Se carga de nuevo la lista de las empresas del servicio guardado en memoria
+        window.localStorage.removeItem('form_save')
       }
     },
     submitForm() {
-      this.loading = true
       console.log('THISFORMPROCESO -> ', this.formProceso)
       this.$refs.formProceso.validate(async(valid) => {
         if (valid) {
+          this.loading = true
           await updateProceso(this.formProceso).then(async(response) => {
-            // console.log('ACTUALIZAR PROCESO -> ', response)
+            if (this.editar) {
+              this.$notify({
+                title: 'info',
+                message: 'Se ha desactivado el modo edición!',
+                type: 'info',
+                duration: 2000
+              })
+            }
             await getProceso(this.id).then(async(response) => {
+              console.log('ACTUALIZAR PROCESO -> ', response)
               this.formProceso = response[0]
-              this.updateModelInicial()
-              this.updateModel()
+              this.textEditar = 'Editar'
+              this.textActualizar = 'Actualizar'
+              await this.updateModelInicial()
+              await this.updateModel()
               this.$notify({
                 title: 'Bien hecho!',
                 message: 'Expediente actualizado con éxito',
-                position: 'bottom-right',
+                position: this.editar ? 'top-right' : 'bottom-right',
                 type: 'success',
                 duration: 2000
               })
+              this.editar = false
+              this.loading = false
             })
-            this.loading = false
-            this.editar = true
-            this.textEditar = 'Editar'
           })
         } else {
           console.log('error submit!!')
@@ -729,7 +591,7 @@ export default {
 
 <style lang="scss" scoped>
 .control-modal {
-  width: 16em;
+  width: 100%;
 }
 </style>
 

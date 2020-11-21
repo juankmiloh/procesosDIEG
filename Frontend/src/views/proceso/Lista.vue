@@ -36,7 +36,7 @@
       <el-form
         ref="formAgregar"
         :model="formAgregar"
-        :rules="rulesFormAgregar"
+        :rules="rulesFormProceso"
         label-width="120px"
         class="demo-ruleForm"
       >
@@ -129,7 +129,7 @@
 
     <el-dialog v-el-drag-dialog title="Asignar Usuario" :visible.sync="msgUsuarioVisible" width="35em" custom-class="dialog-class-lista" center>
       <el-form :model="formUsuario" label-width="120px" class="demo-ruleForm">
-        <el-form-item label="Expediente" prop="radicado">
+        <el-form-item label="Expediente">
           <el-input
             v-model="formUsuario.expediente"
             autocomplete="off"
@@ -298,7 +298,7 @@ export default {
       allDataEmpresas: [],
       /* Datos para captar la creación */
       formAgregar: CONSTANTS.formAgregar,
-      rulesFormAgregar: CONSTANTS.rulesFormAgregar,
+      rulesFormProceso: CONSTANTS.rulesFormProceso,
       formUsuario: CONSTANTS.formUsuario,
       /* Aqui se guarda el valor escrito en el cuadro de texto para la busqueda */
       busquedaExpediente: '',
