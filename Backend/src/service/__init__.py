@@ -10,6 +10,7 @@ from .estados_service import EstadosService
 from .tiposancion_service import TiposancionService
 from .decision_service import DecisionService
 from .causal_service import CausalService
+from .etapa_service import EtapaService
 
 class ServiceModule(Module):
     def configure(self, binder):
@@ -22,6 +23,7 @@ class ServiceModule(Module):
         tiposancion_service = TiposancionService()
         decision_service = DecisionService()
         causal_service = CausalService()
+        etapa_service = EtapaService()
 
         binder.bind(PruebaService, to=prueba_service, scope=singleton)
         binder.bind(EmpresaService, to=empresa_service, scope=singleton)
@@ -32,3 +34,4 @@ class ServiceModule(Module):
         binder.bind(TiposancionService, to=tiposancion_service, scope=singleton)
         binder.bind(DecisionService, to=decision_service, scope=singleton)
         binder.bind(CausalService, to=causal_service, scope=singleton)
+        binder.bind(EtapaService, to=etapa_service, scope=singleton)

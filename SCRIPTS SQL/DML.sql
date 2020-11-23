@@ -1,3 +1,6 @@
+TRUNCATE TABLE PROCESO RESTART IDENTITY CASCADE;
+TRUNCATE TABLE ETAPA_PROCESO RESTART IDENTITY CASCADE;
+TRUNCATE TABLE PROCESO_CAUSAL RESTART IDENTITY CASCADE;
 ----------------------------
 -- DML TABLA ROL
 ----------------------------
@@ -14,63 +17,63 @@ INSERT INTO USUARIOS(NOMBRE, APELLIDO, NICKNAME, DESCRIPCION, ROL, AVATAR, CONTR
 ----------------------------
 -- DML TABLA CAUSAL
 ----------------------------
-INSERT INTO CAUSAL VALUES (1, 'Falla en la prestación del servicio');
-INSERT INTO CAUSAL VALUES (2, 'Incumplimiento de aspectos técnicos');
-INSERT INTO CAUSAL VALUES (3, 'Incumplimiento de los indicadores de calidad');
-INSERT INTO CAUSAL VALUES (4, 'No atención a requerimientos');
-INSERT INTO CAUSAL VALUES (5, 'Retie');
-INSERT INTO CAUSAL VALUES (6, 'SUI');
-INSERT INTO CAUSAL VALUES (7, 'Violación régimen tarifario');
-INSERT INTO CAUSAL VALUES (8, 'Violación reglamentaria');
+INSERT INTO CAUSAL (NOMBRECAUSAL) VALUES ('Falla en la prestación del servicio');
+INSERT INTO CAUSAL (NOMBRECAUSAL) VALUES ('Incumplimiento de aspectos técnicos');
+INSERT INTO CAUSAL (NOMBRECAUSAL) VALUES ('Incumplimiento de los indicadores de calidad');
+INSERT INTO CAUSAL (NOMBRECAUSAL) VALUES ('No atención a requerimientos');
+INSERT INTO CAUSAL (NOMBRECAUSAL) VALUES ('Retie');
+INSERT INTO CAUSAL (NOMBRECAUSAL) VALUES ('SUI');
+INSERT INTO CAUSAL (NOMBRECAUSAL) VALUES ('Violación régimen tarifario');
+INSERT INTO CAUSAL (NOMBRECAUSAL) VALUES ('Violación reglamentaria');
 
 ----------------------------
 -- DML TABLA ESTADO
 ----------------------------
-INSERT INTO ESTADO VALUES (1, 'Acto administrativo');
-INSERT INTO ESTADO VALUES (2, 'Acto que resuelve recurso');
-INSERT INTO ESTADO VALUES (3, 'Alegatos');
-INSERT INTO ESTADO VALUES (4, 'Alegatos presentados');
-INSERT INTO ESTADO VALUES (5, 'Archivo');
-INSERT INTO ESTADO VALUES (6, 'Averiguación preliminar');
-INSERT INTO ESTADO VALUES (7, 'Descargos');
-INSERT INTO ESTADO VALUES (8, 'Dirección (Física y/o email)');
-INSERT INTO ESTADO VALUES (9, 'Escrito de solicitud');
-INSERT INTO ESTADO VALUES (10, 'Etapa probatoria');
-INSERT INTO ESTADO VALUES (11, 'Fallo');
-INSERT INTO ESTADO VALUES (12, 'Fechas de escrito');
-INSERT INTO ESTADO VALUES (13, 'Firmeza');
-INSERT INTO ESTADO VALUES (14, 'Informe técnico de gestión');
-INSERT INTO ESTADO VALUES (15, 'Memorando aclaratorio');
-INSERT INTO ESTADO VALUES (16, 'Memorando devolución');
-INSERT INTO ESTADO VALUES (17, 'Nombre de la empresa');
-INSERT INTO ESTADO VALUES (18, 'Pliego de cargos');
-INSERT INTO ESTADO VALUES (19, 'Presentación de recurso');
-INSERT INTO ESTADO VALUES (20, 'Radicado');
-INSERT INTO ESTADO VALUES (21, 'Tercerías');
-INSERT INTO ESTADO VALUES (22, 'Eliminado');
+INSERT INTO ESTADO (NOMBREESTADO) VALUES ('Informe técnico de gestión');
+INSERT INTO ESTADO (NOMBREESTADO) VALUES ('Memorando devolución');
+INSERT INTO ESTADO (NOMBREESTADO) VALUES ('Memorando aclaratorio');
+INSERT INTO ESTADO (NOMBREESTADO) VALUES ('Averiguación preliminar');
+INSERT INTO ESTADO (NOMBREESTADO) VALUES ('Pliego de cargos');
+INSERT INTO ESTADO (NOMBREESTADO) VALUES ('Descargos');
+INSERT INTO ESTADO (NOMBREESTADO) VALUES ('Etapa probatoria');
+INSERT INTO ESTADO (NOMBREESTADO) VALUES ('Alegatos');
+INSERT INTO ESTADO (NOMBREESTADO) VALUES ('Alegatos presentados');
+INSERT INTO ESTADO (NOMBREESTADO) VALUES ('Fallo');
+INSERT INTO ESTADO (NOMBREESTADO) VALUES ('Presentación de recurso');
+INSERT INTO ESTADO (NOMBREESTADO) VALUES ('Acto que resuelve recurso');
+INSERT INTO ESTADO (NOMBREESTADO) VALUES ('Firmeza');
+INSERT INTO ESTADO (NOMBREESTADO) VALUES ('Archivo');
+INSERT INTO ESTADO (NOMBREESTADO) VALUES ('Eliminado');
 
 ----------------------------
 -- DML TABLA descisionRecurso
 ----------------------------
-INSERT INTO descisionRecurso (tipoDescisionRecurso) VALUES('Aclara');
-INSERT INTO descisionRecurso (tipoDescisionRecurso) VALUES('Adiciona');
-INSERT INTO descisionRecurso (tipoDescisionRecurso) VALUES('Confirma');
-INSERT INTO descisionRecurso (tipoDescisionRecurso) VALUES('Modifica');
-INSERT INTO descisionRecurso (tipoDescisionRecurso) VALUES('Revoca');
+INSERT INTO DESCISIONRECURSO (TIPODESCISIONRECURSO) VALUES('Aclara');
+INSERT INTO DESCISIONRECURSO (TIPODESCISIONRECURSO) VALUES('Adiciona');
+INSERT INTO DESCISIONRECURSO (TIPODESCISIONRECURSO) VALUES('Confirma');
+INSERT INTO DESCISIONRECURSO (TIPODESCISIONRECURSO) VALUES('Modifica');
+INSERT INTO DESCISIONRECURSO (TIPODESCISIONRECURSO) VALUES('Revoca');
 
 ----------------------------
 -- DML TABLA nombreTipoSancion
 ----------------------------
 TRUNCATE TABLE tipoSancion RESTART IDENTITY CASCADE; -- LINEA PARA ELIMINAR DATOS DE UNA TABLA Y REINICIAR EL AUTOINCREMENT
 
-INSERT INTO tipoSancion (nombreTipoSancion) VALUES('Amonestación');
-INSERT INTO tipoSancion (nombreTipoSancion) VALUES('Archivo');
-INSERT INTO tipoSancion (nombreTipoSancion) VALUES('Caducidad de contratos');
-INSERT INTO tipoSancion (nombreTipoSancion) VALUES('Multa');
-INSERT INTO tipoSancion (nombreTipoSancion) VALUES('Prohibición');
-INSERT INTO tipoSancion (nombreTipoSancion) VALUES('Separación administrativa');
-INSERT INTO tipoSancion (nombreTipoSancion) VALUES('Suspensión');
-INSERT INTO tipoSancion (nombreTipoSancion) VALUES('Toma de posesión');
+INSERT INTO TIPOSANCION (NOMBRETIPOSANCION) VALUES('Amonestación');
+INSERT INTO TIPOSANCION (NOMBRETIPOSANCION) VALUES('Archivo');
+INSERT INTO TIPOSANCION (NOMBRETIPOSANCION) VALUES('Caducidad de contratos');
+INSERT INTO TIPOSANCION (NOMBRETIPOSANCION) VALUES('Multa');
+INSERT INTO TIPOSANCION (NOMBRETIPOSANCION) VALUES('Prohibición');
+INSERT INTO TIPOSANCION (NOMBRETIPOSANCION) VALUES('Separación administrativa');
+INSERT INTO TIPOSANCION (NOMBRETIPOSANCION) VALUES('Suspensión');
+INSERT INTO TIPOSANCION (NOMBRETIPOSANCION) VALUES('Toma de posesión');
+
+----------------------------
+-- DML TABLA FASE
+----------------------------
+INSERT INTO FASE (NOMBRE) VALUES ('En curso');
+INSERT INTO FASE (NOMBRE) VALUES ('Finalizado');
+INSERT INTO FASE (NOMBRE) VALUES ('Eliminado');
 
 ----------------------------
 -- DML TABLA PROCESO
@@ -78,33 +81,39 @@ INSERT INTO tipoSancion (nombreTipoSancion) VALUES('Toma de posesión');
 --TRUNCATE TABLE PROCESO RESTART IDENTITY;
 --truncate table proceso_causal;
 --truncate table ETAPA_PROCESO;
-INSERT INTO PROCESO(RADICADOPROCESO, USUARIOASIGNADO, EMPRESA, IDSERVICIO, ESTADO, FECHACADUCIDAD)
+INSERT INTO PROCESO(RADICADOPROCESO, USUARIOASIGNADO, EMPRESA, IDSERVICIO, FASE, FECHACADUCIDAD)
 VALUES ('426752354X7XD3E', 2, 2249, 1, 14, '2014/03/26');
 -- DATOS PARA ENVIO DESDE POSTMANN
--- {"radicado":"7848284648434381E","usuario": 3,"empresa": 502,"servicio": 1,"estado": 14, "fecha_caducidad": "2014/03/26"}
+-- {"radicado":"7848284648434381E","usuario": 3,"empresa": 502,"servicio": 1,"fase": 14, "fecha_caducidad": "2014/03/26"}
 
 ----------------------------
 -- DML TABLA ETAPA
 ----------------------------
-INSERT INTO etapa(siguienteetapa, nombre) VALUES (null, 'RADICADO ESCRITO DE ALEGATOS');
-INSERT INTO etapa(siguienteetapa, nombre) VALUES (1, 'RADICADO AUTO TRASLADO PARA ALEGATOS');
-INSERT INTO etapa(siguienteetapa, nombre) VALUES (2, 'RADICADO PRIMER AUTO DE PRUEBAS');
-INSERT INTO etapa(siguienteetapa, nombre) VALUES (3, 'RADICADO ESCRITO DE DESCARGOS');
-INSERT INTO etapa(siguienteetapa, nombre) VALUES (4, 'RADICADO PLIEGO DE CARGOS');
-INSERT INTO etapa(siguienteetapa, nombre) VALUES (5, 'RADICADO AUTO ARCHIVO AVERIGUACIÓN PRELIMINAR');
-INSERT INTO etapa(siguienteetapa, nombre) VALUES (6, 'RADICADO AUTO AVERIGUACIÓN PRELIMINAR ');
-INSERT INTO etapa(siguienteetapa, nombre) VALUES (7, 'RADICADO MEMORANDO DE ALCANCE');
-INSERT INTO etapa(siguienteetapa, nombre) VALUES (8, 'RADICADO MEMORANDO DEVOLUCIÓN');
-INSERT INTO etapa(siguienteetapa, nombre) VALUES (9, 'RADICADO IG');
+INSERT INTO ETAPA(IDESTADO, NOMBRE, SIGUIENTEETAPA, ESTAMPILLA) VALUES (13, 'Firmeza', null, 'FIR');
+INSERT INTO ETAPA(IDESTADO, NOMBRE, SIGUIENTEETAPA, ESTAMPILLA) VALUES (12, 'Resolución resuelve recurso', 1, 'RRR');
+INSERT INTO ETAPA(IDESTADO, NOMBRE, SIGUIENTEETAPA, ESTAMPILLA) VALUES (11, 'Escrito de recurso', 2, 'EDR');
+INSERT INTO ETAPA(IDESTADO, NOMBRE, SIGUIENTEETAPA, ESTAMPILLA) VALUES (10, 'Resolución', 3, 'RES');
+INSERT INTO ETAPA(IDESTADO, NOMBRE, SIGUIENTEETAPA, ESTAMPILLA) VALUES (9, 'Escrito de alegatos', 4, 'EDA');
+INSERT INTO ETAPA(IDESTADO, NOMBRE, SIGUIENTEETAPA, ESTAMPILLA) VALUES (8, 'Auto traslado para alegatos', 5, 'ATPA');
+INSERT INTO ETAPA(IDESTADO, NOMBRE, SIGUIENTEETAPA, ESTAMPILLA) VALUES (7, 'Primer auto de pruebas', 6, 'PADP');
+INSERT INTO ETAPA(IDESTADO, NOMBRE, SIGUIENTEETAPA, ESTAMPILLA) VALUES (6, 'Escrito de descargos', 7, 'ED');
+INSERT INTO ETAPA(IDESTADO, NOMBRE, SIGUIENTEETAPA, ESTAMPILLA) VALUES (5, 'Pliego de cargos', 8, 'PC');
+INSERT INTO ETAPA(IDESTADO, NOMBRE, SIGUIENTEETAPA, ESTAMPILLA) VALUES (4, 'Auto archivo averiguación preliminar', 9, 'AAP');
+INSERT INTO ETAPA(IDESTADO, NOMBRE, SIGUIENTEETAPA, ESTAMPILLA) VALUES (4, 'Auto averiguación preliminar ', 10, 'AP');
+INSERT INTO ETAPA(IDESTADO, NOMBRE, SIGUIENTEETAPA, ESTAMPILLA) VALUES (3, 'Memorando de alcance', 11, 'MA'); -- Tambien hace referencia al Memorando aclarator, 4io
+INSERT INTO ETAPA(IDESTADO, NOMBRE, SIGUIENTEETAPA, ESTAMPILLA) VALUES (2, 'Memorando devolución', 12, 'MD');
+INSERT INTO ETAPA(IDESTADO, NOMBRE, SIGUIENTEETAPA, ESTAMPILLA) VALUES (1, 'Memorando IG', 13, 'MIG');
+
+--- Tener presente que se puede guardar el campo de resolucion y fecha asociados a la decision en la tabla proceso
 
 ----------------------------
 -- DML TABLA ETAPA_PROCESO
 ----------------------------
-INSERT INTO etapa_proceso(etapa, proceso, fechainicioetapa, fechafinetapa, radicadoetapa, observacionetapa)
+INSERT INTO ETAPA_PROCESO(ETAPA, PROCESO, FECHAINICIOETAPA, FECHAFINETAPA, RADICADOETAPA, OBSERVACIONETAPA)
 VALUES (10, 1, '2016/12/31', null, 123456789, 'Se inicia la etapa de IG');
-INSERT INTO etapa_proceso(etapa, proceso, fechainicioetapa, fechafinetapa, radicadoetapa, observacionetapa)
+INSERT INTO ETAPA_PROCESO(ETAPA, PROCESO, FECHAINICIOETAPA, FECHAFINETAPA, RADICADOETAPA, OBSERVACIONETAPA)
 VALUES (9, 1, '2017/01/01', null, 123, 'Radicado memorando devolución');
-INSERT INTO etapa_proceso(etapa, proceso, fechainicioetapa, fechafinetapa, radicadoetapa, observacionetapa, "tipoNotificacion", "fechaSiguienteEtapa")
+INSERT INTO ETAPA_PROCESO(ETAPA, PROCESO, FECHAINICIOETAPA, FECHAFINETAPA, RADICADOETAPA, OBSERVACIONETAPA, TIPONOTIFICACION, FECHASIGUIENTEETAPA)
 VALUES (8, 1, '2017/03/01', null, 1234, 'Radicado memorando de alcance', 'Verbal', '2020/12/31');
 
 ----------------------------
@@ -112,7 +121,7 @@ VALUES (8, 1, '2017/03/01', null, 1234, 'Radicado memorando de alcance', 'Verbal
 ----------------------------
 -- INSERT INTO proceso_causal(idproceso, causal_idcausal, fechahechos, fechacaducidad) 
 -- VALUES (1, 3, '2016/01/01', '2020/12/31');
-INSERT INTO proceso_causal(idproceso) VALUES (1);
+INSERT INTO PROCESO_CAUSAL(IDPROCESO) VALUES (1);
 
 ----------------------------
 -- DML TABLA SERVICIO

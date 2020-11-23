@@ -37,14 +37,13 @@ class ProcesosService:
                 {
                     'idproceso': result[0],
                     'expediente': result[1],
-                    'servicio': result[2],
+                    'caducidad': str(result[2]),
                     'empresa': result[3].capitalize(),
-                    'usuario': result[4],
-                    'estado': result[5],
-                    'sancion': result[6],
-                    'caducidad': str(result[7]),
-                    'etapa': result[9].capitalize(),
-                    'proxetapa': result[11].capitalize()
+                    'estado': result[4],
+                    'etapa': result[5],
+                    'proxetapa': result[6],
+                    'servicio': result[7],
+                    'usuario': result[8]
                 }
             )
         return proceso
@@ -53,27 +52,24 @@ class ProcesosService:
         proceso = []
         data = procesos_repository.get_proceso_bd(idProceso)
         for result in data:
-            fechahechos = result[10]
-            if fechahechos:
-                fechahechos = format_date(result[10])
 
             proceso.append(
                 {
                     'idproceso': result[0],
                     'expediente': result[1],
-                    'servicio': result[2],
+                    'caducidad': str(result[2]),
                     'empresa': result[3].capitalize(),
-                    'usuario': result[4],
-                    'estado': result[5],
-                    'tipo_sancion': result[6],
-                    'sancion': result[7],
-                    'decision': result[8],
-                    'causa': result[9],
-                    'fecha_hechos': str(result[10]),
-                    'descripcion': result[11],
-                    'caducidad': str(result[12]),
-                    'etapa': result[14].capitalize(),
-                    'proxetapa': result[16].capitalize()
+                    'causa': result[4],
+                    'fecha_hechos': str(result[5]),
+                    'descripcion': result[6],
+                    'estado': result[7],
+                    'etapa': result[8],
+                    'proxetapa': result[9],
+                    'decision': result[10],
+                    'tipo_sancion': result[11],
+                    'sancion': result[12],
+                    'servicio': result[13],
+                    'usuario': result[14]
                 }
             )
         return proceso

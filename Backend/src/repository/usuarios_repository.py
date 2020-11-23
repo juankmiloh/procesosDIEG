@@ -33,7 +33,7 @@ class UsuariosRepository:
 
     def get_usuarios_bd(self):
         sql = '''
-            SELECT * FROM USUARIOS;
+            SELECT * FROM USUARIOS ORDER BY NOMBRE ASC;
         '''
         return self.db.engine.execute(text(sql)).fetchall()
     

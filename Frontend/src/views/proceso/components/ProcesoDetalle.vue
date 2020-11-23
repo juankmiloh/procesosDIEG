@@ -1,8 +1,7 @@
 <template>
-  <div class="createPost-container" style="background: #f7fbff; height: 89vh;">
+  <div class="createPost-container" style="background: #f7fbff height: 89vh">
     <sticky class-name="sub-navbar">
       <div style="border: 0px solid red">
-
         <!-- Boton para abrir modal de etapas -->
         <transition name="el-zoom-in-center">
           <el-button
@@ -19,21 +18,26 @@
 
     <!-- Cuadro de dialogo de etapas -->
 
-    <el-dialog :visible.sync="msgEtapasVisible" :show-close="false" fullscreen custom-class="dialog-class-ldetalle">
-      <!-- Boton para agregar nuevo expediente al aplicativo -->
-      <div style="padding-bottom: 60px;">
-        <sticky :z-index="10" class-name="sub-navbar" style="position: fixed; width: 99%;">
+    <el-dialog
+      :visible.sync="msgEtapasVisible"
+      :show-close="false"
+      fullscreen
+      custom-class="dialog-class-ldetalle"
+    >
+      <div style="padding-bottom: 10px;">
+        <sticky
+          :z-index="10"
+          class-name="sub-navbar"
+          style="position: fixed width: 99%"
+        >
           <div style="border: 0px solid red">
-            <!-- Boton para agregar nuevo expediente al aplicativo -->
+            <!-- Boton para agregar nueva etapa al aplicativo -->
 
             <el-button
-              style="border: 1px solid #67c23a"
-              type="success"
+              style="border: 2px solid #67c23a"
               size="medium"
               icon="el-icon-circle-plus"
-              @click="
-                msgEtapaVisible = true;
-              "
+              @click="msgEtapaVisible = true"
             >Agregar etapa</el-button>
             <el-button
               style="border: 1px solid #67c23a"
@@ -46,71 +50,53 @@
       </div>
       <div class="app-container">
         <el-table
-          def="etapas"
-          :data="proceso.etapas"
-          :default-sort="{ prop: 'fechaInicioEtapa', order: 'descending' }"
-          style="width: 100%; z-index: 0;"
+          v-loading="loading"
+          :z-index="0"
+          :data="
+            datosEtapa.filter(
+              (data) =>
+                !busquedaEtapa ||
+                data.nombreEtapa
+                  .toLowerCase()
+                  .includes(busquedaEtapa.toLowerCase())
+            )
+          "
+          style="width: 100% border: 1px solid #d8ebff"
           border
         >
-          <!-- Etapa -->
           <el-table-column
-            prop="nombreEtapa"
-            label="Etapa"
-            sortable
-            column-key="nombreEtapa"
+            v-for="column in tableColumns"
+            :key="column.label"
+            :label="column.label"
+            :prop="column.prop"
             align="center"
-          />
-
-          <!-- Radicado -->
-          <el-table-column
-            prop="radicadoEtapa"
-            label="Radicado"
+            :width="column.prop === 'observacionEtapa' ? 400 : ''"
             sortable
-            column-key="radicadoEtapa"
           />
-
-          <!-- Fecha de Inicio -->
-          <el-table-column
-            prop="fechaInicioEtapa"
-            label="Fecha de Inicio"
-            sortable
-            column-key="fechaInicioEtapa"
-          />
-
-          <!-- Fecha de Fin -->
-          <el-table-column
-            prop="fechaFinEtapa"
-            label="Fecha de Fin"
-            sortable
-            column-key="fechaFinEtapa"
-          />
-
-          <!-- Observación -->
-          <el-table-column
-            prop="observacionEtapa"
-            label="Observación"
-            sortable
-            column-key="observacionEtapa"
-          />
-
-          <!-- Columna donde se ponen los botones de permisos y quitar -->
-          <el-table-column>
-            <template slot-scope="scope">
-              <!-- Boton de permisos -->
-              <el-button
+          <el-table-column align="center" width="230">
+            <!-- eslint-disable-next-line -->
+            <template slot="header" slot-scope="scope">
+              <el-input
+                v-model="busquedaEtapa"
                 size="mini"
-                @click="
-                  msgEtapaVisible = true;
-                  etapaEditar = scope.$index;
-                "
-              >Editar</el-button>
-
-              <!-- Boton de eliminar -->
+                placeholder="Nombre etapa"
+              />
+            </template>
+            <template slot-scope="scope">
               <el-button
+                style="border: 1px solid #409eff"
+                size="mini"
+                type="success"
+                icon="el-icon-edit"
+                @click="handlePermisos(scope.row)"
+              ><b>Editar</b></el-button>
+              <el-button
+                :disabled="scope.row.nombreEtapa === 'Memorando IG'"
                 size="mini"
                 type="danger"
-                @click="handleDelete(scope.$index, scope.row)"
-              >Quitar</el-button>
+                icon="el-icon-delete-solid"
+                @click="handleDelete(scope.row)"
+              />
             </template>
           </el-table-column>
         </el-table>
@@ -123,10 +109,8 @@
 
     <div v-loading="loading" class="app-container">
       <el-row :gutter="10">
-
         <!-- Card datos proceso -->
         <el-form ref="formProceso" :model="formProceso" label-width="120px">
-
           <el-col :md="8" style="border: 0px solid blue">
             <el-card class="box-card">
               <div slot="header" class="clearfix">
@@ -138,9 +122,10 @@
                   v-model="formProceso.expediente"
                   autocomplete="off"
                   placeholder="Ingrese No. del expediente"
-                  maxlength="14"
+                  maxlength="15"
                   show-word-limit
                   class="control-modal"
+                  :disabled="!editar"
                 />
               </el-form-item>
 
@@ -208,7 +193,7 @@
                     :key="item.idestado"
                     :label="item.nombre"
                     :value="item.idestado"
-                    :disabled="!editar"
+                    disabled
                   />
                 </el-select>
               </el-form-item>
@@ -229,11 +214,12 @@
                 </el-select>
               </el-form-item>
 
-              <el-form-item
-                label="Monto sanción"
-                prop="sancion"
-              >
-                <el-input-number v-model.number="formProceso.sancion" class="control-modal" autocomplete="off" />
+              <el-form-item label="Monto sanción" prop="sancion">
+                <el-input-number
+                  v-model.number="formProceso.sancion"
+                  class="control-modal"
+                  autocomplete="off"
+                />
               </el-form-item>
 
               <el-form-item label="Decisión" prop="decision">
@@ -288,7 +274,12 @@
               </el-form-item>
 
               <el-form-item label="Descripción">
-                <el-input v-model="formProceso.descripcion" type="textarea" class="control-modal" rows="15" />
+                <el-input
+                  v-model="formProceso.descripcion"
+                  type="textarea"
+                  class="control-modal"
+                  rows="15"
+                />
               </el-form-item>
             </el-card>
           </el-col>
@@ -297,7 +288,6 @@
 
           <el-col :md="8" style="border: 0px solid blue">
             <el-row :gutter="10">
-
               <!-- Card datos caducidad -->
 
               <el-col :md="24" style="border: 0px solid blue">
@@ -319,7 +309,10 @@
 
               <!-- Card datos etapa -->
 
-              <el-col :md="24" style="border: 0px solid blue; padding-top: 10px;">
+              <el-col
+                :md="24"
+                style="border: 0px solid blue padding-top: 10px"
+              >
                 <el-card class="box-card">
                   <div slot="header" class="clearfix">
                     <span>Etapas</span>
@@ -329,17 +322,17 @@
                       v-model="formProceso.etapa"
                       autocomplete="off"
                       placeholder="Etapa actual"
-                      style="width: 18em;"
+                      style="width: 18em"
                       readonly
                     />
                   </el-form-item>
 
                   <el-form-item label="Siguiente" prop="prox_etapa">
                     <el-input
-                      v-model="formProceso.proxetapa"
+                      v-model="prox_etapa"
                       autocomplete="off"
                       placeholder="Siguiente etapa"
-                      style="width: 18em;"
+                      style="width: 18em"
                       readonly
                     />
                   </el-form-item>
@@ -349,15 +342,22 @@
               <!-- Boton  / editar / actualizar -->
 
               <el-col :md="24" style="border: 0px solid blue">
-                <el-card class="box-card" shadow="never" style="background: none; border: 0; text-align: center;">
+                <el-card
+                  class="box-card"
+                  shadow="never"
+                  style="background: none border: 0 text-align: center"
+                >
                   <el-button
-                    style="border: 0px solid #67c23a; width: 10em;"
+                    style="border: 0px solid #67c23a width: 10em"
                     :type="editar ? 'danger' : 'primary'"
                     :icon="editar ? 'el-icon-error' : 'el-icon-edit'"
-                    @click="editar = !editar; editarForm()"
+                    @click="
+                      editar = !editar
+                      editarForm()
+                    "
                   >{{ textEditar }}</el-button>
                   <el-button
-                    style="width: 10em;"
+                    style="width: 10em"
                     :type="editar ? 'primary' : 'success'"
                     :icon="editar ? 'el-icon-circle-check' : 'el-icon-check'"
                     @click="submitForm('formProceso')"
@@ -381,6 +381,7 @@ import { getListDecision } from '@/api/procesosDIEG/decision'
 import { getListCausal } from '@/api/procesosDIEG/causal'
 import { updateProceso } from '@/api/procesosDIEG/procesos'
 import { getListEmpresas } from '@/api/procesosDIEG/empresas'
+import { getEtapaProceso } from '@/api/procesosDIEG/etapas'
 import Sticky from '@/components/Sticky' // 粘性header组件
 import { CONSTANTS } from '@/constants/constants'
 
@@ -409,7 +410,7 @@ export default {
       /* Para la edición de una etapa */
       etapaEditar: '0',
       /* Si es o no visible el cuadro de dialogo de las etapas */
-      msgEtapasVisible: false,
+      msgEtapasVisible: true,
       /* Si es o no para editar */
       editar: false,
       textEditar: 'Editar',
@@ -417,7 +418,10 @@ export default {
       loading: false,
       userListOptions: [],
       tempRoute: {},
-      proceso: CONSTANTS.etapas
+      prox_etapa: '',
+      datosEtapa: [],
+      tableColumns: CONSTANTS.tableColumnsEtapas,
+      busquedaEtapa: ''
     }
   },
   computed: {
@@ -438,6 +442,9 @@ export default {
     this.tempRoute = Object.assign({}, this.$route)
   },
   methods: {
+    handleProceso(scope) {
+      console.log(scope)
+    },
     initView() {
       this.getEstado()
       this.getTiposancion()
@@ -464,44 +471,75 @@ export default {
         this.datosCausal = response
       })
     },
-    async fetchData(id) {
+    getEtapas(idproceso) {
+      getEtapaProceso(idproceso).then((response) => {
+        console.log('ETAPA_PROCESO -> ', response)
+        this.datosEtapa = response
+      })
+    },
+    fetchData(id) {
       this.datosUsuarios = JSON.parse(this.$route.params.usuarios)
       this.datosServicios = JSON.parse(this.$route.params.servicios)
       const empresas = JSON.parse(window.localStorage.getItem('empresas'))
-      await getProceso(id).then(async(response) => {
-        console.log('RESPONSE -> ', response)
-        if (response.length > 0) {
-          this.formProceso = response[0]
-          this.datosEmpresas = empresas.filter(empresa => empresa.servicio === this.formProceso.servicio)
-          this.updateModel()
-        } else {
-          await getProcesoInicial(id).then((response) => {
-            // console.log('RESPONSE inicial -> ', response)
+      getProceso(id)
+        .then(async(response) => {
+          // console.log("RESPONSE -> ", response)
+          if (response.length > 0) {
             this.formProceso = response[0]
-            this.datosEmpresas = empresas.filter(empresa => empresa.servicio === this.formProceso.servicio)
-          })
-        }
-        // set tagsview title
-        this.setTagsViewTitle()
-        // set page title
-        this.setPageTitle()
-        this.loading = false
-      }).catch((err) => {
-        console.log(err)
-      })
-      this.updateModelInicial()
-      if (!this.formProceso.hasOwnProperty('descripcion')) { this.formProceso.descripcion = '' }
+            this.datosEmpresas = empresas.filter(
+              (empresa) => empresa.servicio === this.formProceso.servicio
+            )
+            this.updateModelInicial()
+            this.updateModel()
+          } else {
+            await getProcesoInicial(id).then((response) => {
+              console.log('RESPONSE inicial -> ', response)
+              this.formProceso.descripcion = ''
+              this.formProceso = response[0]
+              this.datosEmpresas = empresas.filter(
+                (empresa) => empresa.servicio === this.formProceso.servicio
+              )
+              this.updateModelInicial()
+            })
+          }
+          if (this.formProceso.etapa !== 'Memorando IG') {
+            this.prox_etapa = this.formProceso.proxetapa
+          } else {
+            this.prox_etapa = 'Por definir'
+          }
+          // set tagsview title
+          this.setTagsViewTitle()
+          // set page title
+          this.setPageTitle()
+          this.loading = false
+          this.getEtapas(this.formProceso.idproceso)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     },
     updateModelInicial() {
-      this.formProceso.estado = this.datosEstado.find(estado => estado.nombre === this.formProceso.estado).idestado
-      this.formProceso.empresa = this.datosEmpresas.find(empresa => empresa.nombre === this.formProceso.empresa.toUpperCase()).id_empresa
-      this.formProceso.servicio = this.datosServicios.find(servicio => servicio.servicio === this.formProceso.servicio).idservicio
-      this.formProceso.usuario = this.datosUsuarios.find(usuario => `${usuario.nombre} ${usuario.apellido}` === this.formProceso.usuario).idusuario
+      this.formProceso.estado = this.datosEstado.find(
+        (estado) => estado.nombre === this.formProceso.estado
+      ).idestado
+      this.formProceso.empresa = this.datosEmpresas.find(
+        (empresa) => empresa.nombre === this.formProceso.empresa.toUpperCase()
+      ).id_empresa
+      this.formProceso.servicio = this.datosServicios.find(
+        (servicio) => servicio.servicio === this.formProceso.servicio
+      ).idservicio
+      // this.formProceso.usuario = this.datosUsuarios.find(usuario => `${usuario.nombre} ${usuario.apellido}` === this.formProceso.usuario).idusuario
     },
     updateModel() {
-      this.formProceso.causa = this.datosCausal.find(causal => causal.nombre === this.formProceso.causa).idcausal
-      this.formProceso.decision = this.datosDecision.find(decision => decision.nombre === this.formProceso.decision).iddecision
-      this.formProceso.tipo_sancion = this.datosTiposancion.find(tiposancion => tiposancion.nombre === this.formProceso.tipo_sancion).idtiposancion
+      this.formProceso.causa = this.datosCausal.find(
+        (causal) => causal.nombre === this.formProceso.causa
+      ).idcausal
+      this.formProceso.decision = this.datosDecision.find(
+        (decision) => decision.nombre === this.formProceso.decision
+      ).iddecision
+      this.formProceso.tipo_sancion = this.datosTiposancion.find(
+        (tiposancion) => tiposancion.nombre === this.formProceso.tipo_sancion
+      ).idtiposancion
     },
     setTagsViewTitle() {
       const title = 'Expediente'
@@ -515,7 +553,9 @@ export default {
       document.title = `${title} - ${this.formProceso.expediente}`
     },
     async selectServicio(idservicio) {
-      if (this.editar) { this.formProceso.empresa = '' }
+      if (this.editar) {
+        this.formProceso.empresa = ''
+      }
       if (idservicio) {
         await getListEmpresas(idservicio).then((response) => {
           this.datosEmpresas = response.items
@@ -532,7 +572,10 @@ export default {
         })
         this.textEditar = 'Cancelar'
         this.textActualizar = 'Aceptar'
-        window.localStorage.setItem('form_save', JSON.stringify(this.formProceso))
+        window.localStorage.setItem(
+          'form_save',
+          JSON.stringify(this.formProceso)
+        )
       } else {
         this.$notify({
           title: 'info',
@@ -548,6 +591,9 @@ export default {
       }
     },
     submitForm() {
+      if (!this.formProceso.hasOwnProperty('descripcion')) {
+        this.formProceso.descripcion = ''
+      }
       console.log('THISFORMPROCESO -> ', this.formProceso)
       this.$refs.formProceso.validate(async(valid) => {
         if (valid) {
@@ -562,7 +608,7 @@ export default {
               })
             }
             await getProceso(this.id).then(async(response) => {
-              console.log('ACTUALIZAR PROCESO -> ', response)
+              // console.log("ACTUALIZAR PROCESO -> ", response)
               this.formProceso = response[0]
               this.textEditar = 'Editar'
               this.textActualizar = 'Actualizar'

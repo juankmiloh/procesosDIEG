@@ -1,3 +1,5 @@
+/* jshint esversion: 6 */
+/* eslint-disable */
 const getters = {
     sidebar: state => state.app.sidebar,
     language: state => state.app.language,
@@ -14,5 +16,5 @@ const getters = {
     permission_routes: state => state.permission.routes,
     addRoutes: state => state.permission.addRoutes,
     errorLogs: state => state.errorLog.logs
-}
-export default getters
+};
+export default getters;

@@ -7,6 +7,6 @@ class EstadosRepository:
 
     def get_estados_bd(self):
         sql = '''
-            SELECT * FROM ESTADO WHERE IDESTADO <> 22 ORDER BY NOMBREESTADO ASC;
+            SELECT * FROM ESTADO ORDER BY IDESTADO ASC;
         '''
         return self.db.engine.execute(text(sql)).fetchall()

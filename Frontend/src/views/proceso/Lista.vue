@@ -45,7 +45,7 @@
             v-model="formAgregar.radicado"
             autocomplete="off"
             placeholder="Ingrese No. del expediente"
-            maxlength="14"
+            maxlength="15"
             show-word-limit
             clearable
             class="control-modal"
@@ -86,7 +86,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="Usuario" prop="usuario">
+        <el-form-item label="Abogado" prop="usuario">
           <el-select
             v-model="formAgregar.usuario"
             filterable
@@ -289,7 +289,7 @@ export default {
     return {
       dialogTableVisible: false,
       /* Datos para mostrar en la tabla */
-      tableColumns: CONSTANTS.tableColumns,
+      tableColumns: CONSTANTS.tableColumnsProceso,
       filtersServicio: CONSTANTS.filters,
       datosProcesos: [],
       datosUsuarios: [],
@@ -338,7 +338,7 @@ export default {
     },
     async getProcesos() {
       await getListProcesos().then((response) => {
-        // console.log('Procesos -> ', response)
+        console.log('Procesos -> ', response)
         this.datosProcesos = response
         this.loading = false
       })
