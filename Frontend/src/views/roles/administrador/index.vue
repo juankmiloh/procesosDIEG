@@ -41,8 +41,9 @@ export default {
     // ///////////////////////////////////////////////////////////////////////////////////////
     if (view === '/procesos/expedientes') {
       this.currentView = 'viewProcesos'
-    } else if (view === '/administrador/reporte_empresa') {
-      this.currentView = 'viewEmpresas'
+    } else if (view === '/informe/empresa') {
+      // this.currentView = 'viewEmpresas'
+      this.currentView = 'viewIndicadoresProcesosActivos'
     } else if (view === '/administrador/indicadores_empresa') {
       this.currentView = 'viewIndicadoresEmpresa'
     } else if (view === '/administrador/indicadores_pactivos') {

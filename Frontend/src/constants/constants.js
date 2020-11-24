@@ -98,5 +98,35 @@ export const CONSTANTS = {
     formUsuario: {
         usuario: '',
         expediente: ''
-    }
+    },
+    formAgregarEtapa: {
+        etapa: '',
+        fecha_inicio: '',
+        fecha_fin: '',
+        observacion: ''
+    },
+    rulesFormEtapa: {
+        etapa: [{
+            required: true,
+            message: 'Seleccione una etapa',
+            trigger: 'change'
+        }],
+        fecha_inicio: [{
+            type: 'date',
+            required: true,
+            message: 'Ingrese una fecha válida',
+            trigger: 'change'
+        }],
+        fecha_fin: [{
+            type: 'date',
+            required: false,
+            message: 'Ingrese una fecha válida',
+            trigger: 'change'
+        }],
+        observacion: [{
+            required: false,
+            message: 'Ingrese una observación',
+            trigger: 'change'
+        }]
+    },
 };

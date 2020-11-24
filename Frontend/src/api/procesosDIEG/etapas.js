@@ -4,7 +4,7 @@ import request from '@/utils/request';
 
 export function getListEtapas() {
     return request({
-        url: '/estapas',
+        url: '/etapas',
         method: 'get'
     });
 }
@@ -17,42 +17,10 @@ export function getEtapaProceso(id) {
     });
 }
 
-export function getProcesoInicial(id) {
+export function createEtapa(data) {
     return request({
-        url: '/proceso/detalle/inicial',
-        method: 'get',
-        params: { 'idProceso': id }
-    });
-}
-
-export function createProceso(data) {
-    return request({
-        url: '/procesos',
+        url: '/etapas',
         method: 'post',
         data
-    });
-}
-
-export function updateProcesoUsuario(data) {
-    return request({
-        url: '/procesos/usuarioupdate',
-        method: 'put',
-        data: data
-    });
-}
-
-export function updateProceso(data) {
-    return request({
-        url: '/procesos/update',
-        method: 'put',
-        data: data
-    });
-}
-
-export function deleteProceso(id) {
-    return request({
-        url: '/procesos',
-        method: 'delete',
-        params: { 'idProceso': id }
     });
 }

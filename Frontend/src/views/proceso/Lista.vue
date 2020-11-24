@@ -1,8 +1,7 @@
 <template>
   <div class="createPost-container">
     <sticky class-name="sub-navbar">
-      <div style="border: 0px solid red; text-align: center;">
-
+      <div style="border: 0px solid red; text-align: center">
         <!-- Boton para agregar nuevo expediente al aplicativo -->
 
         <transition name="el-zoom-in-bottom">
@@ -127,7 +126,14 @@
 
     <!-- Cuadro de dialogo para asignar abogado -->
 
-    <el-dialog v-el-drag-dialog title="Asignar Usuario" :visible.sync="msgUsuarioVisible" width="35em" custom-class="dialog-class-lista" center>
+    <el-dialog
+      v-el-drag-dialog
+      title="Asignar Usuario"
+      :visible.sync="msgUsuarioVisible"
+      width="35em"
+      custom-class="dialog-class-lista"
+      center
+    >
       <el-form :model="formUsuario" label-width="120px" class="demo-ruleForm">
         <el-form-item label="Expediente">
           <el-input
@@ -206,7 +212,7 @@
                 .includes(busquedaExpediente.toLowerCase())
           )
         "
-        style="width: 100%; border: 1px solid #d8ebff;"
+        style="width: 100%; border: 1px solid #d8ebff"
         border
       >
         <el-table-column
@@ -215,7 +221,15 @@
           :label="column.label"
           :prop="column.prop"
           align="center"
-          :width="column.prop === 'expediente' ? 150 : column.prop === 'caducidad' ? 120 : column.prop === 'usuario' ? 130 : ''"
+          :width="
+            column.prop === 'expediente'
+              ? 150
+              : column.prop === 'caducidad'
+                ? 120
+                : column.prop === 'usuario'
+                  ? 130
+                  : ''
+          "
           sortable
         />
         <el-table-column
@@ -229,7 +243,7 @@
         />
         <el-table-column align="center" width="230">
           <!-- eslint-disable-next-line -->
-              <template slot="header" slot-scope="scope">
+          <template slot="header" slot-scope="scope">
             <el-input
               v-model="busquedaExpediente"
               size="mini"
@@ -238,7 +252,7 @@
           </template>
           <template slot-scope="scope">
             <el-button
-              style="border: 1px solid #409EFF"
+              style="border: 1px solid #409eff"
               size="mini"
               @click="handlePermisos(scope.row)"
             ><b>Permisos</b></el-button>
@@ -357,7 +371,10 @@ export default {
     async getEmpresas() {
       await getAllEmpresas().then((response) => {
         this.allDataEmpresas = response.items
-        window.localStorage.setItem('empresas', JSON.stringify(this.allDataEmpresas))
+        window.localStorage.setItem(
+          'empresas',
+          JSON.stringify(this.allDataEmpresas)
+        )
         // console.log(this.allDataEmpresas.items)
       })
     },
@@ -451,7 +468,11 @@ export default {
     },
     handleProceso(proceso) {
       // console.log(`/procesos/detalle/${proceso.idproceso}/${JSON.stringify(proceso)}/${JSON.stringify(this.datosUsuarios)}/${JSON.stringify(this.datosServicios)}`)
-      this.$router.push({ path: `/procesos/detalle/${proceso.idproceso}/${JSON.stringify(this.datosServicios)}/${JSON.stringify(this.datosUsuarios)}` })
+      this.$router.push({
+        path: `/procesos/detalle/${proceso.idproceso}/${JSON.stringify(
+          this.datosServicios
+        )}/${JSON.stringify(this.datosUsuarios)}`
+      })
       // this.$router.push({ path: `/procesos/detalle/${idproceso}/${JSON.stringify(this.datosUsuarios)}/${JSON.stringify(this.datosServicios)}/${JSON.stringify(this.allDataEmpresas)}` })
       // this.$router.push(
       //   {
@@ -470,13 +491,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .control-modal {
-    width: 25em;
-  }
+.control-modal {
+  width: 25em;
+}
 </style>
 
 <style lang="scss">
-  .dialog-class-lista {
-    border-radius: 10px;
-  }
+.dialog-class-lista {
+  border-radius: 10px;
+}
 </style>

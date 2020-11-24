@@ -5,6 +5,7 @@ from flask import abort
 from sqlalchemy.sql.elements import Null
 from ..repository import EtapaRepository
 from ..util.web_util import format_date
+from ..util.web_util import add_wrapper
 
 class EtapaService:
 
@@ -44,3 +45,7 @@ class EtapaService:
                 }
             )
         return etapas
+
+    def etapa_insert(self, etapa_repository: EtapaRepository, etapa):
+        etapa_repository.etapa_insert_bd(etapa)
+        return add_wrapper(['Etapa registrada con éxito!'])

@@ -1,5 +1,5 @@
 <template>
-  <div class="createPost-container" style="background: #f7fbff height: 89vh">
+  <div class="createPost-container" style="background: #f7fbff height: 89vh;">
     <sticky class-name="sub-navbar">
       <div style="border: 0px solid red">
         <!-- Boton para abrir modal de etapas -->
@@ -24,11 +24,11 @@
       fullscreen
       custom-class="dialog-class-ldetalle"
     >
-      <div style="padding-bottom: 10px;">
+      <div style="padding-bottom: 10px">
         <sticky
           :z-index="10"
           class-name="sub-navbar"
-          style="position: fixed width: 99%"
+          style="position: fixed width: 99%;"
         >
           <div style="border: 0px solid red">
             <!-- Boton para agregar nueva etapa al aplicativo -->
@@ -37,7 +37,10 @@
               style="border: 2px solid #67c23a"
               size="medium"
               icon="el-icon-circle-plus"
-              @click="msgEtapaVisible = true"
+              @click="
+                clickAgregar();
+                msgEtapaVisible = true;
+              "
             >Agregar etapa</el-button>
             <el-button
               style="border: 1px solid #67c23a"
@@ -53,7 +56,7 @@
           v-loading="loading"
           :z-index="0"
           :data="
-            datosEtapa.filter(
+            datosEtapaProceso.filter(
               (data) =>
                 !busquedaEtapa ||
                 data.nombreEtapa
@@ -61,7 +64,7 @@
                   .includes(busquedaEtapa.toLowerCase())
             )
           "
-          style="width: 100% border: 1px solid #d8ebff"
+          style="width: 100%; border: 1px solid #d8ebff"
           border
         >
           <el-table-column
@@ -102,8 +105,6 @@
         </el-table>
       </div>
     </el-dialog>
-
-    <!-- Cuadro de dialogo para editar o asignar etapa -->
 
     <!-- Formulario donde se cargan los datos del proceso -->
 
@@ -311,7 +312,7 @@
 
               <el-col
                 :md="24"
-                style="border: 0px solid blue padding-top: 10px"
+                style="border: 0px solid blue; padding-top: 10px"
               >
                 <el-card class="box-card">
                   <div slot="header" class="clearfix">
@@ -345,15 +346,15 @@
                 <el-card
                   class="box-card"
                   shadow="never"
-                  style="background: none border: 0 text-align: center"
+                  style="background: none; border: 0; text-align: center"
                 >
                   <el-button
-                    style="border: 0px solid #67c23a width: 10em"
+                    style="border: 0px solid #67c23a; width: 10em"
                     :type="editar ? 'danger' : 'primary'"
                     :icon="editar ? 'el-icon-error' : 'el-icon-edit'"
                     @click="
-                      editar = !editar
-                      editarForm()
+                      editar = !editar;
+                      editarForm();
                     "
                   >{{ textEditar }}</el-button>
                   <el-button
@@ -369,6 +370,82 @@
         </el-form>
       </el-row>
     </div>
+
+    <!-- Cuadro de dialogo para editar o asignar etapa -->
+
+    <el-dialog
+      v-el-drag-dialog
+      title="Agregar Expediente"
+      :visible.sync="msgEtapaVisible"
+      :before-close="closeModalAgregar"
+      width="35em"
+      custom-class="dialog-class-lista"
+    >
+      <el-form
+        ref="formAgregar"
+        :model="formAgregar"
+        :rules="rulesFormEtapa"
+        label-width="120px"
+        class="demo-ruleForm"
+      >
+        <el-form-item label="Etapa" prop="etapa">
+          <el-select
+            v-model="formAgregar.etapa"
+            filterable
+            placeholder="Seleccione una etapa"
+            class="control-modal-agregar"
+            clearable
+          >
+            <el-option
+              v-for="item in datosEtapa"
+              :key="item.idetapa"
+              :label="item.nombre"
+              :value="item.idetapa"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="Fecha inicio" prop="fecha_inicio">
+          <el-date-picker
+            v-model="formAgregar.fecha_inicio"
+            type="date"
+            placeholder="Seleccione fecha inicio"
+            class="control-modal-agregar"
+          />
+        </el-form-item>
+
+        <el-form-item label="Fecha fin" prop="fecha_fin">
+          <el-date-picker
+            v-model="formAgregar.fecha_fin"
+            type="date"
+            placeholder="Seleccione fecha fin"
+            class="control-modal-agregar"
+          />
+        </el-form-item>
+
+        <el-form-item label="Observación" prop="observacion">
+          <el-input
+            v-model="formAgregar.observacion"
+            type="textarea"
+            class="control-modal-agregar"
+            rows="8"
+          />
+        </el-form-item>
+
+        <el-form-item>
+          <el-button
+            @click="
+              resetForm('formAgregar');
+              msgEtapaVisible = false;
+            "
+          >Cancelar</el-button>
+          <el-button
+            type="primary"
+            @click="agregarEtapa('formAgregar')"
+          >Agregar</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -381,12 +458,16 @@ import { getListDecision } from '@/api/procesosDIEG/decision'
 import { getListCausal } from '@/api/procesosDIEG/causal'
 import { updateProceso } from '@/api/procesosDIEG/procesos'
 import { getListEmpresas } from '@/api/procesosDIEG/empresas'
+import { getListEtapas } from '@/api/procesosDIEG/etapas'
 import { getEtapaProceso } from '@/api/procesosDIEG/etapas'
+import { createEtapa } from '@/api/procesosDIEG/etapas'
 import Sticky from '@/components/Sticky' // 粘性header组件
 import { CONSTANTS } from '@/constants/constants'
+import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 
 export default {
   name: 'ProcesoDetalle',
+  directives: { elDragDialog },
   components: { Sticky },
   props: {
     isDetail: {
@@ -419,9 +500,12 @@ export default {
       userListOptions: [],
       tempRoute: {},
       prox_etapa: '',
-      datosEtapa: [],
+      datosEtapaProceso: [],
       tableColumns: CONSTANTS.tableColumnsEtapas,
-      busquedaEtapa: ''
+      busquedaEtapa: '',
+      formAgregar: CONSTANTS.formAgregarEtapa,
+      rulesFormEtapa: CONSTANTS.rulesFormEtapa,
+      datosEtapa: []
     }
   },
   computed: {
@@ -432,6 +516,7 @@ export default {
       this.loading = true
       // console.log('PARAMETROS URL -> ', this.$route.params)
       this.id = this.$route.params.id
+      this.getEtapasProceso(this.id)
       this.initView()
       this.fetchData(this.id)
     }
@@ -442,14 +527,50 @@ export default {
     this.tempRoute = Object.assign({}, this.$route)
   },
   methods: {
-    handleProceso(scope) {
-      console.log(scope)
+    async agregarEtapa(formName) {
+      this.formAgregar.idproceso = this.formProceso.idproceso
+      this.formAgregar.radicado = 'radicadoEtapa'
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.msgEtapaVisible = false
+          this.loading = true
+          this.datosEtapa = []
+          console.log('FORMAGREGAR -> ', this.formAgregar)
+          createEtapa(this.formAgregar).then(async(response) => {
+            console.log('RESPONSE AGREGAR -> ', response)
+            this.$notify({
+              title: 'Buen trabajo!',
+              message: 'Etapa agregada con éxito',
+              type: 'success',
+              duration: 2000
+            })
+            await this.getEtapasProceso(this.formProceso.idproceso)
+            this.getEtapas()
+            this.$refs['formAgregar'].resetFields()
+            this.loading = false
+          })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    clickAgregar() {
+      this.formAgregar = {}
+    },
+    closeModalAgregar() {
+      this.$refs['formAgregar'].resetFields()
+      this.msgEtapaVisible = false
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields()
     },
     initView() {
       this.getEstado()
       this.getTiposancion()
       this.getDecision()
       this.getCausal()
+      this.getEtapas()
     },
     async getEstado() {
       await getListEstado().then((response) => {
@@ -471,10 +592,23 @@ export default {
         this.datosCausal = response
       })
     },
-    getEtapas(idproceso) {
-      getEtapaProceso(idproceso).then((response) => {
-        console.log('ETAPA_PROCESO -> ', response)
+    async getEtapas() {
+      await getListEtapas().then((response) => {
         this.datosEtapa = response
+        for (const iterator of this.datosEtapaProceso) {
+          this.datosEtapa.filter((etapa) => {
+            if (etapa.nombre === iterator.nombreEtapa) {
+              const posEtapa = this.datosEtapa.indexOf(etapa)
+              this.datosEtapa.splice(posEtapa, 1)
+            }
+          })
+        }
+      })
+    },
+    async getEtapasProceso(idproceso) {
+      await getEtapaProceso(idproceso).then((response) => {
+        console.log('ETAPA_PROCESO -> ', response)
+        this.datosEtapaProceso = response
       })
     },
     fetchData(id) {
@@ -512,7 +646,6 @@ export default {
           // set page title
           this.setPageTitle()
           this.loading = false
-          this.getEtapas(this.formProceso.idproceso)
         })
         .catch((err) => {
           console.log(err)
@@ -638,6 +771,12 @@ export default {
 <style lang="scss" scoped>
 .control-modal {
   width: 100%;
+}
+</style>
+
+<style lang="scss" scoped>
+.control-modal-agregar {
+  width: 25em;
 }
 </style>
 

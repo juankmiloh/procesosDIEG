@@ -238,25 +238,17 @@ export const asyncRoutes = [{
             },
         ]
     },
-    // {
-    //     path: '/procesos/detalle/:id(\\d+)',
-    //     component: Layout,
-    //     name: 'DetalleProceso',
-    //     meta: { title: 'Detalle proceso', icon: 'example', noCache: false, activeMenu: '/procesos/expedientes' },
-    //     hidden: true
-    // },
-    // {
-    //   path: '/administrador',
-    //   component: Layout,
-    //   children: [
-    //     {
-    //       path: 'reporte_empresa',
-    //       component: () => import('@/views/roles/administrador'),
-    //       name: 'reporte_empresa',
-    //       meta: { title: 'Reporte por Empresa', icon: 'size', noCache: true, roles: ['administrador'] }
-    //     }
-    //   ]
-    // },
+    {
+        path: '/informe',
+        component: Layout,
+        children: [{
+            path: 'empresa',
+            component: () =>
+                import ('@/views/roles/administrador'),
+            name: 'reporte_empresa',
+            meta: { title: 'Informe por Empresa', icon: 'size', noCache: true, roles: ['administrador'] }
+        }]
+    },
     // {
     //   path: '/administrador',
     //   component: Layout,
