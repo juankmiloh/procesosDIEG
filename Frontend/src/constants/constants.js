@@ -1,11 +1,10 @@
 /* jshint esversion: 6 */
 /* eslint-disable */
 export const CONSTANTS = {
-    tableColumnsProceso: [
-        // {
-        //     label: 'ID Proceso',
-        //     prop: 'idproceso'
-        // },
+    tableColumnsProceso: [{
+            label: '#',
+            prop: 'idproceso'
+        },
         {
             label: 'Expediente',
             prop: 'expediente'
@@ -59,12 +58,8 @@ export const CONSTANTS = {
     ],
     rulesFormProceso: {
         radicado: [
-            { required: true, message: 'Ingrese un expediente', trigger: 'change' },
-            {
-                min: 15,
-                max: 15,
-                message: 'La longitud del expediente debe ser de 15 caracteres'
-            }
+            { required: true, message: 'Ingrese un expediente', trigger: 'blur' },
+            { min: 15, max: 15, message: 'La longitud del expediente debe ser de 15 caracteres', trigger: 'blur' }
         ],
         servicio: [{
             required: true,
@@ -99,10 +94,57 @@ export const CONSTANTS = {
         usuario: '',
         expediente: ''
     },
+    formDetalleProceso: {
+        expediente: '',
+        tipo_sancion: '',
+        decision: '',
+        sancion: '',
+        descripcion: ''
+    },
+    rulesDetalleProceso: {
+        expediente: [
+            { required: true, message: 'Ingrese un expediente', trigger: 'blur' },
+            { min: 15, max: 15, message: 'La longitud debe ser de 15 caracteres', trigger: 'blur' }
+        ],
+        empresa: [{
+            required: true,
+            message: 'Seleccione una empresa',
+            trigger: 'change'
+        }],
+        tipo_sancion: [{
+            required: false,
+            message: 'Seleccione un tipo de sanción',
+            trigger: 'change'
+        }],
+        sancion: [
+            { required: false, message: 'Valor sanción requerido' },
+            { type: 'number', message: 'La sanción debe ser un número' }
+        ],
+        decision: [{
+            required: false,
+            message: 'Seleccione una decision',
+            trigger: 'change'
+        }],
+        causa: [{
+            required: true,
+            message: 'Seleccione una causal',
+            trigger: 'change'
+        }],
+        fecha_hechos: [{
+            required: true,
+            message: 'Ingrese una fecha válida',
+            trigger: 'change'
+        }],
+        caducidad: [{
+            required: true,
+            message: 'Ingrese una fecha válida',
+            trigger: 'change'
+        }]
+    },
     formAgregarEtapa: {
         etapa: '',
-        fecha_inicio: '',
-        fecha_fin: '',
+        fecha_inicio: null,
+        fecha_fin: null,
         observacion: ''
     },
     rulesFormEtapa: {
@@ -112,21 +154,14 @@ export const CONSTANTS = {
             trigger: 'change'
         }],
         fecha_inicio: [{
-            type: 'date',
             required: true,
-            message: 'Ingrese una fecha válida',
-            trigger: 'change'
-        }],
-        fecha_fin: [{
-            type: 'date',
-            required: false,
             message: 'Ingrese una fecha válida',
             trigger: 'change'
         }],
         observacion: [{
             required: false,
             message: 'Ingrese una observación',
-            trigger: 'change'
+            trigger: 'blur'
         }]
     },
 };

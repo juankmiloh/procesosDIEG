@@ -7,27 +7,43 @@ class ProcesosRepository:
 
     def get_procesos_bd(self):
         sql = '''
-            SELECT 
-                P.IDPROCESO,
-                P.RADICADOPROCESO AS EXPEDIENTE,
-                P.FECHACADUCIDAD AS CADUCIDAD,
-                EMP.NOMBRE AS EMPRESA,
-                ES.NOMBREESTADO AS ESTADO,
-                S.NOMBRE AS SERVICIO,
-                U.IDUSUARIO AS IDUSUARIO,
-                U.NOMBRE || ' ' || U.APELLIDO AS USUARIO
-            FROM
-                EMPRESA EMP, SERVICIO S, PROCESO P, USUARIOS U, ETAPA_PROCESO EP, ETAPA E, ESTADO ES
+            SELECT * FROM
+            (
+                SELECT 
+                    P.IDPROCESO,
+                    P.RADICADOPROCESO AS EXPEDIENTE,
+                    P.FECHACADUCIDAD AS CADUCIDAD,
+                    EMP.NOMBRE AS EMPRESA,
+                    ES.NOMBREESTADO AS ESTADO,
+                    S.NOMBRE AS SERVICIO,
+                    U.IDUSUARIO AS IDUSUARIO,
+                    U.NOMBRE || ' ' || U.APELLIDO AS USUARIO,
+                    EP.ETAPA
+                FROM
+                    EMPRESA EMP, SERVICIO S, PROCESO P, USUARIOS U, ETAPA_PROCESO EP, ETAPA E, ESTADO ES
+                WHERE
+                    P.FASE NOT IN (3)
+                    AND P.IDPROCESO = EP.PROCESO
+                    AND EP.ETAPA = E.IDETAPA
+                    AND E.IDESTADO = ES.IDESTADO
+                    AND P.EMPRESA = EMP.IDEMPRESA
+                    AND EMP.SERVICIO = S.IDSERVICIO
+                    AND P.IDSERVICIO = S.IDSERVICIO
+                    AND P.USUARIOASIGNADO = U.IDUSUARIO
+            ) PROCESO,
+            (
+                SELECT 
+                    P.IDPROCESO,
+                    MIN(EP.ETAPA) AS IDETAPA
+                FROM PROCESO P, ETAPA_PROCESO EP
+                WHERE
+                    P.IDPROCESO = EP.PROCESO
+                GROUP BY P.IDPROCESO
+            ) ETAPA
             WHERE
-                P.FASE NOT IN (3)
-                AND P.IDPROCESO = EP.PROCESO
-                AND EP.ETAPA = E.IDETAPA
-                AND E.IDESTADO = ES.IDESTADO
-                AND P.EMPRESA = EMP.IDEMPRESA
-                AND EMP.SERVICIO = S.IDSERVICIO
-                AND P.IDSERVICIO = S.IDSERVICIO
-                AND P.USUARIOASIGNADO = U.IDUSUARIO
-            ORDER BY P.FECHACADUCIDAD ASC;
+                PROCESO.IDPROCESO = ETAPA.IDPROCESO
+                AND PROCESO.ETAPA = ETAPA.IDETAPA
+            ORDER BY PROCESO.IDPROCESO DESC;
         '''
         return self.db.engine.execute(text(sql)).fetchall()
     
@@ -36,29 +52,46 @@ class ProcesosRepository:
         print('* PROCESO -> ', idProceso)
         print('-------------------------------------')
         sql = '''
-            SELECT 
-                P.IDPROCESO,
-                P.RADICADOPROCESO AS EXPEDIENTE,
-                P.FECHACADUCIDAD AS CADUCIDAD,
-                EMP.NOMBRE AS EMPRESA,
-                ES.NOMBREESTADO AS ESTADO,
-                E.NOMBRE AS ACTUALETAPA,
-                (SELECT NOMBRE FROM ETAPA WHERE IDETAPA=E.SIGUIENTEETAPA) AS PROXETAPA,
-                S.NOMBRE AS SERVICIO,
-                U.IDUSUARIO AS IDUSUARIO,
-                U.NOMBRE || ' ' || U.APELLIDO AS USUARIO
-            FROM
-                EMPRESA EMP, SERVICIO S, PROCESO P, USUARIOS U, ETAPA_PROCESO EP, ETAPA E, ESTADO ES
+            SELECT * FROM
+            (
+                SELECT 
+                    P.IDPROCESO,
+                    P.RADICADOPROCESO AS EXPEDIENTE,
+                    P.FECHACADUCIDAD AS CADUCIDAD,
+                    EMP.NOMBRE AS EMPRESA,
+                    ES.NOMBREESTADO AS ESTADO,
+                    E.NOMBRE AS ACTUALETAPA,
+                    (SELECT NOMBRE FROM ETAPA WHERE IDETAPA=E.SIGUIENTEETAPA) AS PROXETAPA,
+                    S.NOMBRE AS SERVICIO,
+                    U.IDUSUARIO AS IDUSUARIO,
+                    U.NOMBRE || ' ' || U.APELLIDO AS USUARIO,
+                    EP.ETAPA
+                FROM
+                    EMPRESA EMP, SERVICIO S, PROCESO P, USUARIOS U, ETAPA_PROCESO EP, ETAPA E, ESTADO ES
+                WHERE
+                    P.FASE NOT IN (3)
+                    AND P.IDPROCESO = EP.PROCESO
+                    AND EP.ETAPA = E.IDETAPA
+                    AND E.IDESTADO = ES.IDESTADO
+                    AND P.EMPRESA = EMP.IDEMPRESA
+                    AND EMP.SERVICIO = S.IDSERVICIO
+                    AND P.IDSERVICIO = S.IDSERVICIO
+                    AND P.USUARIOASIGNADO = U.IDUSUARIO
+                    AND P.IDPROCESO = :IDPROCESO_ARG
+            ) PROCESO,
+            (
+                SELECT 
+                    P.IDPROCESO,
+                    MIN(EP.ETAPA) AS IDETAPA
+                FROM PROCESO P, ETAPA_PROCESO EP
+                WHERE
+                    P.IDPROCESO = EP.PROCESO
+                    AND P.IDPROCESO = :IDPROCESO_ARG
+                GROUP BY P.IDPROCESO
+            ) ETAPA
             WHERE
-                P.FASE NOT IN (3)
-                AND P.IDPROCESO = EP.PROCESO
-                AND EP.ETAPA = E.IDETAPA
-                AND E.IDESTADO = ES.IDESTADO
-                AND P.EMPRESA = EMP.IDEMPRESA
-                AND EMP.SERVICIO = S.IDSERVICIO
-                AND P.IDSERVICIO = S.IDSERVICIO
-                AND P.USUARIOASIGNADO = U.IDUSUARIO
-                AND P.IDPROCESO = :IDPROCESO_ARG;
+                PROCESO.IDPROCESO = ETAPA.IDPROCESO
+                AND PROCESO.ETAPA = ETAPA.IDETAPA;
         '''
         return self.db.engine.execute(text(sql), IDPROCESO_ARG=idProceso).fetchall()
     
@@ -67,38 +100,55 @@ class ProcesosRepository:
         print('* PROCESO -> ', idProceso)
         print('-------------------------------------')
         sql = '''
-            SELECT 
-                P.IDPROCESO,
-                P.RADICADOPROCESO AS EXPEDIENTE,
-                P.FECHACADUCIDAD AS CADUCIDAD,
-                EMP.NOMBRE AS EMPRESA,
-                C.NOMBRECAUSAL,
-                PC.FECHAHECHOS,
-                PC.DESCRIPCION,
-                ES.NOMBREESTADO AS ESTADO,
-                E.NOMBRE AS ACTUALETAPA,
-                (SELECT NOMBRE FROM ETAPA WHERE IDETAPA=E.SIGUIENTEETAPA) AS PROXETAPA,
-                DR.TIPODESCISIONRECURSO AS DECISION,
-                TS.NOMBRETIPOSANCION AS TIPOSANCION,
-                P.MONTOSANCION,
-                S.NOMBRE AS SERVICIO,
-                U.IDUSUARIO AS IDUSUARIO
-            FROM
-                EMPRESA EMP, SERVICIO S, PROCESO P, USUARIOS U, ETAPA_PROCESO EP, ETAPA E, ESTADO ES, PROCESO_CAUSAL PC, CAUSAL C, TIPOSANCION TS, DESCISIONRECURSO DR
+            SELECT * FROM
+            (
+                SELECT 
+                    P.IDPROCESO,
+                    P.RADICADOPROCESO AS EXPEDIENTE,
+                    P.FECHACADUCIDAD AS CADUCIDAD,
+                    EMP.NOMBRE AS EMPRESA,
+                    C.NOMBRECAUSAL,
+                    PC.FECHAHECHOS,
+                    PC.DESCRIPCION,
+                    ES.NOMBREESTADO AS ESTADO,
+                    E.NOMBRE AS ACTUALETAPA,
+                    (SELECT NOMBRE FROM ETAPA WHERE IDETAPA=E.SIGUIENTEETAPA) AS PROXETAPA,
+                    DR.TIPODESCISIONRECURSO AS DECISION,
+                    TS.NOMBRETIPOSANCION AS TIPOSANCION,
+                    P.MONTOSANCION,
+                    S.NOMBRE AS SERVICIO,
+                    U.IDUSUARIO AS IDUSUARIO,
+                    EP.ETAPA
+                FROM
+                    EMPRESA EMP, SERVICIO S, PROCESO P, USUARIOS U, ETAPA_PROCESO EP, ETAPA E, ESTADO ES, PROCESO_CAUSAL PC, CAUSAL C, TIPOSANCION TS, DESCISIONRECURSO DR
+                WHERE
+                    P.FASE NOT IN (3)
+                    AND P.IDPROCESO = EP.PROCESO
+                    AND EP.ETAPA = E.IDETAPA
+                    AND E.IDESTADO = ES.IDESTADO
+                    AND P.EMPRESA = EMP.IDEMPRESA
+                    AND EMP.SERVICIO = S.IDSERVICIO
+                    AND P.IDSERVICIO = S.IDSERVICIO
+                    AND P.IDPROCESO = PC.IDPROCESO
+                    AND PC.IDCAUSAL = C.IDCAUSAL
+                    AND P.USUARIOASIGNADO = U.IDUSUARIO
+                    AND P.TIPOSANCION = TS.IDTIPOSANCION
+                    AND P.DESCISIONRECURSO = DR.IDDESCISIONRECURSO
+                    AND P.IDPROCESO = :IDPROCESO_ARG
+            ) PROCESO,
+            (
+                SELECT 
+                    P.IDPROCESO,
+                    MIN(EP.ETAPA) AS IDETAPA
+                FROM PROCESO P, ETAPA_PROCESO EP
+                WHERE
+                    P.IDPROCESO = EP.PROCESO
+                    AND P.IDPROCESO = :IDPROCESO_ARG
+                GROUP BY P.IDPROCESO
+            ) ETAPA
             WHERE
-                P.FASE NOT IN (3)
-                AND P.IDPROCESO = EP.PROCESO
-                AND EP.ETAPA = E.IDETAPA
-                AND E.IDESTADO = ES.IDESTADO
-                AND P.EMPRESA = EMP.IDEMPRESA
-                AND EMP.SERVICIO = S.IDSERVICIO
-                AND P.IDSERVICIO = S.IDSERVICIO
-                AND P.IDPROCESO = PC.IDPROCESO
-                AND PC.IDCAUSAL = C.IDCAUSAL
-                AND P.USUARIOASIGNADO = U.IDUSUARIO
-                AND P.TIPOSANCION = TS.IDTIPOSANCION
-                AND P.DESCISIONRECURSO = DR.IDDESCISIONRECURSO
-                AND P.IDPROCESO = :IDPROCESO_ARG;
+                PROCESO.IDPROCESO = ETAPA.IDPROCESO
+                AND PROCESO.ETAPA = ETAPA.IDETAPA;
         '''
         return self.db.engine.execute(text(sql), IDPROCESO_ARG=idProceso).fetchall()
 

@@ -33,13 +33,13 @@ class EtapaService:
             if fechafin is None:
                 fechafin = 'No registra'
             else:
-                fechafin = format_date(result[2])
+                fechafin = str(result[3])
                 
             etapas.append(
                 {
                     'radicadoEtapa': result[0],
                     'nombreEtapa': result[1],
-                    'fechaInicioEtapa': format_date(result[2]),
+                    'fechaInicioEtapa': str(result[2]),
                     'fechaFinEtapa': fechafin,
                     'observacionEtapa': result[4],
                 }
@@ -49,3 +49,11 @@ class EtapaService:
     def etapa_insert(self, etapa_repository: EtapaRepository, etapa):
         etapa_repository.etapa_insert_bd(etapa)
         return add_wrapper(['Etapa registrada con éxito!'])
+
+    def etapa_update(self, etapa_repository: EtapaRepository, dataEtapa):
+        etapa_repository.etapa_update_bd(dataEtapa)
+        return add_wrapper(['Etapa actualizada con éxito!'])
+
+    def etapa_delete(self, etapa_repository: EtapaRepository, radicadoEtapa):
+        etapa_repository.etapa_delete_bd(radicadoEtapa)
+        return add_wrapper(['Etapa borrada con éxito!'])

@@ -39,18 +39,11 @@ export default {
     // ///////////////////////////////////////////////////////////////////////////////////////
     /* Cargamos cada uno de los componentes con la ruta propuesta */
     // ///////////////////////////////////////////////////////////////////////////////////////
-    if (view === '/procesos/expedientes') {
-      this.currentView = 'viewProcesos'
-    } else if (view === '/informe/empresa') {
-      // this.currentView = 'viewEmpresas'
-      this.currentView = 'viewIndicadoresProcesosActivos'
-    } else if (view === '/administrador/indicadores_empresa') {
-      this.currentView = 'viewIndicadoresEmpresa'
-    } else if (view === '/administrador/indicadores_pactivos') {
-      this.currentView = 'viewIndicadoresProcesosActivos'
-    } else if (view === '/administrador/indicadores_pterminados') {
-      this.currentView = 'viewIndicadoresProcesosTerminados'
-    }
+    // if (view === '/procesos/expedientes') {
+    //   this.currentView = 'viewProcesos'
+    // } else if (view === '/informe/pactivos') {
+    //   this.currentView = 'viewIndicadoresProcesosActivos'
+    // }
   }
 }
 </script>

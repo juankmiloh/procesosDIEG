@@ -1,4 +1,5 @@
 from sqlalchemy.sql import text
+from sqlalchemy.sql.elements import Null
 
 
 class EtapaRepository:
@@ -22,7 +23,8 @@ class EtapaRepository:
             FROM ETAPA_PROCESO EP, ETAPA E
             WHERE
                 EP.ETAPA = E.IDETAPA
-                AND PROCESO = :IDPROCESO_ARG;
+                AND PROCESO = :IDPROCESO_ARG
+            ORDER BY EP.ETAPA;
         '''
         return self.db.engine.execute(text(sql), IDPROCESO_ARG=idProceso).fetchall()
 
@@ -36,5 +38,39 @@ class EtapaRepository:
 
         '''
         resultsql = self.db.engine.execute(text(sql), ETAPA_ARG=etapa["etapa"], IDPROCESO_ARG=etapa["idproceso"], FECHAINICIO_ARG=etapa["fecha_inicio"], FECHAFIN_ARG=etapa["fecha_fin"], RADICADO_ARG=etapa["radicado"], OBSERVACION_ARG=etapa["observacion"])
+
+        return resultsql
+
+    def etapa_update_bd(self, etapa):
+        print('-------------------------------------')
+        print('* ETAPA A ACTUALIZAR -> ', etapa)
+        print('-------------------------------------')
+
+        if etapa["fecha_fin"] == 'Invalid date':
+            etapa["fecha_fin"] = None
+
+        sql = '''
+            UPDATE 
+                ETAPA_PROCESO
+	        SET 
+                FECHAINICIOETAPA= :FECHAINICIO_ARG,
+                FECHAFINETAPA = :FECHAFIN_ARG,
+                RADICADOETAPA = :RADICADO_ARG,
+                OBSERVACIONETAPA = :OBSERVACION_ARG
+	        WHERE RADICADOETAPA = :RADICADO_ARG;
+        '''
+        resultsql = self.db.engine.execute(text(sql), FECHAINICIO_ARG=etapa["fecha_inicio"], FECHAFIN_ARG=etapa["fecha_fin"], RADICADO_ARG=etapa["radicado"], OBSERVACION_ARG=etapa["observacion"])
+
+        return resultsql
+
+    def etapa_delete_bd(self, radicadoEtapa):
+        print('-------------------------------------')
+        print('* ETAPA A ELIMINAR -> ', radicadoEtapa)
+        print('-------------------------------------')
+        sql = '''
+            DELETE FROM ETAPA_PROCESO
+            WHERE RADICADOETAPA = :RADICADO_ARG;
+        '''
+        resultsql = self.db.engine.execute(text(sql), RADICADO_ARG=radicadoEtapa)
 
         return resultsql

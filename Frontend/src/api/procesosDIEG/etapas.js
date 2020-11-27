@@ -24,3 +24,19 @@ export function createEtapa(data) {
         data
     });
 }
+
+export function updateEtapa(data) {
+    return request({
+        url: '/etapas/update',
+        method: 'put',
+        data: data
+    });
+}
+
+export function deleteEtapa(radicado) {
+    return request({
+        url: '/etapas',
+        method: 'delete',
+        params: { 'radicadoEtapa': radicado }
+    });
+}

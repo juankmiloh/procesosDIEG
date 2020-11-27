@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import logPage from '../../../assets/mazo.png'
+import logPage from '../../../assets/bandera-circle.png'
 
 export default {
   name: 'SidebarLogo',

@@ -176,7 +176,7 @@ export const asyncRoutes = [{
         alwaysShow: true, // will always show the root menu
         name: 'Permission',
         meta: {
-            title: 'Permisos',
+            title: 'Configuración',
             icon: 'lock',
             roles: ['administrador'] // you can set roles in root nav
         },
@@ -241,14 +241,58 @@ export const asyncRoutes = [{
     {
         path: '/informe',
         component: Layout,
-        children: [{
-            path: 'empresa',
-            component: () =>
-                import ('@/views/roles/administrador'),
-            name: 'reporte_empresa',
-            meta: { title: 'Informe por Empresa', icon: 'size', noCache: true, roles: ['administrador'] }
-        }]
+        // redirect: '/informe/empresa',
+        alwaysShow: true, // will always show the root menu
+        name: 'informe',
+        meta: {
+            title: 'Informes',
+            icon: 'chart',
+            roles: ['administrador'] // you can set roles in root nav
+        },
+        children: [
+            // {
+            //       path: 'page',
+            //       component: () =>
+            //           import ('@/views/permission/page'),
+            //       name: 'PagePermission',
+            //       meta: {
+            //           title: 'Page Permission',
+            //           roles: ['administrador', 'abogado'] // or you can only set roles in sub nav
+            //       }
+            //   },
+            // {
+            //     path: 'directive',
+            //     component: () =>
+            //         import ('@/views/permission/directive'),
+            //     name: 'DirectivePermission',
+            //     meta: {
+            //         title: 'Directive Permission'
+            //             // if do not set roles, means: this page does not require permission
+            //     }
+            // },
+            {
+                path: 'pactivos',
+                component: () =>
+                    import ('@/views/informe/ProcesosActivos'),
+                name: 'procesos_activos',
+                meta: {
+                    title: 'Expedientes',
+                    roles: ['administrador']
+                }
+            }
+        ]
     },
+    // {
+    //     path: '/informe',
+    //     component: Layout,
+    //     children: [{
+    //         path: 'empresa',
+    //         component: () =>
+    //             import ('@/views/roles/administrador'),
+    //         name: 'reporte_empresa',
+    //         meta: { title: 'Informe por Empresa', icon: 'size', noCache: true, roles: ['administrador'] }
+    //     }]
+    // },
     // {
     //   path: '/administrador',
     //   component: Layout,

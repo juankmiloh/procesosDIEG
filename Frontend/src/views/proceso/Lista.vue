@@ -1,5 +1,5 @@
 <template>
-  <div class="createPost-container">
+  <div class="createPost-container" style="background: #f7fbff; height: 89vh;">
     <sticky class-name="sub-navbar">
       <div style="border: 0px solid red; text-align: center">
         <!-- Boton para agregar nuevo expediente al aplicativo -->
@@ -26,153 +26,167 @@
 
     <el-dialog
       v-el-drag-dialog
-      title="Agregar Expediente"
       :visible.sync="msgAgregarVisible"
       :before-close="closeModalAgregar"
-      width="35em"
+      width="34em"
       custom-class="dialog-class-lista"
+      :show-close="false"
     >
-      <el-form
-        ref="formAgregar"
-        :model="formAgregar"
-        :rules="rulesFormProceso"
-        label-width="120px"
-        class="demo-ruleForm"
-      >
-        <el-form-item label="Expediente" prop="radicado">
-          <el-input
-            v-model="formAgregar.radicado"
-            autocomplete="off"
-            placeholder="Ingrese No. del expediente"
-            maxlength="15"
-            show-word-limit
-            clearable
-            class="control-modal"
-          />
-        </el-form-item>
-        <el-form-item label="Servicio" prop="servicio">
-          <el-select
-            v-model="formAgregar.servicio"
-            filterable
-            placeholder="Seleccione el servicio"
-            class="control-modal"
-            clearable
-            @change="selectServicio($event)"
-            @clear="clearSelect()"
-          >
-            <el-option
-              v-for="item in datosServicios"
-              :key="item.idservicio"
-              :label="item.servicio"
-              :value="item.idservicio"
+      <sticky class-name="sub-navbar">
+        <div style="border: 0px solid red; color: white; text-align: center;">
+          <h2>Agregar expediente</h2>
+        </div>
+      </sticky>
+      <div class="createPost-container" style="padding-top: 35px; padding-bottom: 20px; padding-left: 13px;">
+        <el-form
+          ref="formAgregar"
+          :model="formAgregar"
+          :rules="rulesFormProceso"
+          label-width="120px"
+          class="demo-ruleForm"
+        >
+          <el-form-item label="Expediente" prop="radicado">
+            <el-input
+              v-model="formAgregar.radicado"
+              autocomplete="off"
+              placeholder="Ingrese No. del expediente"
+              maxlength="15"
+              show-word-limit
+              clearable
+              class="control-modal"
             />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="Empresa" prop="empresa">
-          <el-select
-            v-model="formAgregar.empresa"
-            filterable
-            :disabled="disableEmpresas"
-            placeholder="Seleccione un prestador"
-            class="control-modal"
-            clearable
-          >
-            <el-option
-              v-for="item in datosEmpresas"
-              :key="item.id_empresa"
-              :label="item.nombre"
-              :value="item.id_empresa"
+          </el-form-item>
+          <el-form-item label="Servicio" prop="servicio">
+            <el-select
+              v-model="formAgregar.servicio"
+              filterable
+              placeholder="Seleccione el servicio"
+              class="control-modal"
+              clearable
+              @change="selectServicio($event)"
+              @clear="clearSelect()"
+            >
+              <el-option
+                v-for="item in datosServicios"
+                :key="item.idservicio"
+                :label="item.servicio"
+                :value="item.idservicio"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="Empresa" prop="empresa">
+            <el-select
+              v-model="formAgregar.empresa"
+              filterable
+              :disabled="disableEmpresas"
+              placeholder="Seleccione un prestador"
+              class="control-modal"
+              clearable
+            >
+              <el-option
+                v-for="item in datosEmpresas"
+                :key="item.id_empresa"
+                :label="item.nombre"
+                :value="item.id_empresa"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="Abogado" prop="usuario">
+            <el-select
+              v-model="formAgregar.usuario"
+              filterable
+              placeholder="Seleccione un usuario"
+              class="control-modal"
+              clearable
+            >
+              <el-option
+                v-for="item in datosUsuarios"
+                :key="item.idusuario"
+                :label="item.nombre + ' ' + item.apellido"
+                :value="item.idusuario"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="Caducidad" prop="fecha_caducidad" clearable>
+            <el-date-picker
+              v-model="formAgregar.fecha_caducidad"
+              type="date"
+              placeholder="Seleccione la fecha"
+              class="control-modal"
             />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="Abogado" prop="usuario">
-          <el-select
-            v-model="formAgregar.usuario"
-            filterable
-            placeholder="Seleccione un usuario"
-            class="control-modal"
-            clearable
-          >
-            <el-option
-              v-for="item in datosUsuarios"
-              :key="item.idusuario"
-              :label="item.nombre + ' ' + item.apellido"
-              :value="item.idusuario"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="Caducidad" prop="fecha_caducidad" clearable>
-          <el-date-picker
-            v-model="formAgregar.fecha_caducidad"
-            type="date"
-            placeholder="Seleccione la fecha"
-            class="control-modal"
-          />
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            @click="
-              resetForm('formAgregar');
-              msgAgregarVisible = false;
-            "
-          >Cancelar</el-button>
-          <el-button
-            type="primary"
-            @click="agregarExpediente('formAgregar')"
-          >Agregar</el-button>
-        </el-form-item>
-      </el-form>
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              @click="
+                resetForm('formAgregar');
+                msgAgregarVisible = false;
+              "
+            >Cancelar</el-button>
+            <el-button
+              type="success"
+              @click="agregarExpediente('formAgregar')"
+            >Agregar</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
     </el-dialog>
 
     <!-- Cuadro de dialogo para asignar abogado -->
 
     <el-dialog
       v-el-drag-dialog
-      title="Asignar Usuario"
       :visible.sync="msgUsuarioVisible"
       width="35em"
       custom-class="dialog-class-lista"
       center
+      :show-close="false"
     >
-      <el-form :model="formUsuario" label-width="120px" class="demo-ruleForm">
-        <el-form-item label="Expediente">
-          <el-input
-            v-model="formUsuario.expediente"
-            autocomplete="off"
-            placeholder="Ingrese No. del expediente"
-            maxlength="14"
-            show-word-limit
-            clearable
-            class="control-modal"
-            readonly
-          />
-        </el-form-item>
-        <el-form-item label="Usuario">
-          <el-select
-            v-model="formUsuario.usuario"
-            filterable
-            placeholder="Seleccione un usuario"
-            class="control-modal"
-          >
-            <el-option
-              v-for="item in datosUsuarios"
-              :key="item.idusuario"
-              :label="item.nombre + ' ' + item.apellido"
-              :value="item.idusuario"
+      <sticky class-name="sub-navbar">
+        <div style="border: 0px solid red; color: white; text-align: center;">
+          <h2>Asignar abogado</h2>
+        </div>
+      </sticky>
+      <div class="createPost-container" style="padding-top: 35px; padding-bottom: 5px; padding-left: 20px;">
+        <el-form :model="formUsuario" label-width="120px" class="demo-ruleForm">
+          <el-form-item label="Expediente">
+            <el-input
+              v-model="formUsuario.expediente"
+              autocomplete="off"
+              placeholder="Ingrese No. del expediente"
+              maxlength="14"
+              show-word-limit
+              clearable
+              class="control-modal"
+              readonly
             />
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button @click="msgUsuarioVisible = false">Cancelar</el-button>
-          <el-button
-            type="primary"
-            @click="
-              msgUsuarioVisible = false;
-              asignarUsuario();
-            "
-          >Asignar</el-button>
-        </el-form-item>
-      </el-form>
+          </el-form-item>
+          <el-form-item label="Usuario">
+            <el-select
+              v-model="formUsuario.usuario"
+              filterable
+              placeholder="Seleccione un usuario"
+              class="control-modal"
+            >
+              <el-option
+                v-for="item in datosUsuarios"
+                :key="item.idusuario"
+                :label="item.nombre + ' ' + item.apellido"
+                :value="item.idusuario"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button @click="msgUsuarioVisible = false">Cancelar</el-button>
+            <el-button
+              type="success"
+              @click="
+                msgUsuarioVisible = false;
+                asignarUsuario();
+              "
+            >Asignar</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
     </el-dialog>
 
     <!-- Dialogo que se aparece cuando se va a eliminar un expediente -->
@@ -184,7 +198,9 @@
       width="35%"
       center
       custom-class="dialog-class-lista"
+      :show-close="false"
     >
+      <br>
       <center>
         <span>¿Realmente desea eliminar el expediente <b>No. {{ delExpediente }}</b>?</span>
       </center>
@@ -228,7 +244,9 @@
                 ? 120
                 : column.prop === 'usuario'
                   ? 130
-                  : ''
+                  : column.prop === 'idproceso'
+                    ? 70
+                    : column.prop === 'empresa' ? 270 : ''
           "
           sortable
         />
@@ -237,7 +255,7 @@
           label="Servicio"
           align="center"
           sortable
-          width="120"
+          width="115"
           :filters="filtersServicio"
           :filter-method="filterHandler"
         />
@@ -499,5 +517,20 @@ export default {
 <style lang="scss">
 .dialog-class-lista {
   border-radius: 10px;
+}
+
+.dialog-class-lista .el-dialog__body {
+  padding-top: 0 !important;
+}
+
+.dialog-class-agregar .el-dialog__header {
+  border: 1px solid red;
+  border-radius: 10px;
+  display: none;
+}
+
+.dialog-class-agregar .el-dialog__body {
+  margin: 0 !important;
+  padding: 0 !important;
 }
 </style>

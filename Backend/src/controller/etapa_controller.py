@@ -23,3 +23,17 @@ def getEtapaProceso(etapa_service: EtapaService, etapa_repository: EtapaReposito
 def createEtapa(etapa_service: EtapaService, etapa_repository: EtapaRepository):
     etapa = request.json
     return json.dumps(etapa_service.etapa_insert(etapa_repository, etapa))
+
+# Actualizar etapa
+@controller.route(API_ROOT_PATH + 'etapas/update', methods=['PUT'])
+def updateEtapa(etapa_service: EtapaService, etapa_repository: EtapaRepository):
+    # radicado etapa
+    dataEtapa = request.json
+    return json.dumps(etapa_service.etapa_update(etapa_repository, dataEtapa))
+
+# Eliminar una etapa
+@controller.route(API_ROOT_PATH + 'etapas', methods=['DELETE'])
+def deleteEtapa(etapa_service: EtapaService, etapa_repository: EtapaRepository):
+    # Radicado etapa
+    radicadoEtapa = request.args.get('radicadoEtapa', default='', type=str)
+    return json.dumps(etapa_service.etapa_delete(etapa_repository, radicadoEtapa))
