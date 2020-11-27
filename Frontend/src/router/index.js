@@ -162,7 +162,7 @@ export const constantRoutes = [{
             name: 'Profile',
             meta: { title: 'Perfil', icon: 'user', noCache: true }
         }]
-    }
+    },
 ]
 
 /**
@@ -201,13 +201,24 @@ export const asyncRoutes = [{
             //             // if do not set roles, means: this page does not require permission
             //     }
             // },
+            // {
+            //     path: 'role',
+            //     component: () =>
+            //         import ('@/views/permission/role'),
+            //     name: 'RolePermission',
+            //     meta: {
+            //         title: 'Roles',
+            //         roles: ['administrador']
+            //     }
+            // },
             {
-                path: 'role',
+                path: 'user_create',
                 component: () =>
-                    import ('@/views/permission/role'),
-                name: 'RolePermission',
+                    import ('@/views/roles/administrador/CreateUser'),
+                name: 'UserCreate',
                 meta: {
-                    title: 'Roles',
+                    title: 'Crear usuario',
+                    icon: 'user',
                     roles: ['administrador']
                 }
             }
@@ -247,7 +258,7 @@ export const asyncRoutes = [{
         meta: {
             title: 'Informes',
             icon: 'chart',
-            roles: ['administrador'] // you can set roles in root nav
+            roles: ['administrador', 'abogado'] // you can set roles in root nav
         },
         children: [
             // {
@@ -277,9 +288,10 @@ export const asyncRoutes = [{
                 name: 'procesos_activos',
                 meta: {
                     title: 'Expedientes',
-                    roles: ['administrador']
+                    icon: 'excel',
+                    roles: ['administrador', 'abogado']
                 }
-            }
+            },
         ]
     },
     // {

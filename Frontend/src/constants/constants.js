@@ -164,4 +164,23 @@ export const CONSTANTS = {
             trigger: 'blur'
         }]
     },
+    rulesFormUser: {
+        nombre: [
+            { required: true, message: 'Ingrese nombre', trigger: 'blur' }
+        ],
+        apellido: [
+            { required: true, message: 'Ingrese apellido', trigger: 'blur' }
+        ],
+        nickname: [
+            { required: true, message: 'Ingrese nombre de usuario', trigger: 'blur' }
+        ],
+        contrasena: [
+            { required: true, message: 'Ingrese contraseña', trigger: 'blur' }
+        ],
+        rol: [{
+            required: true,
+            message: 'Seleccione un rol',
+            trigger: 'change'
+        }],
+    },
 };

@@ -63,7 +63,7 @@
                 <el-button :loading="loading" type="primary" style="width: 100%;" @click.native.prevent="handleLogin">Ingresar</el-button>
               </el-col>
               <el-col :xs="12" :md="14" style="padding-top: 0.6em; padding-left: 5%;">
-                <a href="" style="color: #409EFF;">Crear cuenta</a>
+                <a href="" style="color: #409EFF;">Recordar contraseña</a>
               </el-col>
             </el-row>
           </el-card>

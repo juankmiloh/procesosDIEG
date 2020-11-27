@@ -53,3 +53,11 @@ class UsuariosRepository:
             VALUES (:nombre_estado_sql);
         '''
         return self.db.engine.execute(text(sql), nombre_estado_sql=nombre_estado)
+    
+    def usuarios_create_bd(self, usuario):
+        sql = '''
+            INSERT INTO USUARIOS
+            (NOMBRE, APELLIDO, NICKNAME, DESCRIPCION, ROL, AVATAR, CONTRASENA, TOKEN) 
+            VALUES (:NOMBRE_ARG, :APELLIDO_ARG, :NICKNAME_ARG, :DESCRIPCION_ARG, :ROL_ARG, :AVATAR_ARG, :CONTRASENA_ARG, :TOKEN_ARG);
+        '''
+        return self.db.engine.execute(text(sql), NOMBRE_ARG=usuario['nombre'], APELLIDO_ARG=usuario['apellido'], NICKNAME_ARG=usuario['nickname'], DESCRIPCION_ARG=usuario['descripcion'], ROL_ARG=usuario['rol'], AVATAR_ARG=usuario['avatar'], CONTRASENA_ARG=usuario['contrasena'], TOKEN_ARG=usuario['token'])

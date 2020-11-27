@@ -25,3 +25,8 @@ def usuarios(usuarios_service: UsuariosService, usuarios_repository: UsuariosRep
 @controller.route(API_ROOT_PATH + 'nicknames', methods=['GET'])
 def nicknames(usuarios_service: UsuariosService, usuarios_repository: UsuariosRepository):
     return json.dumps(usuarios_service.get_nicknames(usuarios_repository))
+
+@controller.route(API_ROOT_PATH + 'user/create', methods=['POST'])
+def createUser(usuarios_service: UsuariosService, usuarios_repository: UsuariosRepository):
+    usuario = request.json
+    return json.dumps(usuarios_service.create_user_insert(usuarios_repository, usuario))

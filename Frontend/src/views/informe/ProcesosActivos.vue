@@ -13,7 +13,7 @@
       </div>
     </sticky>
 
-    <el-row :gutter="32" style="padding-top: 25px;">
+    <el-row :gutter="32" style="padding-top: 30px;">
       <el-col :xs="24" :sm="24" :lg="8">
         <div v-loading="loadingEmpresas" class="chart-wrapper">
           <div style="text-align: center;"><label for="">Empresas</label></div>

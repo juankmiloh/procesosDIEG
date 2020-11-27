@@ -58,7 +58,7 @@ class UsuariosService:
         response['users'] = users
         response['nicknames'] = nicknames
         return response
-
-    def prueba_insert(self, prueba_repository: UsuariosRepository, nombre_estado):
-        prueba_repository.prueba_insert_bd(nombre_estado)
-        return add_wrapper(['Insertado con nami'])
+    
+    def create_user_insert(self, usuarios_repository: UsuariosRepository, usuario):
+        usuarios_repository.usuarios_create_bd(usuario)
+        return add_wrapper(['Usuario creado con exito!'])

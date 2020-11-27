@@ -47,3 +47,11 @@ export function deleteUsuario(id) {
         params: { 'idusuario': id }
     });
 }
+
+export function createUser(data) {
+    return request({
+        url: '/user/create',
+        method: 'post',
+        data
+    });
+}
