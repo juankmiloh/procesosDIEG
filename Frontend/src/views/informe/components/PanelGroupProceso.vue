@@ -1,28 +1,41 @@
 <template>
   <el-row :gutter="40" class="panel-group">
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+      <div class="card-panel" @click="handleSetLineChartData('shoppings')">
+        <div class="card-panel-icon-wrapper icon-shopping">
+          <svg-icon icon-class="people" class-name="card-panel-icon" />
+        </div>
+        <div class="card-panel-description">
+          <div class="card-panel-text">
+            Servicio
+          </div>
+          <h2>Energía</h2>
+        </div>
+      </div>
+    </el-col>
+    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleSetPieChartData('activos')">
-        <div class="card-panel-icon-wrapper icon-people">
+        <div class="card-panel-icon-wrapper icon-message">
           <svg-icon icon-class="form" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
             Activos
           </div>
-          <count-to :start-val="0" :end-val="countActivos" :duration="2600" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="countActivos" :duration="3000" class="card-panel-num" />
         </div>
       </div>
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleSetPieChartData('terminados')">
-        <div class="card-panel-icon-wrapper icon-message">
-          <svg-icon icon-class="clipboard" class-name="card-panel-icon" />
+        <div class="card-panel-icon-wrapper icon-people">
+          <svg-icon icon-class="skill" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
             Terminados
           </div>
-          <count-to :start-val="0" :end-val="countTerminados" :duration="3000" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="countTerminados" :duration="2600" class="card-panel-num" />
         </div>
       </div>
     </el-col>

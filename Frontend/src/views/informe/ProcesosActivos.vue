@@ -1,38 +1,64 @@
 <template>
-  <div class="dashboard-editor-container" style="height: 89vh;">
+  <div class="createPost-container">
 
-    <panel-group-proceso @handleSetPieChartData="handleSetPieChartData" />
+    <div class="dashboard-editor-container" style="border: 0px solid red; padding-bottom: 0;">
+      <panel-group-proceso @handleSetPieChartData="handleSetPieChartData" />
+    </div>
 
     <sticky class-name="sub-navbar">
-      <div style="border: 0px solid red; text-align: center; color: white;">
-        <transition name="el-zoom-in-bottom">
-          <div class="transition-box">
-            <label for="">Procesos {{ selectPie }}</label>
-          </div>
-        </transition>
+      <div style="text-align: center; color: white;">
+        <label style="font-size: x-large;">Procesos {{ selectPie }}</label>
       </div>
     </sticky>
 
-    <el-row :gutter="32" style="padding-top: 30px;">
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div v-loading="loadingEmpresas" class="chart-wrapper">
-          <div style="text-align: center;"><label for="">Empresas</label></div>
-          <pie-chart :chart-data="pieChartDataEmpresas" />
-        </div>
-      </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div v-loading="loadingCausas" class="chart-wrapper">
-          <div style="text-align: center;"><label for="">Causa</label></div>
-          <pie-chart :chart-data="pieChartDataCausas" />
-        </div>
-      </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div v-loading="loadingEmpresas" class="chart-wrapper">
-          <div style="text-align: center;"><label for="">Estado</label></div>
-          <pie-chart :chart-data="pieChartDataEstado" />
-        </div>
-      </el-col>
-    </el-row>
+    <div class="dashboard-editor-container">
+      <el-row :gutter="32">
+        <el-col :xs="24" :sm="24" :lg="12">
+          <div v-loading="loadingEmpresas" class="chart-wrapper">
+            <div style="text-align: center;"><label for="">Empresas</label></div>
+            <pie-chart :chart-data="pieChartDataEmpresas" />
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :lg="12">
+          <div v-loading="loadingCausas" class="chart-wrapper">
+            <div style="text-align: center;"><label for="">Causa</label></div>
+            <pie-chart :chart-data="pieChartDataCausas" />
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :lg="12">
+          <div v-loading="loadingEmpresas" class="chart-wrapper">
+            <div style="text-align: center;"><label for="">Estado</label></div>
+            <pie-chart :chart-data="pieChartDataEstado" />
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :lg="12">
+          <div v-loading="loadingEmpresas" class="chart-wrapper">
+            <div style="text-align: center;"><label for="">Abogado</label></div>
+            <pie-chart :chart-data="pieChartDataEstado" />
+          </div>
+        </el-col>
+      </el-row>
+      <!-- <el-row :gutter="32">
+        <el-col :xs="24" :sm="24" :lg="8">
+          <div v-loading="loadingEmpresas" class="chart-wrapper">
+            <div style="text-align: center;"><label for="">Empresas</label></div>
+            <pie-chart :chart-data="pieChartDataEmpresas" />
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :lg="8">
+          <div v-loading="loadingCausas" class="chart-wrapper">
+            <div style="text-align: center;"><label for="">Causa</label></div>
+            <pie-chart :chart-data="pieChartDataCausas" />
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :lg="8">
+          <div v-loading="loadingEmpresas" class="chart-wrapper">
+            <div style="text-align: center;"><label for="">Estado</label></div>
+            <pie-chart :chart-data="pieChartDataEstado" />
+          </div>
+        </el-col>
+      </el-row> -->
+    </div>
   </div>
 </template>
 

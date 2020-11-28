@@ -217,7 +217,7 @@ export const asyncRoutes = [{
                     import ('@/views/roles/administrador/CreateUser'),
                 name: 'UserCreate',
                 meta: {
-                    title: 'Crear usuario',
+                    title: 'Usuarios',
                     icon: 'user',
                     roles: ['administrador']
                 }

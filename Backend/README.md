@@ -1,4 +1,4 @@
-## Back-end del módulo de indicadores para UMMEG
+## Back-end para el manejo del módulo de procesos (expedientes) para la DIEG
 
 # linux/MacOS
 export FLASK_ENV=development

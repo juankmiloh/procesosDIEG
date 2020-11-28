@@ -322,7 +322,7 @@
           </div>
         </sticky>
       </div>
-      <div class="app-container">
+      <div class="app-container" style="background: #f7fbff; height: 89vh;">
         <el-table
           v-loading="loading"
           :z-index="0"

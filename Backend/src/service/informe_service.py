@@ -12,6 +12,8 @@ class InformeService:
         procesos = []
         data = informe_repository.get_cantidad_procesos_bd()
         for result in data:
+            print('------------ CANTIDAD DE PROCESOS ----', result, '----------------')
+                
             procesos.append(
                 {
                     'cantidad': result[0],
