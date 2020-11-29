@@ -5,36 +5,54 @@ class InformeRepository:
     def __init__(self, db):
         self.db = db
 
-    def get_cantidad_procesos_bd(self):
+    def get_cantidad_procesos_bd(self, idservicio):
         sql = '''
-            SELECT COUNT(*), F.NOMBRE FROM PROCESO P, FASE F WHERE P.FASE = F.IDFASE GROUP BY F.NOMBRE ORDER BY F.NOMBRE ASC;
+            SELECT (CASE WHEN PROCESO_FASE.CANTIDAD IS NOT NULL THEN PROCESO_FASE.CANTIDAD ELSE 0 END) AS CANTIDAD, FASE.NOMBRE FROM
+            (SELECT * FROM FASE) FASE
+            LEFT JOIN
+            (SELECT F.IDFASE, COUNT(*) AS CANTIDAD, F.NOMBRE FROM PROCESO P, FASE F WHERE P.FASE = F.IDFASE AND (P.IDSERVICIO = :IDSERVICIO_ARG OR 0 = :IDSERVICIO_ARG) GROUP BY F.IDFASE, F.NOMBRE ORDER BY F.NOMBRE ASC) PROCESO_FASE
+            ON FASE.IDFASE = PROCESO_FASE.IDFASE;
         '''
-        return self.db.engine.execute(text(sql)).fetchall()
+        return self.db.engine.execute(text(sql), IDSERVICIO_ARG=idservicio).fetchall()
     
-    def get_procesos_empresa_bd(self, fase):
+    def get_procesos_empresa_bd(self, fase, idservicio):
         sql = '''
             SELECT COUNT(*), EMP.NOMBRE FROM PROCESO P, EMPRESA EMP
             WHERE 
                 P.FASE = :FASE_ARG
+                AND (P.IDSERVICIO = :IDSERVICIO_ARG OR 0 = :IDSERVICIO_ARG)
                 AND P.EMPRESA = EMP.IDEMPRESA
+                AND P.IDSERVICIO = EMP.SERVICIO
             GROUP BY EMP.NOMBRE;
         '''
-        return self.db.engine.execute(text(sql), FASE_ARG=fase).fetchall()
+        return self.db.engine.execute(text(sql), FASE_ARG=fase, IDSERVICIO_ARG=idservicio).fetchall()
     
-    def get_procesos_causal_bd(self, fase):
+    def get_procesos_causal_bd(self, fase, idservicio):
         sql = '''
             SELECT COUNT(*), C.NOMBRECAUSAL FROM PROCESO P, PROCESO_CAUSAL PC, CAUSAL C
             WHERE 
                 P.FASE = :FASE_ARG
+                AND (P.IDSERVICIO = :IDSERVICIO_ARG OR 0 = :IDSERVICIO_ARG)
                 AND P.IDPROCESO = PC.IDPROCESO
                 AND PC.IDCAUSAL = C.IDCAUSAL
             GROUP BY 
                 PC.IDCAUSAL,
                 C.NOMBRECAUSAL;
         '''
-        return self.db.engine.execute(text(sql), FASE_ARG=fase).fetchall()
+        return self.db.engine.execute(text(sql), FASE_ARG=fase, IDSERVICIO_ARG=idservicio).fetchall()
     
-    def get_procesos_estado_bd(self, fase):
+    def get_procesos_usuario_bd(self, fase, idservicio):
+        sql = '''
+            SELECT COUNT(*), U.NOMBRE||' '||U.APELLIDO FROM PROCESO P, USUARIOS U
+            WHERE
+                P.FASE = :FASE_ARG
+                AND (P.IDSERVICIO = :IDSERVICIO_ARG OR 0 = :IDSERVICIO_ARG)
+                AND P.USUARIOASIGNADO = U.IDUSUARIO
+            GROUP BY U.NOMBRE||' '||U.APELLIDO;
+        '''
+        return self.db.engine.execute(text(sql), FASE_ARG=fase, IDSERVICIO_ARG=idservicio).fetchall()
+    
+    def get_procesos_estado_bd(self, fase, idservicio):
         sql = '''
             SELECT COUNT(*), ESTADO FROM
             (
@@ -52,6 +70,7 @@ class InformeRepository:
                     EMPRESA EMP, SERVICIO S, PROCESO P, USUARIOS U, ETAPA_PROCESO EP, ETAPA E, ESTADO ES
                 WHERE
                     P.FASE = :FASE_ARG
+                    AND (P.IDSERVICIO = :IDSERVICIO_ARG OR 0 = :IDSERVICIO_ARG)
                     AND P.IDPROCESO = EP.PROCESO
                     AND EP.ETAPA = E.IDETAPA
                     AND E.IDESTADO = ES.IDESTADO
@@ -74,4 +93,4 @@ class InformeRepository:
                 AND PROCESO.ETAPA = ETAPA.IDETAPA
             GROUP BY ESTADO;
         '''
-        return self.db.engine.execute(text(sql), FASE_ARG=fase).fetchall()
+        return self.db.engine.execute(text(sql), FASE_ARG=fase, IDSERVICIO_ARG=idservicio).fetchall()

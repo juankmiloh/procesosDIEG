@@ -2,30 +2,42 @@
 /* eslint-disable */
 import request from '@/utils/request';
 
-export function getListProcesosEmpresa() {
+export function getListProcesosEmpresa(idservicio) {
     return request({
         url: '/procesos_empresa',
-        method: 'get'
+        method: 'get',
+        params: { 'idservicio': idservicio }
     });
 }
 
-export function getListProcesosCausal() {
+export function getListProcesosCausal(idservicio) {
     return request({
         url: '/procesos_causal',
-        method: 'get'
+        method: 'get',
+        params: { 'idservicio': idservicio }
     });
 }
 
-export function getListProcesosEstado() {
+export function getListProcesosEstado(idservicio) {
     return request({
         url: '/procesos_estado',
-        method: 'get'
+        method: 'get',
+        params: { 'idservicio': idservicio }
     });
 }
 
-export function getListCantidadProcesos() {
+export function getListProcesosUsuario(idservicio) {
+    return request({
+        url: '/procesos_usuario',
+        method: 'get',
+        params: { 'idservicio': idservicio }
+    });
+}
+
+export function getListCantidadProcesos(idservicio) {
     return request({
         url: '/cantidad_procesos',
-        method: 'get'
+        method: 'get',
+        params: { 'idservicio': idservicio }
     });
 }

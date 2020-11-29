@@ -284,7 +284,7 @@ export const asyncRoutes = [{
             {
                 path: 'pactivos',
                 component: () =>
-                    import ('@/views/informe/ProcesosActivos'),
+                    import ('@/views/informe/Expedientes'),
                 name: 'procesos_activos',
                 meta: {
                     title: 'Expedientes',

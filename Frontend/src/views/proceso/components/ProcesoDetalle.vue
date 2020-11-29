@@ -323,57 +323,59 @@
         </sticky>
       </div>
       <div class="app-container" style="background: #f7fbff; height: 89vh;">
-        <el-table
-          v-loading="loading"
-          :z-index="0"
-          :data="
-            datosEtapaProceso.filter(
-              (data) =>
-                !busquedaEtapa ||
-                data.nombreEtapa
-                  .toLowerCase()
-                  .includes(busquedaEtapa.toLowerCase())
-            )
-          "
-          style="width: 100%; border: 1px solid #d8ebff"
-          border
-        >
-          <el-table-column
-            v-for="column in tableColumns"
-            :key="column.label"
-            :label="column.label"
-            :prop="column.prop"
-            align="center"
-            :width="column.prop === 'observacionEtapa' ? 400 : ''"
-            sortable
-          />
-          <el-table-column align="center" width="230">
-            <!-- eslint-disable-next-line -->
-            <template slot="header" slot-scope="scope">
-              <el-input
-                v-model="busquedaEtapa"
-                size="mini"
-                placeholder="Nombre etapa"
-              />
-            </template>
-            <template slot-scope="scope">
-              <el-button
-                style="border: 1px solid #409eff"
-                size="mini"
-                type="success"
-                icon="el-icon-edit"
-                @click="handleEditarEtapa(scope);"
-              ><b>Editar</b></el-button>
-              <el-button
-                :disabled="scope.row.nombreEtapa === 'Memorando IG'"
-                size="mini"
-                type="danger"
-                icon="el-icon-delete-solid"
-                @click="handleBorrarEtapa(scope.row)"
-              />
-            </template>
-          </el-table-column>
-        </el-table>
+        <el-card class="box-card">
+          <el-table
+            v-loading="loading"
+            :z-index="0"
+            :data="
+              datosEtapaProceso.filter(
+                (data) =>
+                  !busquedaEtapa ||
+                  data.nombreEtapa
+                    .toLowerCase()
+                    .includes(busquedaEtapa.toLowerCase())
+              )
+            "
+            style="width: 100%; border: 1px solid #d8ebff"
+            border
+          >
+            <el-table-column
+              v-for="column in tableColumns"
+              :key="column.label"
+              :label="column.label"
+              :prop="column.prop"
+              align="center"
+              :width="column.prop === 'observacionEtapa' ? 400 : ''"
+              sortable
+            />
+            <el-table-column align="center" width="230">
+              <!-- eslint-disable-next-line -->
+              <template slot="header" slot-scope="scope">
+                <el-input
+                  v-model="busquedaEtapa"
+                  size="mini"
+                  placeholder="Nombre etapa"
+                />
+              </template>
+              <template slot-scope="scope">
+                <el-button
+                  style="border: 1px solid #409eff"
+                  size="mini"
+                  type="success"
+                  icon="el-icon-edit"
+                  @click="handleEditarEtapa(scope);"
+                ><b>Editar</b></el-button>
+                <el-button
+                  :disabled="scope.row.nombreEtapa === 'Memorando IG'"
+                  size="mini"
+                  type="danger"
+                  icon="el-icon-delete-solid"
+                  @click="handleBorrarEtapa(scope.row)"
+                />
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-card>
       </div>
     </el-dialog>
 
@@ -470,6 +472,7 @@
       center
       custom-class="dialog-class-lista"
     >
+      <br>
       <center>
         <span>¿Realmente desea eliminar la etapa <b>{{ delEtapa }}</b>?</span>
       </center>

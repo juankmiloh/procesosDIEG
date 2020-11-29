@@ -1,5 +1,5 @@
 <template>
-  <div class="createPost-container" style="background: #f7fbff; height: 89vh;">
+  <div class="createPost-container" style="background: #f7fbff;">
     <sticky class-name="sub-navbar">
       <div style="border: 0px solid red; text-align: center">
         <!-- Boton para agregar nuevo expediente al aplicativo -->
@@ -216,80 +216,82 @@
     <!-- Tabla donde se lista, ordena y realiza busqueda de los expedientes -->
 
     <div class="app-container">
-      <el-table
-        v-loading="loading"
-        :z-index="0"
-        :data="
-          datosProcesos.filter(
-            (data) =>
-              !busquedaExpediente ||
-              data.expediente
-                .toLowerCase()
-                .includes(busquedaExpediente.toLowerCase())
-          )
-        "
-        style="width: 100%; border: 1px solid #d8ebff"
-        border
-      >
-        <el-table-column
-          v-for="column in tableColumns"
-          :key="column.label"
-          :label="column.label"
-          :prop="column.prop"
-          align="center"
-          :width="
-            column.prop === 'expediente'
-              ? 150
-              : column.prop === 'caducidad'
-                ? 120
-                : column.prop === 'usuario'
-                  ? 130
-                  : column.prop === 'idproceso'
-                    ? 70
-                    : column.prop === 'empresa' ? 270 : ''
+      <el-card class="box-card">
+        <el-table
+          v-loading="loading"
+          :z-index="0"
+          :data="
+            datosProcesos.filter(
+              (data) =>
+                !busquedaExpediente ||
+                data.expediente
+                  .toLowerCase()
+                  .includes(busquedaExpediente.toLowerCase())
+            )
           "
-          sortable
-        />
-        <el-table-column
-          prop="servicio"
-          label="Servicio"
-          align="center"
-          sortable
-          width="115"
-          :filters="filtersServicio"
-          :filter-method="filterHandler"
-        />
-        <el-table-column align="center" width="230">
-          <!-- eslint-disable-next-line -->
-          <template slot="header" slot-scope="scope">
-            <el-input
-              v-model="busquedaExpediente"
-              size="mini"
-              placeholder="No. Expediente"
-            />
-          </template>
-          <template slot-scope="scope">
-            <el-button
-              style="border: 1px solid #409eff"
-              size="mini"
-              @click="handlePermisos(scope.row)"
-            ><b>Permisos</b></el-button>
-            <!-- <router-link :to="'/example/edit/'+scope.row.idproceso"> -->
-            <el-button
-              size="mini"
-              type="success"
-              @click="handleProceso(scope.row)"
-            ><b>Ver</b></el-button>
-            <!-- </router-link> -->
-            <el-button
-              size="mini"
-              type="danger"
-              icon="el-icon-delete-solid"
-              @click="handleDelete(scope.row)"
-            />
-          </template>
-        </el-table-column>
-      </el-table>
+          style="width: 100%; border: 1px solid #d8ebff"
+          border
+        >
+          <el-table-column
+            v-for="column in tableColumns"
+            :key="column.label"
+            :label="column.label"
+            :prop="column.prop"
+            align="center"
+            :width="
+              column.prop === 'expediente'
+                ? 150
+                : column.prop === 'caducidad'
+                  ? 120
+                  : column.prop === 'usuario'
+                    ? 130
+                    : column.prop === 'idproceso'
+                      ? 70
+                      : column.prop === 'empresa' ? 270 : ''
+            "
+            sortable
+          />
+          <el-table-column
+            prop="servicio"
+            label="Servicio"
+            align="center"
+            sortable
+            width="115"
+            :filters="filtersServicio"
+            :filter-method="filterHandler"
+          />
+          <el-table-column align="center" width="230">
+            <!-- eslint-disable-next-line -->
+            <template slot="header" slot-scope="scope">
+              <el-input
+                v-model="busquedaExpediente"
+                size="mini"
+                placeholder="No. Expediente"
+              />
+            </template>
+            <template slot-scope="scope">
+              <el-button
+                style="border: 1px solid #409eff"
+                size="mini"
+                @click="handlePermisos(scope.row)"
+              ><b>Permisos</b></el-button>
+              <!-- <router-link :to="'/example/edit/'+scope.row.idproceso"> -->
+              <el-button
+                size="mini"
+                type="success"
+                @click="handleProceso(scope.row)"
+              ><b>Ver</b></el-button>
+              <!-- </router-link> -->
+              <el-button
+                size="mini"
+                type="danger"
+                icon="el-icon-delete-solid"
+                @click="handleDelete(scope.row)"
+              />
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-card>
     </div>
   </div>
 </template>
