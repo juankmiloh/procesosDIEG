@@ -1,3 +1,4 @@
+from itertools import count
 from sqlalchemy.sql import text
 from sqlalchemy.sql.elements import Null
 
@@ -35,11 +36,10 @@ class EtapaRepository:
         sql = '''
             INSERT INTO ETAPA_PROCESO(ETAPA, PROCESO, FECHAINICIOETAPA, FECHAFINETAPA, RADICADOETAPA, OBSERVACIONETAPA)
             VALUES (:ETAPA_ARG, :IDPROCESO_ARG, :FECHAINICIO_ARG, :FECHAFIN_ARG, :RADICADO_ARG, :OBSERVACION_ARG);
-
         '''
-        resultsql = self.db.engine.execute(text(sql), ETAPA_ARG=etapa["etapa"], IDPROCESO_ARG=etapa["idproceso"], FECHAINICIO_ARG=etapa["fechaInicioEtapa"], FECHAFIN_ARG=etapa["fechaFinEtapa"], RADICADO_ARG=etapa["radicadoEtapa"], OBSERVACION_ARG=etapa["observacionEtapa"])
+        self.db.engine.execute(text(sql), ETAPA_ARG=etapa["etapa"], IDPROCESO_ARG=etapa["idproceso"], FECHAINICIO_ARG=etapa["fechaInicioEtapa"], FECHAFIN_ARG=etapa["fechaFinEtapa"], RADICADO_ARG=etapa["radicadoEtapa"], OBSERVACION_ARG=etapa["observacionEtapa"])
 
-        return resultsql
+        self.update_fase_proceso(etapa["idproceso"])
 
     def etapa_update_bd(self, etapa):
         print('-------------------------------------')
@@ -59,18 +59,52 @@ class EtapaRepository:
                 OBSERVACIONETAPA = :OBSERVACION_ARG
 	        WHERE RADICADOETAPA = :RADICADO_ARG;
         '''
-        resultsql = self.db.engine.execute(text(sql), FECHAINICIO_ARG=etapa["fechaInicioEtapa"], FECHAFIN_ARG=etapa["fechaFinEtapa"], RADICADO_ARG=etapa["radicadoEtapa"], OBSERVACION_ARG=etapa["observacionEtapa"])
+        self.db.engine.execute(text(sql), FECHAINICIO_ARG=etapa["fechaInicioEtapa"], FECHAFIN_ARG=etapa["fechaFinEtapa"], RADICADO_ARG=etapa["radicadoEtapa"], OBSERVACION_ARG=etapa["observacionEtapa"])
 
-        return resultsql
-
-    def etapa_delete_bd(self, radicadoEtapa):
+        self.update_fase_proceso(etapa["idproceso"])
+            
+                        
+    def etapa_delete_bd(self, etapa):
         print('-------------------------------------')
-        print('* ETAPA A ELIMINAR -> ', radicadoEtapa)
+        print('* ETAPA A ELIMINAR -> ', etapa)
         print('-------------------------------------')
         sql = '''
             DELETE FROM ETAPA_PROCESO
             WHERE RADICADOETAPA = :RADICADO_ARG;
         '''
-        resultsql = self.db.engine.execute(text(sql), RADICADO_ARG=radicadoEtapa)
+        self.db.engine.execute(text(sql), RADICADO_ARG=etapa["radicadoEtapa"])
 
-        return resultsql
+        self.update_fase_proceso(etapa["idproceso"])
+
+    def update_fase_proceso(self, idproceso):
+        sql = '''
+            SELECT E.NOMBRE FROM ETAPA_PROCESO EP, ETAPA E WHERE PROCESO=:IDPROCESO_ARG AND EP.ETAPA=E.IDETAPA;
+        '''
+        resultsql = self.db.engine.execute(text(sql), IDPROCESO_ARG=idproceso).fetchall()
+
+        countEtapas = 0
+        terminado = False
+        fase = 0
+        
+        for result in resultsql:
+            etapa = result[0]
+            if etapa != 'Memorando de devolución':
+                if etapa != 'Memorando de alcance':
+                    print('------------ ETAPA ----', etapa, '----------------')
+                    countEtapas = countEtapas + 1
+                    if etapa == 'Archivo':
+                        terminado = True
+
+        print('------------ CANTIDAD ETAPAS ----', countEtapas, '----------------')
+        print('------------ TERMINADO ----', terminado, '----------------')
+
+        if countEtapas >= 13 and terminado:
+            print('------------ PROCESO TERMINADO ----------------')
+            fase = 2 # Proceso terminado
+        else:
+            fase = 1 # Proceso En curso
+
+        sql = '''
+                UPDATE PROCESO SET FASE=:FASE_ARG WHERE IDPROCESO=:IDPROCESO_ARG;
+            '''
+        self.db.engine.execute(text(sql), IDPROCESO_ARG=idproceso, FASE_ARG=fase)

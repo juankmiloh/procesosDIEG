@@ -15,25 +15,61 @@
       <el-row v-if="!loadingEmpresas && pieChartDataEmpresas.datos.length > 0" :gutter="32">
         <el-col :xs="24" :sm="24" :lg="12">
           <div v-loading="loadingEmpresas" class="chart-wrapper">
-            <div style="text-align: center;"><label for="">Empresas</label></div>
+            <el-row>
+              <el-col :md="23">
+                <div style="text-align: center;"><label for="">Empresas</label></div>
+              </el-col>
+              <el-col :md="1">
+                <div style="cursor: pointer;" @click="handleDataPie(pieChartDataEmpresas)">
+                  <i class="el-icon-link" />
+                </div>
+              </el-col>
+            </el-row>
             <pie-chart :chart-data="pieChartDataEmpresas" style="height: 45vh;" />
           </div>
         </el-col>
         <el-col v-if="!loadingCausas && pieChartDataCausas.datos.length > 0" :xs="24" :sm="24" :lg="12">
           <div v-loading="loadingCausas" class="chart-wrapper">
-            <div style="text-align: center;"><label for="">Causa</label></div>
+            <el-row>
+              <el-col :md="23">
+                <div style="text-align: center;"><label for="">Causa</label></div>
+              </el-col>
+              <el-col :md="1">
+                <div style="cursor: pointer;" @click="handleDataPie(pieChartDataCausas)">
+                  <i class="el-icon-link" />
+                </div>
+              </el-col>
+            </el-row>
             <pie-chart :chart-data="pieChartDataCausas" style="height: 45vh;" />
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :lg="12">
           <div v-loading="loadingEstado" class="chart-wrapper">
-            <div style="text-align: center;"><label for="">Estado</label></div>
+            <el-row>
+              <el-col :md="23">
+                <div style="text-align: center;"><label for="">Estado</label></div>
+              </el-col>
+              <el-col :md="1">
+                <div style="cursor: pointer;" @click="handleDataPie(pieChartDataEstado)">
+                  <i class="el-icon-link" />
+                </div>
+              </el-col>
+            </el-row>
             <pie-chart :chart-data="pieChartDataEstado" style="height: 45vh;" />
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :lg="12">
           <div v-loading="loadingUsuarios" class="chart-wrapper">
-            <div style="text-align: center;"><label for="">Abogados</label></div>
+            <el-row>
+              <el-col :md="23">
+                <div style="text-align: center;"><label for="">Abogados</label></div>
+              </el-col>
+              <el-col :md="1">
+                <div style="cursor: pointer;" @click="handleDataPie(pieChartDataUsuarios)">
+                  <i class="el-icon-link" />
+                </div>
+              </el-col>
+            </el-row>
             <pie-chart :chart-data="pieChartDataUsuarios" style="height: 45vh;" />
           </div>
         </el-col>
@@ -161,6 +197,10 @@ export default {
     this.initView()
   },
   methods: {
+    handleDataPie(evt) {
+      console.log('datapie')
+      console.log(evt)
+    },
     initView() {
       this.getData(this.formServicio.servicio) // 0: Indica todos los servicios / 1: Indica servicio de energía / 2: Gas / 3: GLP
     },

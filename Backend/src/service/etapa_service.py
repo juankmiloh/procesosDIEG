@@ -54,6 +54,6 @@ class EtapaService:
         etapa_repository.etapa_update_bd(dataEtapa)
         return add_wrapper(['Etapa actualizada con éxito!'])
 
-    def etapa_delete(self, etapa_repository: EtapaRepository, radicadoEtapa):
-        etapa_repository.etapa_delete_bd(radicadoEtapa)
+    def etapa_delete(self, etapa_repository: EtapaRepository, etapa):
+        etapa_repository.etapa_delete_bd(etapa)
         return add_wrapper(['Etapa borrada con éxito!'])

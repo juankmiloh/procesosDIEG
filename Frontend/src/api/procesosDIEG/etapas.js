@@ -33,10 +33,10 @@ export function updateEtapa(data) {
     });
 }
 
-export function deleteEtapa(radicado) {
+export function deleteEtapa(etapa) {
     return request({
         url: '/etapas',
         method: 'delete',
-        params: { 'radicadoEtapa': radicado }
+        data: etapa
     });
 }

@@ -783,6 +783,7 @@ export default {
             this.loading = true
             this.datosEtapa = []
             delete modelEditarEtapa['etapa']
+            modelEditarEtapa.idproceso = this.formProceso.idproceso
             console.log('FORMEDITAR -> ', modelEditarEtapa)
             await updateEtapa(modelEditarEtapa).then(async(response) => {
               // console.log('RESPONSE AGREGAR -> ', response)
@@ -847,7 +848,11 @@ export default {
       this.deleteDialogVisible = true
     },
     async borrarEtapa() {
-      await deleteEtapa(this.delradEtapa).then(async(response) => {
+      const modelEtapaDel = {
+        idproceso: this.formProceso.idproceso,
+        radicadoEtapa: this.delradEtapa
+      }
+      await deleteEtapa(modelEtapaDel).then(async(response) => {
         this.deleteDialogVisible = false
         this.loading = true
         this.$notify({
