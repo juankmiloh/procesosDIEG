@@ -258,7 +258,7 @@ export const asyncRoutes = [{
         meta: {
             title: 'Informes',
             icon: 'chart',
-            roles: ['administrador', 'abogado'] // you can set roles in root nav
+            roles: ['administrador', 'abogado', 'consulta'] // you can set roles in root nav
         },
         children: [
             // {
@@ -289,7 +289,7 @@ export const asyncRoutes = [{
                 meta: {
                     title: 'Expedientes',
                     icon: 'excel',
-                    roles: ['administrador', 'abogado']
+                    roles: ['administrador', 'abogado', 'consulta']
                 }
             },
         ]

@@ -292,7 +292,7 @@
       :visible.sync="msgEtapasVisible"
       :show-close="false"
       fullscreen
-      custom-class="dialog-class-ldetalle"
+      custom-class="dialog-class-ldetalle dialog-color"
     >
       <div style="padding-bottom: 10px">
         <sticky
@@ -322,7 +322,7 @@
           </div>
         </sticky>
       </div>
-      <div class="app-container" style="background: #f7fbff; height: 89vh;">
+      <div class="app-container" style="background: #f7fbff;">
         <el-card class="box-card">
           <el-table
             v-loading="loading"
@@ -422,27 +422,27 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="Fecha inicio" prop="fecha_inicio">
+          <el-form-item label="Fecha inicio" prop="fechaInicioEtapa">
             <el-date-picker
-              v-model="formAgregar.fecha_inicio"
-              type="date"
+              v-model="formAgregar.fechaInicioEtapa"
+              type="datetime"
               placeholder="Seleccione fecha inicio"
               class="control-modal-agregar"
             />
           </el-form-item>
 
-          <el-form-item label="Fecha fin" prop="fecha_fin">
+          <el-form-item label="Fecha fin" prop="fechaFinEtapa">
             <el-date-picker
-              v-model="formAgregar.fecha_fin"
-              type="date"
+              v-model="formAgregar.fechaFinEtapa"
+              type="datetime"
               placeholder="Seleccione fecha fin"
               class="control-modal-agregar"
             />
           </el-form-item>
 
-          <el-form-item label="Observación" prop="observacion">
+          <el-form-item label="Observación" prop="observacionEtapa">
             <el-input
-              v-model="formAgregar.observacion"
+              v-model="formAgregar.observacionEtapa"
               type="textarea"
               class="control-modal-agregar"
               rows="8"
@@ -542,7 +542,7 @@ export default {
       datosEtapaProceso: [],
       tableColumns: CONSTANTS.tableColumnsEtapas,
       busquedaEtapa: '',
-      formAgregar: {},
+      formAgregar: CONSTANTS.formAgregarEtapa,
       rulesFormProceso: CONSTANTS.rulesDetalleProceso,
       rulesFormEtapa: CONSTANTS.rulesFormEtapa,
       datosEtapa: [],
@@ -577,18 +577,16 @@ export default {
   methods: {
     async getEtapasProceso(idproceso) {
       await getEtapaProceso(idproceso).then((response) => {
-        console.log('ETAPA_PROCESO -> ', response)
-        this.datosEtapaProceso = response
-        // const nuevoarray = this.datosEtapaProceso.map((data) => {
-        //   data.fechaInicioEtapa = moment(data.fechaInicioEtapa).format('DD/MM/YYYY HH:mm:ss')
-        //   if (data.fechaFinEtapa === 'No registra') {
-        //     data.fechaFinEtapa = null
-        //   } else {
-        //     data.fechaFinEtapa = moment(data.fechaFinEtapa).format('DD/MM/YYYY HH:mm:ss')
-        //   }
-        //   return data
-        // })
-        // console.log(nuevoarray)
+        // console.log('ETAPA_PROCESO -> ', response)
+        const modelResponse = response.map((data) => {
+          data.fechaInicioEtapa = moment(data.fechaInicioEtapa).format('YYYY/MM/DD HH:mm:ss')
+          if (data.fechaFinEtapa !== 'No registra') {
+            data.fechaFinEtapa = moment(data.fechaFinEtapa).format('YYYY/MM/DD HH:mm:ss')
+          }
+          return data
+        })
+        this.datosEtapaProceso = modelResponse
+        console.log('NUEVO ETAPA_PROCESO -> ', this.datosEtapaProceso)
       })
     },
     async initView() {
@@ -637,15 +635,15 @@ export default {
       this.datosServicios = JSON.parse(this.$route.params.servicios) // Se capturan los parametros de la URL
       let modelProceso = {}
       await getProceso(id).then(async(response) => {
-        console.log('RESPONSE -> ', response)
+        // console.log('RESPONSE PROCESO -> ', response)
         if (response.length > 0) { // Se obtienen los datos del proceso si ya esta diligenciado en su totalidad
-          console.log('RESPONSE proceso completo -> ', response)
+          // console.log('RESPONSE proceso completo -> ', response)
           modelProceso = response[0]
           this.getEmpresasProceso(modelProceso)
           modelProceso = await this.verificarDataModel(modelProceso, true)
         } else { // Sino se cargan los datos del proceso completos (Esto pasa cuando se crea un proceso nuevo)
           await getProcesoInicial(id).then(async(response) => {
-            console.log('RESPONSE inicial -> ', response)
+            // console.log('RESPONSE inicial -> ', response)
             modelProceso = response[0]
             modelProceso.tipo_sancion = 9 // Se agrega el atributo al modelo del proceso
             modelProceso.decision = 6 // Se agrega el atributo al modelo del proceso un valor por defecto
@@ -678,7 +676,7 @@ export default {
         this.loading = false
         this.showButtons = true
         this.formProceso = modelProceso
-        console.log('Model proceso -> ', this.formProceso)
+        // console.log('Model proceso -> ', this.formProceso)
         // set tagsview title
         this.setTagsViewTitle()
         // set page title
@@ -686,7 +684,7 @@ export default {
         if (this.$refs['formProceso']) {
           this.$refs['formProceso'].resetFields()
         }
-        console.log('fetchData 3 -> ', this.$refs['formProceso'])
+        // console.log('fetchData 3 -> ', this.$refs['formProceso'])
       }).catch((err) => {
         console.log(err)
       })
@@ -743,18 +741,18 @@ export default {
     async handleEtapa() {
       if (!this.editarEtapa) { // Condicion para AGREGAR una etapa (No es modo editar etapa)
         const modelAgregarEtapa = this.formAgregar
-        modelAgregarEtapa.idproceso = this.formProceso.idproceso
-        modelAgregarEtapa.radicado = `P${this.formProceso.idproceso}${this.estampillaEtapa}`
-        if (!modelAgregarEtapa.hasOwnProperty('fecha_fin')) {
-          console.log('esta vacio fecha fin!')
-          modelAgregarEtapa.fecha_fin = null
-        }
-        if (!modelAgregarEtapa.hasOwnProperty('observacion')) {
-          console.log('esta vacio observacion!')
-          modelAgregarEtapa.observacion = ''
-        }
         this.$refs['formAgregar'].validate(async(valid) => {
           if (valid) {
+            modelAgregarEtapa.idproceso = this.formProceso.idproceso
+            modelAgregarEtapa.radicadoEtapa = `P${this.formProceso.idproceso}${this.estampillaEtapa}`
+            if (!modelAgregarEtapa.hasOwnProperty('fechaFinEtapa')) {
+              console.log('esta vacio fecha fin!')
+              modelAgregarEtapa.fechaFinEtapa = null
+            }
+            if (!modelAgregarEtapa.hasOwnProperty('observacionEtapa')) {
+              console.log('esta vacio observacion!')
+              modelAgregarEtapa.observacionEtapa = ''
+            }
             this.msgAgregarEtapaVisible = false
             this.loading = true
             this.datosEtapa = []
@@ -810,17 +808,17 @@ export default {
       this.estampillaEtapa = this.datosEtapa.find(etapa => etapa.idetapa === data).estampilla
     },
     closeModalAgregar() {
-      this.formAgregar = {}
+      this.formAgregar = CONSTANTS.formAgregarEtapa
       if (this.$refs['formAgregar']) {
         this.$refs['formAgregar'].resetFields()
       }
       this.msgAgregarEtapaVisible = false
-      console.log('closeModalAgregar -> ', this.$refs['formAgregar'])
+      // console.log('closeModalAgregar -> ', this.$refs['formAgregar'])
     },
     handleEditarEtapa(etapa) {
       this.editarEtapa = true
       this.textEditarEtapa = 'Actualizar'
-      this.formAgregar = {}
+      this.formAgregar = CONSTANTS.formAgregarEtapa
       if (this.$refs['formAgregar']) {
         this.$refs['formAgregar'].resetFields()
       }
@@ -828,14 +826,14 @@ export default {
       // console.log('clickAgregarEtapa -> ', this.$refs['formAgregar'])
       const modelEditarEtapa = {}
       try {
-        modelEditarEtapa.radicado = etapa.row.radicadoEtapa
+        modelEditarEtapa.radicadoEtapa = etapa.row.radicadoEtapa
         modelEditarEtapa.etapa = etapa.row.nombreEtapa
-        modelEditarEtapa.observacion = etapa.row.observacionEtapa
-        modelEditarEtapa.fecha_inicio = moment(etapa.row.fechaInicioEtapa).format()
-        if (etapa.row.fechaFinEtapa === 'No registra') {
-          modelEditarEtapa.fecha_fin = null
+        modelEditarEtapa.observacionEtapa = etapa.row.observacionEtapa
+        modelEditarEtapa.fechaInicioEtapa = moment(etapa.row.fechaInicioEtapa).format('YYYY/MM/DD HH:mm:ss')
+        if (etapa.row.fechaFinEtapa !== 'No registra') {
+          modelEditarEtapa.fechaFinEtapa = moment(etapa.row.fechaFinEtapa).format('YYYY/MM/DD HH:mm:ss')
         } else {
-          modelEditarEtapa.fecha_fin = moment(etapa.row.fechaFinEtapa).format()
+          modelEditarEtapa.fechaFinEtapa = null
         }
         this.formAgregar = modelEditarEtapa
         console.log('handleEditarEtapa -> ', this.formAgregar)
@@ -957,7 +955,6 @@ export default {
 
 <style lang="scss">
 .dialog-class-ldetalle .el-dialog__header {
-  border: 1px solid red;
   border-radius: 10px;
   display: none;
 }
@@ -965,5 +962,10 @@ export default {
 .dialog-class-ldetalle .el-dialog__body {
   margin: 0 !important;
   padding: 0 !important;
+  height: 100%;
+}
+
+.dialog-color {
+  background: #f7fbff;
 }
 </style>

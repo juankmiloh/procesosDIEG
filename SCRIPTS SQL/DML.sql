@@ -6,6 +6,7 @@ TRUNCATE TABLE PROCESO_CAUSAL RESTART IDENTITY CASCADE;
 ----------------------------
 INSERT INTO ROL (DESCRIPCION) VALUES ('administrador');
 INSERT INTO ROL (DESCRIPCION) VALUES ('abogado');
+INSERT INTO ROL (DESCRIPCION) VALUES ('consulta');
 
 ----------------------------
 -- DML TABLA USUARIO

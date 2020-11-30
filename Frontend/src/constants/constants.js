@@ -143,9 +143,9 @@ export const CONSTANTS = {
     },
     formAgregarEtapa: {
         etapa: '',
-        fecha_inicio: null,
-        fecha_fin: null,
-        observacion: ''
+        fechaInicioEtapa: null,
+        fechaFinEtapa: null,
+        observacionEtapa: ''
     },
     rulesFormEtapa: {
         etapa: [{
@@ -153,12 +153,12 @@ export const CONSTANTS = {
             message: 'Seleccione una etapa',
             trigger: 'change'
         }],
-        fecha_inicio: [{
+        fechaInicioEtapa: [{
             required: true,
             message: 'Ingrese una fecha válida',
             trigger: 'change'
         }],
-        observacion: [{
+        observacionEtapa: [{
             required: false,
             message: 'Ingrese una observación',
             trigger: 'blur'

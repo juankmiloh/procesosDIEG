@@ -11,38 +11,40 @@
       </div>
     </sticky>
 
-    <div v-loading="loadingEmpresas" class="dashboard-editor-container" style="height: 100vh;">
+    <div v-loading="loadingEmpresas" class="dashboard-editor-container">
       <el-row v-if="!loadingEmpresas && pieChartDataEmpresas.datos.length > 0" :gutter="32">
         <el-col :xs="24" :sm="24" :lg="12">
           <div v-loading="loadingEmpresas" class="chart-wrapper">
             <div style="text-align: center;"><label for="">Empresas</label></div>
-            <pie-chart :chart-data="pieChartDataEmpresas" />
+            <pie-chart :chart-data="pieChartDataEmpresas" style="height: 45vh;" />
           </div>
         </el-col>
         <el-col v-if="!loadingCausas && pieChartDataCausas.datos.length > 0" :xs="24" :sm="24" :lg="12">
           <div v-loading="loadingCausas" class="chart-wrapper">
             <div style="text-align: center;"><label for="">Causa</label></div>
-            <pie-chart :chart-data="pieChartDataCausas" />
+            <pie-chart :chart-data="pieChartDataCausas" style="height: 45vh;" />
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :lg="12">
           <div v-loading="loadingEstado" class="chart-wrapper">
             <div style="text-align: center;"><label for="">Estado</label></div>
-            <pie-chart :chart-data="pieChartDataEstado" />
+            <pie-chart :chart-data="pieChartDataEstado" style="height: 45vh;" />
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :lg="12">
           <div v-loading="loadingUsuarios" class="chart-wrapper">
             <div style="text-align: center;"><label for="">Abogados</label></div>
-            <pie-chart :chart-data="pieChartDataUsuarios" />
+            <pie-chart :chart-data="pieChartDataUsuarios" style="height: 45vh;" />
           </div>
         </el-col>
       </el-row>
-      <el-row v-if="!loadingEmpresas && pieChartDataEmpresas.datos.length === 0">
-        <el-col :xs="24" :sm="24" :lg="24" style="text-align: center; border: 0px solid red;">
-          <img :src="imgNotFound" width="45%" height="auto">
-        </el-col>
-      </el-row>
+      <transition name="el-fade-in-linear">
+        <el-row v-show="!loadingEmpresas" v-if="!loadingEmpresas && pieChartDataEmpresas.datos.length === 0">
+          <el-col :xs="24" :sm="24" :lg="24" style="text-align: center; border: 0px solid red;">
+            <img :src="imgNotFound" width="45%" height="auto">
+          </el-col>
+        </el-row>
+      </transition>
       <!-- <el-row :gutter="32">
         <el-col :xs="24" :sm="24" :lg="8">
           <div v-loading="loadingEmpresas" class="chart-wrapper">
@@ -163,7 +165,7 @@ export default {
       this.getData(this.formServicio.servicio) // 0: Indica todos los servicios / 1: Indica servicio de energía / 2: Gas / 3: GLP
     },
     async getData(idservicio) {
-      await this.getDataEmpresas(idservicio)
+      this.getDataEmpresas(idservicio)
       this.getDataCausas(idservicio)
       this.getDataEstado(idservicio)
       this.getServicios(idservicio)

@@ -33,7 +33,13 @@ class UsuariosRepository:
 
     def get_usuarios_bd(self):
         sql = '''
-            SELECT * FROM USUARIOS ORDER BY NOMBRE ASC;
+            SELECT * FROM USUARIOS WHERE ROL <> 3 ORDER BY NOMBRE ASC;
+        '''
+        return self.db.engine.execute(text(sql)).fetchall()
+    
+    def get_rol_bd(self):
+        sql = '''
+            SELECT * FROM ROL;
         '''
         return self.db.engine.execute(text(sql)).fetchall()
     

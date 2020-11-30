@@ -41,12 +41,24 @@ class UsuariosService:
                     'idusuario': result[0],
                     'nombre': result[1],
                     'apellido': str(result[2]),
-                    'rol': result[3],
-                    'password': result[4],
+                    'rol': result[5],
+                    'password': result[7],
                 }
             )
         return usuarios
 
+    def get_rol(self, usuarios_repository: UsuariosRepository):
+        roles = []
+        data = usuarios_repository.get_rol_bd()
+        for result in data:
+            roles.append(
+                {
+                    'idrol': result[0],
+                    'nombre': result[1].capitalize()
+                }
+            )
+        return roles
+    
     def get_nicknames(self, usuarios_repository: UsuariosRepository):
         response = {}
         nicknames = []

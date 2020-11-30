@@ -37,7 +37,7 @@ class EtapaRepository:
             VALUES (:ETAPA_ARG, :IDPROCESO_ARG, :FECHAINICIO_ARG, :FECHAFIN_ARG, :RADICADO_ARG, :OBSERVACION_ARG);
 
         '''
-        resultsql = self.db.engine.execute(text(sql), ETAPA_ARG=etapa["etapa"], IDPROCESO_ARG=etapa["idproceso"], FECHAINICIO_ARG=etapa["fecha_inicio"], FECHAFIN_ARG=etapa["fecha_fin"], RADICADO_ARG=etapa["radicado"], OBSERVACION_ARG=etapa["observacion"])
+        resultsql = self.db.engine.execute(text(sql), ETAPA_ARG=etapa["etapa"], IDPROCESO_ARG=etapa["idproceso"], FECHAINICIO_ARG=etapa["fechaInicioEtapa"], FECHAFIN_ARG=etapa["fechaFinEtapa"], RADICADO_ARG=etapa["radicadoEtapa"], OBSERVACION_ARG=etapa["observacionEtapa"])
 
         return resultsql
 
@@ -46,8 +46,8 @@ class EtapaRepository:
         print('* ETAPA A ACTUALIZAR -> ', etapa)
         print('-------------------------------------')
 
-        if etapa["fecha_fin"] == 'Invalid date':
-            etapa["fecha_fin"] = None
+        if etapa["fechaFinEtapa"] == 'Invalid date':
+            etapa["fechaFinEtapa"] = None
 
         sql = '''
             UPDATE 
@@ -59,7 +59,7 @@ class EtapaRepository:
                 OBSERVACIONETAPA = :OBSERVACION_ARG
 	        WHERE RADICADOETAPA = :RADICADO_ARG;
         '''
-        resultsql = self.db.engine.execute(text(sql), FECHAINICIO_ARG=etapa["fecha_inicio"], FECHAFIN_ARG=etapa["fecha_fin"], RADICADO_ARG=etapa["radicado"], OBSERVACION_ARG=etapa["observacion"])
+        resultsql = self.db.engine.execute(text(sql), FECHAINICIO_ARG=etapa["fechaInicioEtapa"], FECHAFIN_ARG=etapa["fechaFinEtapa"], RADICADO_ARG=etapa["radicadoEtapa"], OBSERVACION_ARG=etapa["observacionEtapa"])
 
         return resultsql
 

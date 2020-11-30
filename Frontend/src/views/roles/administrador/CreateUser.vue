@@ -67,8 +67,12 @@
 
               <el-form-item label="Tipo usuario" prop="rol">
                 <el-select v-model="formUsuario.rol" placeholder="Seleccione un rol" class="control-modal">
-                  <el-option label="Administrador" value="1" />
-                  <el-option label="Abogado" value="2" />
+                  <el-option
+                    v-for="item in dataRoles"
+                    :key="item.idrol"
+                    :label="item.nombre"
+                    :value="item.idrol"
+                  />
                 </el-select>
               </el-form-item>
 
@@ -90,6 +94,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { createUser } from '@/api/procesosDIEG/usuarios'
+import { getListRol } from '@/api/procesosDIEG/usuarios'
 import Sticky from '@/components/Sticky' // 粘性header组件
 import { CONSTANTS } from '@/constants/constants'
 import md5 from 'md5'
@@ -110,7 +115,8 @@ export default {
         token: ''
       },
       rulesFormUser: CONSTANTS.rulesFormUser,
-      loading: false
+      loading: false,
+      dataRoles: []
     }
   },
   computed: {
@@ -121,7 +127,13 @@ export default {
   },
   methods: {
     async initView() {
-
+      this.getDataRoles()
+    },
+    async getDataRoles() {
+      await getListRol().then((response) => {
+        console.log(response)
+        this.dataRoles = response
+      })
     },
     submitForm(formName) {
       this.$refs[formName].validate(async(valid) => {

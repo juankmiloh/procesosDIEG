@@ -16,6 +16,13 @@ export function getListNicknames() {
     });
 }
 
+export function getListRol() {
+    return request({
+        url: '/rol',
+        method: 'get'
+    });
+}
+
 export function getUsuario(id) {
     return request({
         url: '/usuario/detalle',
