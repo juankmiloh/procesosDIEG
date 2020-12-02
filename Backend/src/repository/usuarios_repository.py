@@ -23,7 +23,7 @@ class UsuariosRepository:
                 U.DESCRIPCION,
                 U.AVATAR,
                 U.NICKNAME,
-                U.NOMBRE AS USUARIO
+                U.NOMBRE||' '||U.APELLIDO AS USUARIO
             FROM USUARIOS U, ROL R
             WHERE 
                 U.ROL = R.IDROL

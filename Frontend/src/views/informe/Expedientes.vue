@@ -20,7 +20,7 @@
                 <div style="text-align: center;"><label for="">Empresas</label></div>
               </el-col>
               <el-col :md="1">
-                <div style="cursor: pointer;" @click="handleDataPie(pieChartDataEmpresas)">
+                <div style="cursor: pointer;" @click="handleDataPie(pieChartDataEmpresas, 'empresas')">
                   <i class="el-icon-link" />
                 </div>
               </el-col>
@@ -35,7 +35,7 @@
                 <div style="text-align: center;"><label for="">Causa</label></div>
               </el-col>
               <el-col :md="1">
-                <div style="cursor: pointer;" @click="handleDataPie(pieChartDataCausas)">
+                <div style="cursor: pointer;" @click="handleDataPie(pieChartDataCausas, 'causa')">
                   <i class="el-icon-link" />
                 </div>
               </el-col>
@@ -50,7 +50,7 @@
                 <div style="text-align: center;"><label for="">Estado</label></div>
               </el-col>
               <el-col :md="1">
-                <div style="cursor: pointer;" @click="handleDataPie(pieChartDataEstado)">
+                <div style="cursor: pointer;" @click="handleDataPie(pieChartDataEstado, 'estado')">
                   <i class="el-icon-link" />
                 </div>
               </el-col>
@@ -65,7 +65,7 @@
                 <div style="text-align: center;"><label for="">Abogados</label></div>
               </el-col>
               <el-col :md="1">
-                <div style="cursor: pointer;" @click="handleDataPie(pieChartDataUsuarios)">
+                <div style="cursor: pointer;" @click="handleDataPie(pieChartDataUsuarios, 'abogados')">
                   <i class="el-icon-link" />
                 </div>
               </el-col>
@@ -81,26 +81,6 @@
           </el-col>
         </el-row>
       </transition>
-      <!-- <el-row :gutter="32">
-        <el-col :xs="24" :sm="24" :lg="8">
-          <div v-loading="loadingEmpresas" class="chart-wrapper">
-            <div style="text-align: center;"><label for="">Empresas</label></div>
-            <pie-chart :chart-data="pieChartDataEmpresas" />
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :lg="8">
-          <div v-loading="loadingCausas" class="chart-wrapper">
-            <div style="text-align: center;"><label for="">Causa</label></div>
-            <pie-chart :chart-data="pieChartDataCausas" />
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :lg="8">
-          <div v-loading="loadingEmpresas" class="chart-wrapper">
-            <div style="text-align: center;"><label for="">Estado</label></div>
-            <pie-chart :chart-data="pieChartDataEstado" />
-          </div>
-        </el-col>
-      </el-row> -->
     </div>
 
     <!-- Cuadro de dialogo para seleccionar servicio -->
@@ -141,6 +121,79 @@
             >Aceptar</el-button>
           </el-form-item>
         </el-form>
+      </div>
+    </el-dialog>
+
+    <!-- Cuadro de dialogo para mostrar detalle del 'proceso' piechart(grafica) -->
+
+    <el-dialog
+      :visible.sync="detalleDialogVisible"
+      width="55em"
+      custom-class="dialog-class-lista"
+      center
+      :show-close="false"
+    >
+      <sticky class-name="sub-navbar">
+        <div style="border: 0px solid red; color: white; text-align: center;">
+          <h2>Detalle {{ titleDialog }}</h2>
+        </div>
+      </sticky>
+      <!-- Tabla donde se lista, ordena y realiza busqueda de los expedientes -->
+
+      <div class="app-container">
+        <el-card class="box-card">
+          <el-table
+            :z-index="0"
+            :data="
+              datosProcesos.filter(
+                (data) =>
+                  !busquedaExpediente ||
+                  data.expediente
+                    .toLowerCase()
+                    .includes(busquedaExpediente.toLowerCase())
+              )
+            "
+            style="width: 100%; border: 1px solid #d8ebff"
+            border
+          >
+            <el-table-column
+              v-for="column in tableColumns"
+              :key="column.label"
+              :label="column.label"
+              :prop="column.prop"
+              align="center"
+              sortable
+              :width="
+                column.prop === 'expediente'
+                  ? 150
+                  : column.prop === 'idproceso'
+                    ? 70
+                    : column.prop === 'empresa'
+                      ? 270
+                      : column.prop === 'causa'
+                        ? 270
+                        : column.prop === 'fase' ? 100 : ''
+              "
+            />
+            <el-table-column align="center">
+              <!-- eslint-disable-next-line -->
+              <template slot="header" slot-scope="scope">
+                <el-input
+                  v-model="busquedaExpediente"
+                  size="mini"
+                  placeholder="No. Expediente"
+                />
+              </template>
+              <template slot-scope="scope">
+                <el-button
+                  size="mini"
+                  type="success"
+                  @click="handleProceso(scope.row)"
+                ><b>Ver</b></el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-card>
       </div>
     </el-dialog>
   </div>
@@ -190,16 +243,32 @@ export default {
       formServicio: {
         servicio: 0
       },
-      datosServicios: []
+      datosServicios: [],
+      detalleDialogVisible: false,
+      tableColumns: [],
+      datosProcesos: [],
+      busquedaExpediente: '',
+      titleDialog: ''
     }
   },
   created() {
     this.initView()
   },
   methods: {
-    handleDataPie(evt) {
-      console.log('datapie')
-      console.log(evt)
+    handleDataPie(datos, title) {
+      this.busquedaExpediente = ''
+      this.titleDialog = title
+      this.detalleDialogVisible = true
+      console.log(datos)
+      this.tableColumns = datos.columns
+      this.datosProcesos = datos.data
+    },
+    handleProceso(proceso) {
+      console.log('DIALOG PROCESO -> ', proceso)
+      this.detalleDialogVisible = false
+      this.$router.push({
+        path: `/procesos/detalle/${proceso.idproceso}`
+      })
     },
     initView() {
       this.getData(this.formServicio.servicio) // 0: Indica todos los servicios / 1: Indica servicio de energía / 2: Gas / 3: GLP
@@ -224,6 +293,7 @@ export default {
     },
     async getDataEmpresas(idservicio) {
       await getListProcesosEmpresa(idservicio).then((response) => {
+        console.log('PIECHART_EMPRESAS -> ', response)
         this.dataEmpresas = response
         this.pieChartDataEmpresas = this.dataEmpresas['activos']
         this.loadingEmpresas = false

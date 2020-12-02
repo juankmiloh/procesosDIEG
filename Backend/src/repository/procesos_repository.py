@@ -69,8 +69,7 @@ class ProcesosRepository:
                 FROM
                     EMPRESA EMP, SERVICIO S, PROCESO P, USUARIOS U, ETAPA_PROCESO EP, ETAPA E, ESTADO ES
                 WHERE
-                    P.FASE NOT IN (3)
-                    AND P.IDPROCESO = EP.PROCESO
+                    P.IDPROCESO = EP.PROCESO
                     AND EP.ETAPA = E.IDETAPA
                     AND E.IDESTADO = ES.IDESTADO
                     AND P.EMPRESA = EMP.IDEMPRESA
@@ -122,8 +121,7 @@ class ProcesosRepository:
                 FROM
                     EMPRESA EMP, SERVICIO S, PROCESO P, USUARIOS U, ETAPA_PROCESO EP, ETAPA E, ESTADO ES, PROCESO_CAUSAL PC, CAUSAL C, TIPOSANCION TS, DESCISIONRECURSO DR
                 WHERE
-                    P.FASE NOT IN (3)
-                    AND P.IDPROCESO = EP.PROCESO
+                    P.IDPROCESO = EP.PROCESO
                     AND EP.ETAPA = E.IDETAPA
                     AND E.IDESTADO = ES.IDESTADO
                     AND P.EMPRESA = EMP.IDEMPRESA

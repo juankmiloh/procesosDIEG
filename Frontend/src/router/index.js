@@ -221,7 +221,7 @@ export const asyncRoutes = [{
                     icon: 'user',
                     roles: ['administrador']
                 }
-            }
+            },
         ]
     },
 
@@ -237,14 +237,14 @@ export const asyncRoutes = [{
                 meta: { title: 'Procesos', icon: 'example', noCache: false, roles: ['administrador', 'abogado'] }
             },
             {
-                // path: 'detalle/:id',
-                path: 'detalle/:id/:servicios/:usuarios',
+                path: 'detalle/:id',
+                // path: 'detalle/:id/:servicios/:usuarios',
                 // path: 'detalle/:id/:usuarios/:servicios/:empresas',
                 // path: 'detalle',
                 component: () =>
                     import ('@/views/proceso/Detalle'),
                 name: 'DetalleProceso',
-                meta: { title: 'Detalle proceso', icon: 'example', noCache: false, activeMenu: '/procesos/expedientes', roles: ['administrador', 'abogado'] },
+                meta: { title: 'Detalle proceso', icon: 'example', noCache: false, activeMenu: '/procesos/expedientes', roles: ['administrador', 'abogado', 'consulta'] },
                 hidden: true
             },
         ]

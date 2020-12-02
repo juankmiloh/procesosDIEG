@@ -14,32 +14,19 @@
 
         <lang-select class="right-menu-item hover-effect" />
 
-        <!-- <el-tooltip content="Global Size" effect="dark" placement="bottom">
-          <size-select id="size-select" class="right-menu-item hover-effect" />
-        </el-tooltip> -->
-
       </template>
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <img :src="avatar" class="user-avatar">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/profile/index">
             <el-dropdown-item>Perfil</el-dropdown-item>
           </router-link>
-          <!-- <router-link to="/">
-            <el-dropdown-item>Principal</el-dropdown-item>
-          </router-link> -->
-          <!-- <a target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">
-            <el-dropdown-item>Github</el-dropdown-item>
-          </a> -->
-          <!-- <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
-          </a> -->
           <el-dropdown-item divided>
-            <span style="display:block;" @click="logout">Salir</span>
+            <span style="display:block;" @click="logout">{{ $t("navbar.logOut") }}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -53,7 +40,6 @@ import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import ErrorLog from '@/components/ErrorLog'
 import Screenfull from '@/components/Screenfull'
-import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
 import LangSelect from '@/components/LangSelect'
 
@@ -63,7 +49,6 @@ export default {
     Hamburger,
     ErrorLog,
     Screenfull,
-    SizeSelect,
     Search,
     LangSelect
   },

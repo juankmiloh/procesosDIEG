@@ -1,5 +1,5 @@
 <template>
-  <div class="createPost-container" style="background: #f7fbff; height: 89vh;">
+  <div class="createPost-container" style="background: #f7fbff;">
     <sticky class-name="sub-navbar">
       <div style="border: 0px solid red">
         <span />
@@ -22,6 +22,14 @@
             <el-card class="box-card">
               <div slot="header" class="clearfix">
                 <span>Crear usuario</span>
+              </div>
+
+              <div class="demo-basic--circle" style="text-align: center; padding-bottom: 3%;">
+                <div class="block" style="padding-bottom: 1%;"><el-avatar :size="150" :src="imageUrl" /></div>
+                <label class="file-upload">
+                  <input type="file" @change="previewFiles">
+                  <span style="font-size: small; color: gray;">Cambiar foto</span>
+                </label>
               </div>
 
               <el-form-item label="Nombre" prop="nombre">
@@ -76,6 +84,15 @@
                 </el-select>
               </el-form-item>
 
+              <el-form-item label="Descripción" prop="descripcion">
+                <el-input
+                  v-model="formUsuario.descripcion"
+                  type="textarea"
+                  class="control-modal"
+                  rows="3"
+                />
+              </el-form-item>
+
               <el-form-item>
                 <el-button
                   style="width: 10em"
@@ -111,12 +128,13 @@ export default {
         contrasena: '',
         rol: '',
         descripcion: '',
-        avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
+        avatar: CONSTANTS.imageURL,
         token: ''
       },
       rulesFormUser: CONSTANTS.rulesFormUser,
       loading: false,
-      dataRoles: []
+      dataRoles: [],
+      imageUrl: CONSTANTS.imageURL
     }
   },
   computed: {
@@ -126,6 +144,21 @@ export default {
     this.initView()
   },
   methods: {
+    async previewFiles(event) {
+      const file = event.target.files[0]
+      console.log(event.target.files[0])
+      this.imageUrl = await this.toBase64(file)
+      this.formUsuario.avatar = this.imageUrl
+      console.log(this.imageUrl)
+    },
+    toBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = () => resolve(reader.result)
+        reader.onerror = error => reject(error)
+      })
+    },
     async initView() {
       this.getDataRoles()
     },
@@ -151,6 +184,7 @@ export default {
               duration: 2000
             })
             this.$refs[formName].resetFields()
+            this.imageUrl = CONSTANTS.imageURL
           })
         } else {
           console.log('error submit!!')
@@ -167,3 +201,18 @@ export default {
   width: 100%;
 }
 </style>
+
+<style>
+.file-upload {
+  cursor: pointer;
+  border: 0px solid gray;
+  border-radius: 3px;
+  padding: 3px;
+}
+
+.file-upload input {
+  overflow: hidden;
+  width: 0;
+}
+</style>
+

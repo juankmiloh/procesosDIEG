@@ -489,10 +489,13 @@ export default {
     handleProceso(proceso) {
       // console.log(`/procesos/detalle/${proceso.idproceso}/${JSON.stringify(proceso)}/${JSON.stringify(this.datosUsuarios)}/${JSON.stringify(this.datosServicios)}`)
       this.$router.push({
-        path: `/procesos/detalle/${proceso.idproceso}/${JSON.stringify(
-          this.datosServicios
-        )}/${JSON.stringify(this.datosUsuarios)}`
+        path: `/procesos/detalle/${proceso.idproceso}`
       })
+      // this.$router.push({
+      //   path: `/procesos/detalle/${proceso.idproceso}/${JSON.stringify(
+      //     this.datosServicios
+      //   )}/${JSON.stringify(this.datosUsuarios)}`
+      // })
       // this.$router.push({ path: `/procesos/detalle/${idproceso}/${JSON.stringify(this.datosUsuarios)}/${JSON.stringify(this.datosServicios)}/${JSON.stringify(this.allDataEmpresas)}` })
       // this.$router.push(
       //   {

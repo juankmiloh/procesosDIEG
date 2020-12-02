@@ -490,6 +490,9 @@
 <script>
 import { mapGetters } from 'vuex'
 import { getProceso, getProcesoInicial } from '@/api/procesosDIEG/procesos'
+import { getAllEmpresas } from '@/api/procesosDIEG/empresas'
+import { getListUsuarios } from '@/api/procesosDIEG/usuarios'
+import { getListServicios } from '@/api/procesosDIEG/servicios'
 import { getListEstado } from '@/api/procesosDIEG/estado'
 import { getListTiposancion } from '@/api/procesosDIEG/tiposancion'
 import { getListDecision } from '@/api/procesosDIEG/decision'
@@ -522,6 +525,7 @@ export default {
       datosUsuarios: [],
       datosServicios: [],
       datosEmpresas: [],
+      empresas: [],
       datosEstado: [],
       datosTiposancion: [],
       datosDecision: [],
@@ -590,12 +594,31 @@ export default {
       })
     },
     async initView() {
+      this.getEmpresas()
+      this.getUsuarios()
+      this.getServicios()
       this.getEstado()
       this.getTiposancion()
       this.getDecision()
       this.getCausal()
       await this.getEtapas()
       await this.fetchData(this.id)
+    },
+    async getEmpresas() {
+      await getAllEmpresas().then((response) => {
+        this.empresas = response.items
+      })
+    },
+    async getUsuarios() {
+      await getListUsuarios().then((response) => {
+        // console.log('Usuarios -> ', response)
+        this.datosUsuarios = response
+      })
+    },
+    async getServicios() {
+      await getListServicios().then((response) => {
+        this.datosServicios = response
+      })
     },
     async getEstado() {
       await getListEstado().then((response) => {
@@ -631,8 +654,8 @@ export default {
       })
     },
     async fetchData(id) {
-      this.datosUsuarios = JSON.parse(this.$route.params.usuarios) // Se capturan los parametros de la URL
-      this.datosServicios = JSON.parse(this.$route.params.servicios) // Se capturan los parametros de la URL
+      // this.datosUsuarios = JSON.parse(this.$route.params.usuarios) // Se capturan los parametros de la URL
+      // this.datosServicios = JSON.parse(this.$route.params.servicios) // Se capturan los parametros de la URL
       let modelProceso = {}
       await getProceso(id).then(async(response) => {
         // console.log('RESPONSE PROCESO -> ', response)
@@ -705,8 +728,8 @@ export default {
       return modelProceso
     },
     getEmpresasProceso(modelProceso) {
-      const empresas = JSON.parse(window.localStorage.getItem('empresas')) // Se capturan los datos de las empresas
-      this.datosEmpresas = empresas.filter((empresa) => empresa.servicio === modelProceso.servicio) // Se obtienen las empresas asociadas al servicio publico del proceso
+      // const empresas = JSON.parse(window.localStorage.getItem('empresas')) // Se capturan los datos de las empresas
+      this.datosEmpresas = this.empresas.filter((empresa) => empresa.servicio === modelProceso.servicio) // Se obtienen las empresas asociadas al servicio publico del proceso
     },
     setTagsViewTitle() {
       const title = 'Expediente'
