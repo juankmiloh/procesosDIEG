@@ -16,6 +16,7 @@ class EtapaRepository:
     def get_etapa_proceso_bd(self, idProceso):
         sql = '''
             SELECT 
+                EP.ETAPA,
                 EP.RADICADOETAPA,
                 E.NOMBRE,
                 EP.FECHAINICIOETAPA,

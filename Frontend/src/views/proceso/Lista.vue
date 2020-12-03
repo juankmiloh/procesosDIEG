@@ -1,24 +1,28 @@
 <template>
-  <div class="createPost-container" style="background: #f7fbff;">
+  <div class="createPost-container" style="background: #f7fbff">
     <sticky class-name="sub-navbar">
       <div style="border: 0px solid red; text-align: center">
         <!-- Boton para agregar nuevo expediente al aplicativo -->
+        <div v-show="showOnlyAdmin">
+          <transition name="el-zoom-in-bottom">
+            <div v-show="!loading" class="transition-box">
+              <el-button
+                style="border: 1px solid #67c23a"
+                size="medium"
+                icon="el-icon-circle-plus"
+                round
+                @click="
+                  clickAgregar();
+                  msgAgregarVisible = true;
+                "
+              >Agregar expediente</el-button>
+            </div>
+          </transition>
+        </div>
 
-        <transition name="el-zoom-in-bottom">
-          <div v-show="!loading" class="transition-box">
-            <el-button
-              v-show="!loading"
-              style="border: 1px solid #67c23a"
-              size="medium"
-              icon="el-icon-circle-plus"
-              round
-              @click="
-                clickAgregar();
-                msgAgregarVisible = true;
-              "
-            >Agregar expediente</el-button>
-          </div>
-        </transition>
+        <div v-show="!showOnlyAdmin" style="text-align: center; color: white">
+          <label style="font-size: x-large">{{ usuario }}</label>
+        </div>
       </div>
     </sticky>
 
@@ -33,11 +37,14 @@
       :show-close="false"
     >
       <sticky class-name="sub-navbar">
-        <div style="border: 0px solid red; color: white; text-align: center;">
+        <div style="border: 0px solid red; color: white; text-align: center">
           <h2>Agregar expediente</h2>
         </div>
       </sticky>
-      <div class="createPost-container" style="padding-top: 35px; padding-bottom: 20px; padding-left: 13px;">
+      <div
+        class="createPost-container"
+        style="padding-top: 35px; padding-bottom: 20px; padding-left: 13px"
+      >
         <el-form
           ref="formAgregar"
           :model="formAgregar"
@@ -142,11 +149,14 @@
       :show-close="false"
     >
       <sticky class-name="sub-navbar">
-        <div style="border: 0px solid red; color: white; text-align: center;">
+        <div style="border: 0px solid red; color: white; text-align: center">
           <h2>Asignar abogado</h2>
         </div>
       </sticky>
-      <div class="createPost-container" style="padding-top: 35px; padding-bottom: 5px; padding-left: 20px;">
+      <div
+        class="createPost-container"
+        style="padding-top: 35px; padding-bottom: 5px; padding-left: 20px"
+      >
         <el-form :model="formUsuario" label-width="120px" class="demo-ruleForm">
           <el-form-item label="Expediente">
             <el-input
@@ -239,15 +249,21 @@
             :prop="column.prop"
             align="center"
             :width="
-              column.prop === 'expediente'
-                ? 150
-                : column.prop === 'caducidad'
-                  ? 120
-                  : column.prop === 'usuario'
-                    ? 130
-                    : column.prop === 'idproceso'
-                      ? 70
-                      : column.prop === 'empresa' ? 270 : ''
+              showOnlyAdmin
+                ? column.prop === 'expediente'
+                  ? 150
+                  : column.prop === 'caducidad'
+                    ? 120
+                    : column.prop === 'usuario'
+                      ? 135
+                      : column.prop === 'idproceso'
+                        ? 70
+                        : column.prop === 'empresa'
+                          ? 260
+                          : ''
+                : column.prop === 'idproceso'
+                  ? 70
+                  : column.prop === 'empresa' ? 270 : column.prop === 'estado' ? 210 : ''
             "
             sortable
           />
@@ -256,11 +272,11 @@
             label="Servicio"
             align="center"
             sortable
-            width="115"
+            :width="showOnlyAdmin ? 112 : ''"
             :filters="filtersServicio"
             :filter-method="filterHandler"
           />
-          <el-table-column align="center" width="230">
+          <el-table-column align="center" :width="showOnlyAdmin ? 230 : ''">
             <!-- eslint-disable-next-line -->
             <template slot="header" slot-scope="scope">
               <el-input
@@ -271,6 +287,7 @@
             </template>
             <template slot-scope="scope">
               <el-button
+                v-show="showOnlyAdmin"
                 style="border: 1px solid #409eff"
                 size="mini"
                 @click="handlePermisos(scope.row)"
@@ -283,6 +300,7 @@
               ><b>Ver</b></el-button>
               <!-- </router-link> -->
               <el-button
+                v-show="showOnlyAdmin"
                 size="mini"
                 type="danger"
                 icon="el-icon-delete-solid"
@@ -311,7 +329,6 @@ import { getListEmpresas } from '@/api/procesosDIEG/empresas'
 import { getAllEmpresas } from '@/api/procesosDIEG/empresas'
 // import { getRoles } from '@/api/role'
 // import { addRole } from '@/api/role'
-import { login } from '@/api/user'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import Sticky from '@/components/Sticky' // 粘性header组件
 
@@ -323,7 +340,7 @@ export default {
     return {
       dialogTableVisible: false,
       /* Datos para mostrar en la tabla */
-      tableColumns: CONSTANTS.tableColumnsProceso,
+      tableColumns: [],
       filtersServicio: CONSTANTS.filters,
       datosProcesos: [],
       datosUsuarios: [],
@@ -345,36 +362,40 @@ export default {
       delExpediente: '',
       delIdproceso: '',
       loading: true,
-      disableEmpresas: true
+      disableEmpresas: true,
+      showOnlyAdmin: false
     }
   },
   computed: {
-    ...mapGetters(['name', 'roles'])
+    ...mapGetters(['name', 'roles', 'usuario', 'idusuario'])
   },
   created() {
     this.initView()
   },
   methods: {
     initView() {
-      this.getRolesMock()
+      if (this.roles[0] === 'administrador') {
+        this.showOnlyAdmin = true
+        this.tableColumns = CONSTANTS.tableColumnsAdmin
+      } else {
+        this.tableColumns = CONSTANTS.tableColumnsAbogado
+      }
       this.getProcesos()
       this.getUsuarios()
       this.getServicios()
       this.getEmpresas()
     },
-    async getRolesMock() {
-      await login({
-        username: 'administrdor',
-        password: ''
-      }).then((response) => {
-        // console.log('Roles mock -> ', response)
-      })
-    },
     async getProcesos() {
       await getListProcesos().then((response) => {
-        console.log('Procesos -> ', response)
-        this.datosProcesos = response
+        let procesos = []
+        if (this.roles[0] === 'administrador') {
+          procesos = response
+        } else {
+          procesos = response.filter((proceso) => proceso.idusuario === this.idusuario)
+        }
+        this.datosProcesos = procesos
         this.loading = false
+        console.log('Procesos -> ', this.datosProcesos)
       })
     },
     async getUsuarios() {

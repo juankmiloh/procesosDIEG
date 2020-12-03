@@ -11,7 +11,7 @@
       <el-col :span="24">
         <aside>
           <span class="text-user">
-            <b>Administrador / {{ name }}</b>
+            <b>{{ privilegio }} / {{ name }}</b>
           </span>
         </aside>
       </el-col>
@@ -52,7 +52,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['name', 'avatar', 'roles'])
+    ...mapGetters(['name', 'avatar', 'roles', 'privilegio'])
   }
 }
 </script>

@@ -29,19 +29,20 @@ class EtapaService:
         fechafin = ''
         data = etapa_repository.get_etapa_proceso_bd(idproceso)
         for result in data:
-            fechafin = result[3]
+            fechafin = result[4]
             if fechafin is None:
                 fechafin = 'No registra'
             else:
-                fechafin = str(result[3])
+                fechafin = str(result[4])
                 
             etapas.append(
                 {
-                    'radicadoEtapa': result[0],
-                    'nombreEtapa': result[1],
-                    'fechaInicioEtapa': str(result[2]),
+                    'idetapa': result[0],
+                    'radicadoEtapa': result[1],
+                    'nombreEtapa': result[2],
+                    'fechaInicioEtapa': str(result[3]),
                     'fechaFinEtapa': fechafin,
-                    'observacionEtapa': result[4],
+                    'observacionEtapa': result[5],
                 }
             )
         return etapas

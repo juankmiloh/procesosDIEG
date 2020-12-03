@@ -55,11 +55,11 @@ i18n.locale = Cookies.get('language') ? Cookies.get('language') : 'es',
 
     Vue.config.productionTip = false
 
-Vue.filter('capitalize', function(value) {
-    if (!value) return ''
-    value = value.toString()
-    return value.charAt(0).toUpperCase() + value.slice(1)
-})
+// Vue.filter('capitalize', function(value) {
+//     if (!value) return ''
+//     value = value.toString()
+//     return value.charAt(0).toLowerCase() + value.slice(1)
+// })
 
 // Vue.component('v-icon', Icon)
 

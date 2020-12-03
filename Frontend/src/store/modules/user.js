@@ -10,37 +10,45 @@ const state = {
     avatar: '',
     introduction: '',
     roles: [],
-    usuario: ''
-}
+    usuario: '',
+    privilegio: '',
+    idusuario: ''
+};
 
 const mutations = {
     SET_TOKEN: (state, token) => {
-        state.token = token
+        state.token = token;
     },
     SET_INTRODUCTION: (state, introduction) => {
-        state.introduction = introduction
+        state.introduction = introduction;
     },
     SET_NAME: (state, name) => {
-        state.name = name
+        state.name = name;
     },
     SET_AVATAR: (state, avatar) => {
-        state.avatar = avatar
+        state.avatar = avatar;
     },
     SET_ROLES: (state, roles) => {
-        state.roles = roles
+        state.roles = roles;
     },
     SET_USERNAME: (state, usuario) => {
         state.usuario = usuario;
+    },
+    SET_PRIVILEGIO: (state, privilegio) => {
+        state.privilegio = privilegio;
+    },
+    SET_IDUSUARIO: (state, idusuario) => {
+        state.idusuario = idusuario;
     }
 }
 
 const actions = {
     // user login
     login({ commit }, userInfo) {
-        const { username, password } = userInfo
+        const { username, password } = userInfo;
         return new Promise((resolve, reject) => {
             login({ username: username.trim(), password: password }).then(response => {
-                const { data } = response
+                const { data } = response;
                 commit('SET_TOKEN', data.token)
                 setToken(data.token)
                 resolve()
@@ -61,7 +69,7 @@ const actions = {
                     reject('Verification failed, please Login again.')
                 }
 
-                const { roles, name, avatar, introduction, usuario } = data
+                const { roles, name, avatar, introduction, usuario, privilegio, idusuario } = data
 
                 // roles must be a non-empty array
                 if (!roles || roles.length <= 0) {
@@ -73,6 +81,8 @@ const actions = {
                 commit('SET_AVATAR', avatar)
                 commit('SET_INTRODUCTION', introduction)
                 commit('SET_USERNAME', usuario)
+                commit('SET_PRIVILEGIO', privilegio)
+                commit('SET_IDUSUARIO', idusuario)
                 resolve(data)
             }).catch(error => {
                 reject(error)

@@ -119,6 +119,7 @@
               <el-form-item label="Tipo sancion" prop="tipo_sancion">
                 <el-select
                   v-model="formProceso.tipo_sancion"
+                  :disabled="!abogadoEditar"
                   filterable
                   placeholder="Seleccione sanción"
                   class="control-modal"
@@ -135,6 +136,7 @@
               <el-form-item label="Sanción" prop="sancion">
                 <el-input
                   v-model.number="formProceso.sancion"
+                  :disabled="!abogadoEditar"
                   class="control-modal"
                   autocomplete="off"
                 />
@@ -143,6 +145,7 @@
               <el-form-item label="Decisión" prop="decision">
                 <el-select
                   v-model="formProceso.decision"
+                  :disabled="!abogadoEditar"
                   filterable
                   placeholder="Seleccione decisión"
                   class="control-modal"
@@ -169,6 +172,7 @@
               <el-form-item label="Causa" prop="causa">
                 <el-select
                   v-model="formProceso.causa"
+                  :disabled="!abogadoEditar"
                   filterable
                   placeholder="Seleccione una causal"
                   class="control-modal"
@@ -185,6 +189,7 @@
               <el-form-item label="Fecha hechos" prop="fecha_hechos">
                 <el-date-picker
                   v-model="formProceso.fecha_hechos"
+                  :disabled="!abogadoEditar"
                   type="date"
                   placeholder="Seleccione una fecha"
                   class="control-modal"
@@ -194,6 +199,7 @@
               <el-form-item label="Descripción">
                 <el-input
                   v-model="formProceso.descripcion"
+                  :disabled="!abogadoEditar"
                   type="textarea"
                   class="control-modal"
                   rows="15"
@@ -266,12 +272,14 @@
                   style="background: none; border: 0; text-align: center"
                 >
                   <el-button
+                    v-show="showOnlyAdmin"
                     style="border: 0px solid #67c23a; width: 10em"
                     :type="editarProceso ? 'danger' : 'primary'"
                     :icon="editarProceso ? 'el-icon-error' : 'el-icon-edit'"
                     @click="editarProceso = !editarProceso; editarForm();"
                   >{{ textEditarProceso }}</el-button>
                   <el-button
+                    :disabled="!abogadoEditar"
                     style="width: 10em"
                     :type="editarProceso ? 'primary' : 'success'"
                     :icon="editarProceso ? 'el-icon-circle-check' : 'el-icon-check'"
@@ -306,6 +314,7 @@
             <transition name="el-zoom-in-center">
               <div v-show="showButtonsModal">
                 <el-button
+                  :disabled="!abogadoEditar"
                   style="border: 2px solid #67c23a"
                   size="medium"
                   icon="el-icon-circle-plus"
@@ -359,6 +368,7 @@
               </template>
               <template slot-scope="scope">
                 <el-button
+                  :disabled="!abogadoEditar"
                   style="border: 1px solid #409eff"
                   size="mini"
                   type="success"
@@ -366,7 +376,7 @@
                   @click="handleEditarEtapa(scope);"
                 ><b>Editar</b></el-button>
                 <el-button
-                  :disabled="scope.row.nombreEtapa === 'Memorando IG'"
+                  :disabled="scope.row.nombreEtapa === 'Memorando IG' || !abogadoEditar"
                   size="mini"
                   type="danger"
                   icon="el-icon-delete-solid"
@@ -558,11 +568,13 @@ export default {
       editarEtapa: false,
       textEditarEtapa: 'Agregar',
       showButtons: false,
-      showButtonsModal: false
+      showButtonsModal: false,
+      showOnlyAdmin: false,
+      abogadoEditar: false
     }
   },
   computed: {
-    ...mapGetters(['name', 'roles'])
+    ...mapGetters(['name', 'roles', 'idusuario'])
   },
   created() {
     if (this.isDetail) {
@@ -594,6 +606,11 @@ export default {
       })
     },
     async initView() {
+      console.log(this.roles)
+      if (this.roles[0] === 'administrador') {
+        this.showOnlyAdmin = true
+        this.abogadoEditar = true
+      }
       this.getEmpresas()
       this.getUsuarios()
       this.getServicios()
@@ -675,6 +692,9 @@ export default {
             this.getEmpresasProceso(modelProceso)
             modelProceso = await this.verificarDataModel(modelProceso, false)
           })
+        }
+        if (this.roles[0] === 'abogado' && modelProceso.usuario === this.idusuario) {
+          this.abogadoEditar = true
         }
         if (modelProceso.etapa !== 'Memorando IG') {
           this.prox_etapa = modelProceso.proxetapa

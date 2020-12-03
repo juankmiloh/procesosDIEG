@@ -7,7 +7,7 @@
       </pan-thumb>
       <div class="info-container">
         <span class="display_name">{{ usuario }}</span>
-        <span v-for="item in roles" :key="item" style="font-size:20px;padding-top:20px;display:inline-block;">{{ item | capitalize }}</span>
+        <span style="font-size:20px;padding-top:20px;display:inline-block;">{{ privilegio | uppercaseFirst }}</span>
       </div>
     </div>
     <div>
@@ -33,7 +33,8 @@ export default {
       'name',
       'avatar',
       'roles',
-      'usuario'
+      'usuario',
+      'privilegio'
     ])
   }
 }

@@ -7,7 +7,7 @@
       </pan-thumb>
       <div class="info-container">
         <span class="display_name">{{ usuario }}</span>
-        <span style="font-size:20px;padding-top:20px;display:inline-block;">{{ introduction | capitalize }}</span>
+        <span style="font-size:20px;padding-top:20px;display:inline-block;">{{ introduction }}</span>
       </div>
     </div>
     <div>

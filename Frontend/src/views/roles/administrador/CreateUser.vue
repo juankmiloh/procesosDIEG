@@ -56,10 +56,21 @@
                 <el-input
                   v-model="formUsuario.nickname"
                   autocomplete="off"
-                  placeholder="Ingrese nickname"
+                  placeholder="Ingrese nombre de usuario"
                   clearable
                   class="control-modal"
                 />
+              </el-form-item>
+
+              <el-form-item label="Género" prop="genero">
+                <el-select v-model="formUsuario.genero" placeholder="Seleccione un genero" class="control-modal">
+                  <el-option
+                    v-for="item in dataGenero"
+                    :key="item.idgenero"
+                    :label="item.nombre"
+                    :value="item.idgenero"
+                  />
+                </el-select>
               </el-form-item>
 
               <el-form-item label="Contraseña" prop="contrasena">
@@ -109,11 +120,13 @@
 </template>
 
 <script>
+import { validUsername } from '@/utils/validate'
 import { mapGetters } from 'vuex'
 import { createUser } from '@/api/procesosDIEG/usuarios'
 import { getListRol } from '@/api/procesosDIEG/usuarios'
 import Sticky from '@/components/Sticky' // 粘性header组件
 import { CONSTANTS } from '@/constants/constants'
+import { DATA } from '@/data/ImgUser'
 import md5 from 'md5'
 
 export default {
@@ -121,20 +134,12 @@ export default {
   components: { Sticky },
   data() {
     return {
-      formUsuario: {
-        nombre: '',
-        apellido: '',
-        nickname: '',
-        contrasena: '',
-        rol: '',
-        descripcion: '',
-        avatar: CONSTANTS.imageURL,
-        token: ''
-      },
+      formUsuario: CONSTANTS.formUser,
       rulesFormUser: CONSTANTS.rulesFormUser,
       loading: false,
       dataRoles: [],
-      imageUrl: CONSTANTS.imageURL
+      imageUrl: DATA.imageURL,
+      dataGenero: CONSTANTS.dataGenero
     }
   },
   computed: {
@@ -146,12 +151,14 @@ export default {
   methods: {
     async previewFiles(event) {
       const file = event.target.files[0]
-      console.log(event.target.files[0])
-      this.imageUrl = await this.toBase64(file)
-      this.formUsuario.avatar = this.imageUrl
-      console.log(this.imageUrl)
+      if (file) {
+        // console.log('file -> ', file)
+        this.imageUrl = await this.imgToBase64(file)
+        this.formUsuario.avatar = this.imageUrl
+        console.log(this.imageUrl)
+      }
     },
-    toBase64(file) {
+    imgToBase64(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader()
         reader.readAsDataURL(file)
@@ -159,8 +166,34 @@ export default {
         reader.onerror = error => reject(error)
       })
     },
+    validateUsername(rule, value, callback) {
+      const usernameLower = value.toLowerCase()
+      if (validUsername(usernameLower)) {
+        callback(new Error('Nombre de usuario ya esta en uso'))
+      } else if (this.formUsuario.nickname === '') {
+        callback(new Error('Ingrese nombre de usuario'))
+      } else {
+        callback()
+      }
+    },
+    validatePassword(rule, value, callback) {
+      if (value.length < 6) {
+        callback(
+          new Error('La contraseña no puede ser menor a seis caracteres')
+        )
+      } else {
+        callback()
+      }
+    },
     async initView() {
       this.getDataRoles()
+      this.formUsuario.avatar = DATA.imageURL
+      this.rulesFormUser.nickname = [
+        { required: true, trigger: 'blur', validator: this.validateUsername }
+      ]
+      this.rulesFormUser.contrasena = [
+        { required: true, trigger: 'blur', validator: this.validatePassword }
+      ]
     },
     async getDataRoles() {
       await getListRol().then((response) => {
@@ -184,7 +217,7 @@ export default {
               duration: 2000
             })
             this.$refs[formName].resetFields()
-            this.imageUrl = CONSTANTS.imageURL
+            this.imageUrl = DATA.imageURL
           })
         } else {
           console.log('error submit!!')

@@ -25,9 +25,11 @@ class UsuariosService:
                 "data": {
                     "roles": [result[0]],
                     "introduction": result[1],
-                    "avatar": result[2],
-                    "name": result[3],
-                    "usuario": result[4]
+                    "name": result[2],
+                    "usuario": result[3],
+                    "idusuario": result[4],
+                    "privilegio": result[5],
+                    "avatar": result[6]
                 }
             }
         return responseGetInfo

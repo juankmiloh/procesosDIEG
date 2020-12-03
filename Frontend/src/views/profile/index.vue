@@ -55,7 +55,8 @@ export default {
       'avatar',
       'roles',
       'usuario',
-      'introduction'
+      'introduction',
+      'privilegio'
     ])
   },
   created() {
@@ -69,7 +70,8 @@ export default {
         email: 'admin@test.com',
         avatar: this.avatar,
         usuario: this.usuario,
-        descripcion: this.introduction
+        descripcion: this.introduction,
+        privilegio: this.privilegio
       }
     }
   }

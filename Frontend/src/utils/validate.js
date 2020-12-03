@@ -19,7 +19,7 @@ export function isExternal(path) {
 export function validUsername(str) {
     // aqui van los usuarios creados en tokens
     const usuarios = JSON.parse(window.localStorage.getItem('usuarios'));
-    console.log('USUARIOS -> ', usuarios.data);
+    // console.log('USUARIOS -> ', usuarios.data);
     const valid_map = usuarios.data; // Cargar nombres de usuarios una vez entre al login
     return valid_map.indexOf(str.trim()) >= 0;
 }
