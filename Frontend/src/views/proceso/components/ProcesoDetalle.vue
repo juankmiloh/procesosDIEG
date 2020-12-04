@@ -354,7 +354,7 @@
               :label="column.label"
               :prop="column.prop"
               align="center"
-              :width="column.prop === 'observacionEtapa' ? 400 : ''"
+              :width="column.prop === 'observacionEtapa' ? 300 : column.prop === 'nombreEtapa' ? 300 : column.prop === 'idetapa' ? 70 : ''"
               sortable
             />
             <el-table-column align="center" width="230">
@@ -602,11 +602,10 @@ export default {
           return data
         })
         this.datosEtapaProceso = modelResponse
-        console.log('NUEVO ETAPA_PROCESO -> ', this.datosEtapaProceso)
+        // console.log('NUEVO ETAPA_PROCESO -> ', this.datosEtapaProceso)
       })
     },
     async initView() {
-      console.log(this.roles)
       if (this.roles[0] === 'administrador') {
         this.showOnlyAdmin = true
         this.abogadoEditar = true
@@ -729,7 +728,8 @@ export default {
         }
         // console.log('fetchData 3 -> ', this.$refs['formProceso'])
       }).catch((err) => {
-        console.log(err)
+        // console.log(err)
+        return err
       })
     },
     async verificarDataModel(modelProceso, infoCompleta) {
@@ -779,7 +779,6 @@ export default {
         this.$refs['formAgregar'].resetFields()
       }
       this.msgAgregarEtapaVisible = true
-      console.log('clickAgregarEtapa -> ', this.$refs['formAgregar'])
     },
     async handleEtapa() {
       if (!this.editarEtapa) { // Condicion para AGREGAR una etapa (No es modo editar etapa)
@@ -789,17 +788,17 @@ export default {
             modelAgregarEtapa.idproceso = this.formProceso.idproceso
             modelAgregarEtapa.radicadoEtapa = `P${this.formProceso.idproceso}${this.estampillaEtapa}`
             if (!modelAgregarEtapa.hasOwnProperty('fechaFinEtapa')) {
-              console.log('esta vacio fecha fin!')
+              // console.log('esta vacio fecha fin!')
               modelAgregarEtapa.fechaFinEtapa = null
             }
             if (!modelAgregarEtapa.hasOwnProperty('observacionEtapa')) {
-              console.log('esta vacio observacion!')
+              // console.log('esta vacio observacion!')
               modelAgregarEtapa.observacionEtapa = ''
             }
             this.msgAgregarEtapaVisible = false
             this.loading = true
             this.datosEtapa = []
-            console.log('FORMAGREGAR -> ', modelAgregarEtapa)
+            // console.log('FORMAGREGAR -> ', modelAgregarEtapa)
             await createEtapa(modelAgregarEtapa).then(async(response) => {
               // console.log('RESPONSE AGREGAR -> ', response)
               this.$notify({
@@ -842,7 +841,7 @@ export default {
               this.loading = false
             })
           } else {
-            console.log('error submit!!')
+            // console.log('error submit!!')
             return false
           }
         })
@@ -880,9 +879,9 @@ export default {
           modelEditarEtapa.fechaFinEtapa = null
         }
         this.formAgregar = modelEditarEtapa
-        console.log('handleEditarEtapa -> ', this.formAgregar)
+        // console.log('handleEditarEtapa -> ', this.formAgregar)
       } catch (error) {
-        console.log(error)
+        // console.log(error)
       }
     },
     handleBorrarEtapa(data) {
@@ -962,7 +961,7 @@ export default {
               })
             }
             await getProceso(this.id).then(async(response) => { // Se actulizan los datos del proceso
-              console.log('ACTUALIZAR PROCESO -> ', response)
+              // console.log('ACTUALIZAR PROCESO -> ', response)
               modelProceso = response[0]
               this.textEditarProceso = 'Editar'
               this.textActualizar = 'Actualizar'
@@ -980,7 +979,7 @@ export default {
             })
           })
         } else {
-          console.log('error submit!!')
+          // console.log('error submit!!')
           return false
         }
       })

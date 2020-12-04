@@ -259,12 +259,12 @@ export default {
       this.busquedaExpediente = ''
       this.titleDialog = title
       this.detalleDialogVisible = true
-      console.log(datos)
+      // console.log(datos)
       this.tableColumns = datos.columns
       this.datosProcesos = datos.data
     },
     handleProceso(proceso) {
-      console.log('DIALOG PROCESO -> ', proceso)
+      // console.log('DIALOG PROCESO -> ', proceso)
       this.detalleDialogVisible = false
       this.$router.push({
         path: `/procesos/detalle/${proceso.idproceso}`
@@ -293,7 +293,7 @@ export default {
     },
     async getDataEmpresas(idservicio) {
       await getListProcesosEmpresa(idservicio).then((response) => {
-        console.log('PIECHART_EMPRESAS -> ', response)
+        // console.log('PIECHART_EMPRESAS -> ', response)
         this.dataEmpresas = response
         this.pieChartDataEmpresas = this.dataEmpresas['activos']
         this.loadingEmpresas = false
@@ -317,7 +317,7 @@ export default {
     },
     async getDataUsuarios(idservicio) {
       await getListProcesosUsuario(idservicio).then((response) => {
-        console.log(response)
+        // console.log(response)
         this.DataUsuarios = response
         this.pieChartDataUsuarios = this.DataUsuarios['activos']
         this.loadingUsuarios = false

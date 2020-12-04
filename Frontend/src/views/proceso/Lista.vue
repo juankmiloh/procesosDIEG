@@ -395,7 +395,7 @@ export default {
         }
         this.datosProcesos = procesos
         this.loading = false
-        console.log('Procesos -> ', this.datosProcesos)
+        // console.log('Procesos -> ', this.datosProcesos)
       })
     },
     async getUsuarios() {
@@ -479,7 +479,7 @@ export default {
           this.msgAgregarVisible = false
           // console.log(this.formAgregar)
           this.loading = true
-          console.log('FORMAGREGAR -> ', this.formAgregar)
+          // console.log('FORMAGREGAR -> ', this.formAgregar)
           createProceso(this.formAgregar).then((response) => {
             this.$notify({
               title: 'Buen trabajo!',
@@ -491,7 +491,7 @@ export default {
             this.$refs['formAgregar'].resetFields()
           })
         } else {
-          console.log('error submit!!')
+          // console.log('error submit!!')
           return false
         }
       })

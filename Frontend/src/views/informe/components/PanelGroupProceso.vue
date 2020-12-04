@@ -97,7 +97,7 @@ export default {
       this.$emit('handleSetPieChartData', type)
     },
     async getCantidadProcesos(idservicio) {
-      console.log('Servicio observable -> ', idservicio)
+      // console.log('Servicio observable -> ', idservicio)
       await getListCantidadProcesos(idservicio).then((response) => {
         // console.log(response)
         this.countActivos = response['En curso'].cantidad

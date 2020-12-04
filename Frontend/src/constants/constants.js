@@ -229,11 +229,11 @@ export const CONSTANTS = {
     },
     dataGenero: [{
             idgenero: 1,
-            nombre: 'Femenino'
+            nombre: 'Hombre'
         },
         {
             idgenero: 2,
-            nombre: 'Masculino'
+            nombre: 'Mujer'
         }
     ]
 };

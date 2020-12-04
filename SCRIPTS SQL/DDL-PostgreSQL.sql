@@ -47,6 +47,14 @@ CREATE TABLE USUARIOS (
 PRIMARY KEY(IDUSUARIO));
 
 ----------------------------
+-- DDL TABLA GENERO
+----------------------------
+CREATE TABLE GENERO (
+  IDGENERO SERIAL  NOT NULL ,
+  NOMBRE TEXT    ,
+PRIMARY KEY(IDGENERO));
+
+----------------------------
 -- DDL TABLA ROL
 ----------------------------
 CREATE TABLE ROL (

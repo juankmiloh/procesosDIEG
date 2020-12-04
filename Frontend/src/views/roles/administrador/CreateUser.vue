@@ -6,115 +6,136 @@
       </div>
     </sticky>
 
-    <!-- Formulario donde se cargan los datos del proceso -->
+    <div class="app-container">
+      <div>
+        <el-row :gutter="20">
 
-    <div v-loading="loading" class="app-container">
-      <el-row :gutter="10">
-        <!-- Card datos proceso -->
-        <el-form
-          ref="formUsuario"
-          :rules="rulesFormUser"
-          :model="formUsuario"
-          label-width="120px"
-          class="demo-ruleForm"
-        >
-          <el-col :md="24" style="border: 0px solid blue; padding-left: 25%; padding-right: 25%;">
-            <el-card class="box-card">
+          <el-col :span="10" :xs="24">
+            <lista-users :data="viewRefresh" @handleSetUser="handleSetUser" />
+          </el-col>
+
+          <el-col :span="14" :xs="24">
+            <el-card>
               <div slot="header" class="clearfix">
                 <span>Crear usuario</span>
               </div>
+              <!-- Formulario donde se cargan los datos del usuario -->
+              <el-form
+                ref="formUsuario"
+                :rules="rulesFormUser"
+                :model="formUsuario"
+                label-width="120px"
+                :inline="false"
+                class="form-user"
+              >
+                <div class="demo-basic--circle" style="text-align: center; padding-bottom: 2%;">
+                  <div class="block" style="padding-bottom: 1%;"><el-avatar :size="120" :src="imageUrl" /></div>
+                  <label class="file-upload">
+                    <input type="file" @change="previewFiles">
+                    <span style="font-size: small; color: gray;">Cambiar foto</span>
+                  </label>
+                </div>
 
-              <div class="demo-basic--circle" style="text-align: center; padding-bottom: 3%;">
-                <div class="block" style="padding-bottom: 1%;"><el-avatar :size="150" :src="imageUrl" /></div>
-                <label class="file-upload">
-                  <input type="file" @change="previewFiles">
-                  <span style="font-size: small; color: gray;">Cambiar foto</span>
-                </label>
-              </div>
-
-              <el-form-item label="Nombre" prop="nombre">
-                <el-input
-                  v-model="formUsuario.nombre"
-                  autocomplete="off"
-                  placeholder="Ingrese nombre"
-                  clearable
-                  class="control-modal"
-                />
-              </el-form-item>
-
-              <el-form-item label="Apellido" prop="apellido">
-                <el-input
-                  v-model="formUsuario.apellido"
-                  autocomplete="off"
-                  placeholder="Ingrese apellido"
-                  clearable
-                  class="control-modal"
-                />
-              </el-form-item>
-
-              <el-form-item label="Usuario" prop="nickname">
-                <el-input
-                  v-model="formUsuario.nickname"
-                  autocomplete="off"
-                  placeholder="Ingrese nombre de usuario"
-                  clearable
-                  class="control-modal"
-                />
-              </el-form-item>
-
-              <el-form-item label="Género" prop="genero">
-                <el-select v-model="formUsuario.genero" placeholder="Seleccione un genero" class="control-modal">
-                  <el-option
-                    v-for="item in dataGenero"
-                    :key="item.idgenero"
-                    :label="item.nombre"
-                    :value="item.idgenero"
-                  />
-                </el-select>
-              </el-form-item>
-
-              <el-form-item label="Contraseña" prop="contrasena">
-                <el-input
-                  v-model="formUsuario.contrasena"
-                  type="password"
-                  autocomplete="off"
-                  placeholder="Ingrese contrasena"
-                  clearable
-                  class="control-modal"
-                />
-              </el-form-item>
-
-              <el-form-item label="Tipo usuario" prop="rol">
-                <el-select v-model="formUsuario.rol" placeholder="Seleccione un rol" class="control-modal">
-                  <el-option
-                    v-for="item in dataRoles"
-                    :key="item.idrol"
-                    :label="item.nombre"
-                    :value="item.idrol"
-                  />
-                </el-select>
-              </el-form-item>
-
-              <el-form-item label="Descripción" prop="descripcion">
-                <el-input
-                  v-model="formUsuario.descripcion"
-                  type="textarea"
-                  class="control-modal"
-                  rows="3"
-                />
-              </el-form-item>
-
-              <el-form-item>
-                <el-button
-                  style="width: 10em"
-                  type="success"
-                  @click="submitForm('formUsuario')"
-                >Guardar</el-button>
-              </el-form-item>
+                <el-row :gutter="10" style="border: 0px solid red; padding-left: 15%; padding-right: 15%;">
+                  <el-col :span="24" :xs="24" style="border: 0px solid red; text-align: center;">
+                    <el-form-item label="" prop="genero" class="item-genero">
+                      <el-radio-group v-model="formUsuario.genero">
+                        <el-radio-button
+                          v-for="item in dataGenero"
+                          :key="item.idgenero"
+                          :label="item.nombre"
+                        />
+                      </el-radio-group>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12" :xs="24" style="border: 0px solid red;">
+                    <el-form-item label="" prop="nombre">
+                      <el-input
+                        v-model="formUsuario.nombre"
+                        autocomplete="off"
+                        placeholder="Nombre"
+                        clearable
+                        class="control-modal"
+                      />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12" :xs="24" style="border: 0px solid red;">
+                    <el-form-item label="" prop="apellido">
+                      <el-input
+                        v-model="formUsuario.apellido"
+                        autocomplete="off"
+                        placeholder="Apellido"
+                        clearable
+                        class="control-modal"
+                      />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12" :xs="24" style="border: 0px solid red;">
+                    <el-form-item label="" prop="nickname">
+                      <el-input
+                        v-model="formUsuario.nickname"
+                        autocomplete="off"
+                        placeholder="Usuario"
+                        clearable
+                        class="control-modal"
+                      />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12" :xs="24" style="border: 0px solid red;">
+                    <el-form-item label="" prop="contrasena">
+                      <el-input
+                        v-model="formUsuario.contrasena"
+                        type="password"
+                        autocomplete="off"
+                        placeholder="Contraseña"
+                        clearable
+                        class="control-modal"
+                      />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="24" :xs="24" style="border: 0px solid red;">
+                    <el-form-item label="" prop="rol">
+                      <el-select v-model="formUsuario.rol" placeholder="Tipo de usuario" class="control-modal">
+                        <el-option
+                          v-for="item in dataRoles"
+                          :key="item.idrol"
+                          :label="item.nombre"
+                          :value="item.idrol"
+                        />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="24" :xs="24" style="border: 0px solid red;">
+                    <el-form-item label="" prop="descripcion">
+                      <el-input
+                        v-model="formUsuario.descripcion"
+                        type="textarea"
+                        class="control-modal"
+                        rows="3"
+                        placeholder="Descripción"
+                      />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12" :xs="24" style="border: 0px solid red; text-align: right;">
+                    <el-form-item>
+                      <el-button
+                        style="width: 10em"
+                        type="success"
+                        @click="submitForm('formUsuario')"
+                      >{{ textButton }}</el-button>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12" :xs="24" style="border: 0px solid red; text-align: left;">
+                    <el-form-item>
+                      <el-button style="width: 10em" @click="resetForm('formUsuario')">Limpiar</el-button>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
             </el-card>
           </el-col>
-        </el-form>
-      </el-row>
+        </el-row>
+      </div>
     </div>
   </div>
 </template>
@@ -123,15 +144,20 @@
 import { validUsername } from '@/utils/validate'
 import { mapGetters } from 'vuex'
 import { createUser } from '@/api/procesosDIEG/usuarios'
+import { updateUsuario } from '@/api/procesosDIEG/usuarios'
 import { getListRol } from '@/api/procesosDIEG/usuarios'
 import Sticky from '@/components/Sticky' // 粘性header组件
 import { CONSTANTS } from '@/constants/constants'
 import { DATA } from '@/data/ImgUser'
 import md5 from 'md5'
+import ListaUsers from './components/user/ListaUsers'
 
 export default {
   name: 'CreateUser',
-  components: { Sticky },
+  components: {
+    Sticky,
+    ListaUsers
+  },
   data() {
     return {
       formUsuario: CONSTANTS.formUser,
@@ -139,7 +165,10 @@ export default {
       loading: false,
       dataRoles: [],
       imageUrl: DATA.imageURL,
-      dataGenero: CONSTANTS.dataGenero
+      dataGenero: CONSTANTS.dataGenero,
+      viewRefresh: { action: false },
+      textButton: 'Guardar',
+      updateUSer: false
     }
   },
   computed: {
@@ -149,13 +178,29 @@ export default {
     this.initView()
   },
   methods: {
+    handleSetUser(param) {
+      if (param.hasOwnProperty('updateView')) {
+        this.rulesFormUser.contrasena[0].required = true
+        this.updateUSer = false
+        this.textButton = 'Guardar'
+        this.viewRefresh.action = param.updateView
+      } else {
+        console.log('handleSetUser-> ', param)
+        this.rulesFormUser.contrasena[0].required = false
+        this.updateUSer = true
+        this.textButton = 'Actualizar'
+        this.formUsuario = param
+        this.imageUrl = param.avatar
+        window.localStorage.setItem('userUpdate', param.nickname)
+      }
+    },
     async previewFiles(event) {
       const file = event.target.files[0]
       if (file) {
         // console.log('file -> ', file)
         this.imageUrl = await this.imgToBase64(file)
         this.formUsuario.avatar = this.imageUrl
-        console.log(this.imageUrl)
+        // console.log(this.imageUrl)
       }
     },
     imgToBase64(file) {
@@ -169,7 +214,15 @@ export default {
     validateUsername(rule, value, callback) {
       const usernameLower = value.toLowerCase()
       if (validUsername(usernameLower)) {
-        callback(new Error('Nombre de usuario ya esta en uso'))
+        if (this.updateUSer) {
+          if (usernameLower === window.localStorage.getItem('userUpdate')) {
+            callback()
+          } else {
+            callback(new Error('Nombre de usuario ya esta en uso'))
+          }
+        } else {
+          callback(new Error('Nombre de usuario ya esta en uso'))
+        }
       } else if (this.formUsuario.nickname === '') {
         callback(new Error('Ingrese nombre de usuario'))
       } else {
@@ -177,12 +230,28 @@ export default {
       }
     },
     validatePassword(rule, value, callback) {
-      if (value.length < 6) {
-        callback(
-          new Error('La contraseña no puede ser menor a seis caracteres')
-        )
-      } else {
-        callback()
+      if (!this.updateUSer) { // Si no actualiza usuario
+        if (value.length < 6) {
+          callback(
+            new Error('No puede ser menor a seis caracteres')
+          )
+        } else {
+          callback()
+        }
+      } else { // Si se actualiza usuario
+        if (this.formUsuario.contrasena !== '') {
+          this.rulesFormUser.contrasena[0].required = true
+          if (value.length < 6) {
+            callback(
+              new Error('No puede ser menor a seis caracteres')
+            )
+          } else {
+            callback()
+          }
+        } else {
+          this.rulesFormUser.contrasena[0].required = false
+          callback()
+        }
       }
     },
     async initView() {
@@ -197,33 +266,72 @@ export default {
     },
     async getDataRoles() {
       await getListRol().then((response) => {
-        console.log(response)
+        // console.log(response)
         this.dataRoles = response
       })
     },
     submitForm(formName) {
       this.$refs[formName].validate(async(valid) => {
-        if (valid) {
-          this.formUsuario.token = `${this.formUsuario.nickname}-token`
-          this.formUsuario.rol = Number(this.formUsuario.rol)
-          this.formUsuario.contrasena = md5(this.formUsuario.contrasena)
-          console.log(this.formUsuario)
-          await createUser(this.formUsuario).then(async(response) => {
+        if (!this.updateUSer) { // Si no actualiza usuario
+          if (valid) {
+            const modelUser = this.formUsuario
+            modelUser.token = `${modelUser.nickname}-token`
+            modelUser.rol = Number(modelUser.rol)
+            modelUser.contrasena = md5(modelUser.contrasena)
+            modelUser.genero = this.dataGenero.find((genero) => genero.nombre === modelUser.genero).idgenero
+            console.log(modelUser)
+            await createUser(modelUser).then(async(response) => {
+              this.$notify({
+                title: 'Bien hecho!',
+                message: 'Usuario creado con éxito',
+                position: 'top-right',
+                type: 'success',
+                duration: 2000
+              })
+              this.$refs[formName].resetFields()
+              this.imageUrl = DATA.imageURL
+              this.viewRefresh = { action: true }
+            })
+            // this.$refs[formName].resetFields()
+            // this.imageUrl = DATA.imageURL
+            // this.viewRefresh = { action: true }
+          } else {
+            // console.log('error submit!!')
+            return false
+          }
+        } else { // Si se actualiza usuario
+          const modelUser = this.formUsuario
+          modelUser.token = `${modelUser.nickname}-token`
+          modelUser.genero = this.dataGenero.find((genero) => genero.nombre === modelUser.genero).idgenero
+          if (modelUser.contrasena !== '') {
+            modelUser.contrasena = md5(modelUser.contrasena)
+          }
+          console.log('modelUser -> ', modelUser)
+          await updateUsuario(modelUser).then(async(response) => {
             this.$notify({
               title: 'Bien hecho!',
-              message: 'Usuario creado con éxito',
+              message: 'Usuario actualizado con éxito',
               position: 'top-right',
               type: 'success',
               duration: 2000
             })
             this.$refs[formName].resetFields()
-            this.imageUrl = DATA.imageURL
+            this.viewRefresh = { idusuario: modelUser.idusuario, action: true }
           })
-        } else {
-          console.log('error submit!!')
-          return false
+          // this.formUsuario = CONSTANTS.formUser
+          // this.$refs[formName].resetFields()
+          // this.imageUrl = DATA.imageURL
+          // this.viewRefresh = { idusuario: modelUser.idusuario, action: true }
         }
       })
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields()
+      this.formUsuario = CONSTANTS.formUser
+      this.formUsuario.avatar = DATA.imageURL
+      this.imageUrl = DATA.imageURL
+      this.viewRefresh = { action: true }
+      console.log(this.formUsuario)
     }
   }
 }
@@ -246,6 +354,12 @@ export default {
 .file-upload input {
   overflow: hidden;
   width: 0;
+}
+.form-user .el-form-item .el-form-item__content {
+  margin-left: 0% !important;
+}
+.item-genero .el-form-item__error {
+  padding-left: 12.5vw;
 }
 </style>
 

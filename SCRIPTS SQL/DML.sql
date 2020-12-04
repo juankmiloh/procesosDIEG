@@ -9,6 +9,12 @@ INSERT INTO ROL (DESCRIPCION) VALUES ('abogado');
 INSERT INTO ROL (DESCRIPCION) VALUES ('consulta');
 
 ----------------------------
+-- DML TABLA GENERO
+----------------------------
+INSERT INTO GENERO (NOMBRE) VALUES ('Hombre');
+INSERT INTO GENERO (NOMBRE) VALUES ('Mujer');
+
+----------------------------
 -- DML TABLA USUARIO
 ----------------------------
 INSERT INTO USUARIOS(NOMBRE, APELLIDO, GENERO, NICKNAME, DESCRIPCION, ROL, AVATAR, CONTRASENA, TOKEN) VALUES ('Madia', 'Ortega', 1, 'mortega', 'Directora de investigaciones - Administrador', 1, 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif', MD5('123456'), 'mortega-token');

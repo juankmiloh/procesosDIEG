@@ -48,6 +48,27 @@ class UsuariosService:
                 }
             )
         return usuarios
+    
+    def get_lista_usuarios(self, usuarios_repository: UsuariosRepository):
+        usuarios = []
+        data = usuarios_repository.get_lista_usuarios_bd()
+        for result in data:
+            usuarios.append(
+                {
+                    'privilegio': result[0],
+                    'idusuario': result[1],
+                    'nombre': result[2],
+                    'apellido': str(result[3]),
+                    'nickname': str(result[4]),
+                    'descripcion': result[5],
+                    'rol': result[6],
+                    'avatar': result[7],
+                    'contrasena': '',
+                    'token': result[9],
+                    'genero': result[11]
+                }
+            )
+        return usuarios
 
     def get_rol(self, usuarios_repository: UsuariosRepository):
         roles = []
@@ -76,3 +97,11 @@ class UsuariosService:
     def create_user_insert(self, usuarios_repository: UsuariosRepository, usuario):
         usuarios_repository.usuarios_create_bd(usuario)
         return add_wrapper(['Usuario creado con exito!'])
+
+    def usuario_update(self, usuarios_repository: UsuariosRepository, usuario):
+        usuarios_repository.usuario_update_bd(usuario)
+        return add_wrapper(['Usuario editado con éxito!'])
+
+    def usuario_delete(self, usuarios_repository: UsuariosRepository, idusuario):
+        usuarios_repository.usuario_delete_bd(idusuario)
+        return add_wrapper(['Usuario borrado con éxito!'])

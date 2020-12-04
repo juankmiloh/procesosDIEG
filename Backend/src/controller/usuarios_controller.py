@@ -34,3 +34,20 @@ def nicknames(usuarios_service: UsuariosService, usuarios_repository: UsuariosRe
 def createUser(usuarios_service: UsuariosService, usuarios_repository: UsuariosRepository):
     usuario = request.json
     return json.dumps(usuarios_service.create_user_insert(usuarios_repository, usuario))
+
+@controller.route(API_ROOT_PATH + 'lista_usuarios', methods=['GET'])
+def listaUsuarios(usuarios_service: UsuariosService, usuarios_repository: UsuariosRepository):
+    return json.dumps(usuarios_service.get_lista_usuarios(usuarios_repository))
+
+@controller.route(API_ROOT_PATH + 'usuarios', methods=['DELETE'])
+def deleteUser(usuarios_service: UsuariosService, usuarios_repository: UsuariosRepository):
+    # Id usuario
+    idUsuario = request.args.get('idusuario', default='', type=str)
+    return json.dumps(usuarios_service.usuario_delete(usuarios_repository, idUsuario))
+
+# Actualizar usuario
+@controller.route(API_ROOT_PATH + 'usuarios', methods=['PUT'])
+def updateUsuario(usuarios_service: UsuariosService, usuarios_repository: UsuariosRepository):
+    # Id usuario
+    usuario = request.json
+    return json.dumps(usuarios_service.usuario_update(usuarios_repository, usuario))

@@ -9,6 +9,13 @@ export function getListUsuarios() {
     });
 }
 
+export function getAllUsuarios() {
+    return request({
+        url: '/lista_usuarios',
+        method: 'get'
+    });
+}
+
 export function getListNicknames() {
     return request({
         url: '/nicknames',
