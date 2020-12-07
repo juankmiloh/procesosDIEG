@@ -53,6 +53,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { getAllUsuarios } from '@/api/procesosDIEG/usuarios'
 import { deleteUsuario } from '@/api/procesosDIEG/usuarios'
 import { getListNicknames } from '@/api/procesosDIEG/usuarios'
@@ -76,6 +77,9 @@ export default {
       idusuario: '',
       usuario: ''
     }
+  },
+  computed: {
+    ...mapGetters(['name', 'roles'])
   },
   watch: {
     data: {
@@ -109,31 +113,43 @@ export default {
       })
     },
     confirmDeleteUser(user) {
-      console.log(user.idusuario)
+      // console.log(user.idusuario)
       this.idusuario = user.idusuario
       this.usuario = `${user.nombre} ${user.apellido}`
       this.deleteDialogVisible = true
     },
     async borrarUsuario() {
-      await deleteUsuario(this.idusuario).then(async(response) => {
+      const username = this.datosUsuarios.find((user) => user.idusuario === this.idusuario).nickname
+      if (username === this.name) {
         this.deleteDialogVisible = false
-        this.$notify({
-          title: 'Información',
-          message: 'Se ha eliminado el usuario con éxito!',
-          type: 'warning',
-          duration: 2000
-        })
-        await this.getUsuarios()
-      }, (error) => {
-        console.log(error)
         this.$notify({
           title: 'Advertencia',
-          message: 'El usuario tiene procesos asignados',
+          message: 'Acción no permitida!',
           type: 'warning',
           duration: 2000
         })
-        this.deleteDialogVisible = false
-      })
+      } else {
+        await deleteUsuario(this.idusuario).then(async(response) => {
+          this.deleteDialogVisible = false
+          this.$notify({
+            title: 'Información',
+            message: 'Se ha eliminado el usuario con éxito!',
+            type: 'success',
+            duration: 2000
+          })
+          await this.getUsuarios()
+          this.$emit('handleSetUser', { updateView: false })
+        }, (error) => {
+          console.log(error)
+          this.deleteDialogVisible = false
+          this.$notify({
+            title: 'Advertencia',
+            message: 'El usuario tiene procesos asignados',
+            type: 'warning',
+            duration: 2000
+          })
+        })
+      }
     },
     async returnUser(user) {
       await this.$emit('handleSetUser', user)

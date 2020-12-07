@@ -255,11 +255,11 @@
                   : column.prop === 'caducidad'
                     ? 120
                     : column.prop === 'usuario'
-                      ? 135
+                      ? 140
                       : column.prop === 'idproceso'
                         ? 70
                         : column.prop === 'empresa'
-                          ? 260
+                          ? 210
                           : ''
                 : column.prop === 'idproceso'
                   ? 70

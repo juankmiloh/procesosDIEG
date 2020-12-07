@@ -12,6 +12,7 @@ from .decision_repository import DecisionRepository
 from .causal_repository import CausalRepository
 from .etapa_repository import EtapaRepository
 from .informe_repository import InformeRepository
+from .terceros_repository import TercerosRepository
 
 
 class RepositoryModule(Module):
@@ -30,6 +31,7 @@ class RepositoryModule(Module):
         causal_repository = CausalRepository(self.db)
         etapa_repository = EtapaRepository(self.db)
         informe_repository = InformeRepository(self.db)
+        terceros_repository = TercerosRepository(self.db)
 
         binder.bind(PruebaRepository, to=prueba_repository, scope=singleton)
         binder.bind(EmpresaRepository, to=empresa_repository, scope=singleton)
@@ -42,3 +44,4 @@ class RepositoryModule(Module):
         binder.bind(CausalRepository, to=causal_repository, scope=singleton)
         binder.bind(EtapaRepository, to=etapa_repository, scope=singleton)
         binder.bind(InformeRepository, to=informe_repository, scope=singleton)
+        binder.bind(TercerosRepository, to=terceros_repository, scope=singleton)

@@ -179,13 +179,16 @@ export default {
   },
   methods: {
     handleSetUser(param) {
+      // console.log('handleSetUser -> ', param)
       if (param.hasOwnProperty('updateView')) {
         this.rulesFormUser.contrasena[0].required = true
         this.updateUSer = false
         this.textButton = 'Guardar'
         this.viewRefresh.action = param.updateView
+        this.$refs['formUsuario'].resetFields()
+        this.formUsuario.avatar = DATA.imageURL
+        this.imageUrl = DATA.imageURL
       } else {
-        console.log('handleSetUser-> ', param)
         this.rulesFormUser.contrasena[0].required = false
         this.updateUSer = true
         this.textButton = 'Actualizar'
@@ -279,7 +282,7 @@ export default {
             modelUser.rol = Number(modelUser.rol)
             modelUser.contrasena = md5(modelUser.contrasena)
             modelUser.genero = this.dataGenero.find((genero) => genero.nombre === modelUser.genero).idgenero
-            console.log(modelUser)
+            // console.log('Guardar modelUser -> ', modelUser)
             await createUser(modelUser).then(async(response) => {
               this.$notify({
                 title: 'Bien hecho!',
@@ -306,7 +309,7 @@ export default {
           if (modelUser.contrasena !== '') {
             modelUser.contrasena = md5(modelUser.contrasena)
           }
-          console.log('modelUser -> ', modelUser)
+          // console.log('actualizar modelUser -> ', modelUser)
           await updateUsuario(modelUser).then(async(response) => {
             this.$notify({
               title: 'Bien hecho!',
@@ -331,7 +334,6 @@ export default {
       this.formUsuario.avatar = DATA.imageURL
       this.imageUrl = DATA.imageURL
       this.viewRefresh = { action: true }
-      console.log(this.formUsuario)
     }
   }
 }

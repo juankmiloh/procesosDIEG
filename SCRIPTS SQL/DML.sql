@@ -23,6 +23,12 @@ INSERT INTO USUARIOS(NOMBRE, APELLIDO, GENERO, NICKNAME, DESCRIPCION, ROL, AVATA
 INSERT INTO USUARIOS(NOMBRE, APELLIDO, GENERO, NICKNAME, DESCRIPCION, ROL, AVATAR, CONTRASENA, TOKEN) VALUES ('Juan Camilo', 'Herrera', 2, 'jherrera', 'Abogado DIEG', 2, 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif', MD5('123456'), 'jherrera-token');
 
 ----------------------------
+-- DML TABLA TIPOPERSONA
+----------------------------
+INSERT INTO TIPOPERSONA(NOMBRE) VALUES ('Persona natural');
+INSERT INTO TIPOPERSONA(NOMBRE) VALUES ('Persona jurídica');
+
+----------------------------
 -- DML TABLA CAUSAL
 ----------------------------
 INSERT INTO CAUSAL (NOMBRECAUSAL) VALUES ('Falla en la prestación del servicio');
@@ -95,6 +101,12 @@ INSERT INTO PROCESO(RADICADOPROCESO, USUARIOASIGNADO, EMPRESA, IDSERVICIO, FASE,
 VALUES ('426752354X7XD3E', 2, 2249, 1, 14, '2014/03/26');
 -- DATOS PARA ENVIO DESDE POSTMANN
 -- {"radicado":"7848284648434381E","usuario": 3,"empresa": 502,"servicio": 1,"fase": 14, "fecha_caducidad": "2014/03/26"}
+
+----------------------------
+-- DML TABLA ETAPA
+----------------------------
+INSERT INTO TERCEROS(IDPROCESO, IDTIPOPERSONA, DOCUMENTO, NOMBRE, DIRECCION, EMAIL)
+VALUES (18, 1, 1016040458, 'Juan Camilo Herrera', 'Calle 23D # 104A - 57', 'juankmiloh@hotmail.com');
 
 ----------------------------
 -- DML TABLA ETAPA

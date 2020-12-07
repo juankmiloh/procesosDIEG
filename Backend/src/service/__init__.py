@@ -12,6 +12,7 @@ from .decision_service import DecisionService
 from .causal_service import CausalService
 from .etapa_service import EtapaService
 from .informe_service import InformeService
+from .terceros_service import TercerosService
 
 class ServiceModule(Module):
     def configure(self, binder):
@@ -26,6 +27,7 @@ class ServiceModule(Module):
         causal_service = CausalService()
         etapa_service = EtapaService()
         informe_service = InformeService()
+        terceros_service = TercerosService()
 
         binder.bind(PruebaService, to=prueba_service, scope=singleton)
         binder.bind(EmpresaService, to=empresa_service, scope=singleton)
@@ -38,3 +40,4 @@ class ServiceModule(Module):
         binder.bind(CausalService, to=causal_service, scope=singleton)
         binder.bind(EtapaService, to=etapa_service, scope=singleton)
         binder.bind(InformeService, to=informe_service, scope=singleton)
+        binder.bind(TercerosService, to=terceros_service, scope=singleton)

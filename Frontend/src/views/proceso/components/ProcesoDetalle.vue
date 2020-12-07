@@ -116,7 +116,7 @@
                 </el-select>
               </el-form-item>
 
-              <el-form-item label="Tipo sancion" prop="tipo_sancion">
+              <el-form-item label="Tipo decisión" prop="tipo_sancion">
                 <el-select
                   v-model="formProceso.tipo_sancion"
                   :disabled="!abogadoEditar"
@@ -164,48 +164,54 @@
           <!-- Form datos causal -->
 
           <el-col :md="8" style="border: 0px solid blue">
-            <el-card class="box-card">
-              <div slot="header" class="clearfix">
-                <span>Causal</span>
-              </div>
+            <el-row :gutter="10">
+              <el-col :md="24">
+                <el-card class="box-card">
+                  <div slot="header" class="clearfix">
+                    <span>Causal</span>
+                  </div>
 
-              <el-form-item label="Causa" prop="causa">
-                <el-select
-                  v-model="formProceso.causa"
-                  :disabled="!abogadoEditar"
-                  filterable
-                  placeholder="Seleccione una causal"
-                  class="control-modal"
-                >
-                  <el-option
-                    v-for="item in datosCausal"
-                    :key="item.idcausal"
-                    :label="item.nombre"
-                    :value="item.idcausal"
-                  />
-                </el-select>
-              </el-form-item>
+                  <el-form-item label="Causa" prop="causa">
+                    <el-select
+                      v-model="formProceso.causa"
+                      :disabled="!abogadoEditar"
+                      filterable
+                      placeholder="Seleccione una causal"
+                      class="control-modal"
+                    >
+                      <el-option
+                        v-for="item in datosCausal"
+                        :key="item.idcausal"
+                        :label="item.nombre"
+                        :value="item.idcausal"
+                      />
+                    </el-select>
+                  </el-form-item>
 
-              <el-form-item label="Fecha hechos" prop="fecha_hechos">
-                <el-date-picker
-                  v-model="formProceso.fecha_hechos"
-                  :disabled="!abogadoEditar"
-                  type="date"
-                  placeholder="Seleccione una fecha"
-                  class="control-modal"
-                />
-              </el-form-item>
+                  <el-form-item label="Fecha hechos" prop="fecha_hechos">
+                    <el-date-picker
+                      v-model="formProceso.fecha_hechos"
+                      :disabled="!abogadoEditar"
+                      type="date"
+                      placeholder="Seleccione una fecha"
+                      class="control-modal"
+                    />
+                  </el-form-item>
 
-              <el-form-item label="Descripción">
-                <el-input
-                  v-model="formProceso.descripcion"
-                  :disabled="!abogadoEditar"
-                  type="textarea"
-                  class="control-modal"
-                  rows="15"
-                />
-              </el-form-item>
-            </el-card>
+                  <el-form-item label="Descripción">
+                    <el-input
+                      v-model="formProceso.descripcion"
+                      :disabled="!abogadoEditar"
+                      type="textarea"
+                      class="control-modal"
+                      rows="3"
+                    />
+                  </el-form-item>
+                </el-card>
+              </el-col>
+              <!-- Card terceros interesados -->
+              <switch-terceros v-if="id" :idproceso="id" />
+            </el-row>
           </el-col>
 
           <!-- Datos caducidad / etapas -->
@@ -518,11 +524,12 @@ import Sticky from '@/components/Sticky' // 粘性header组件
 import { CONSTANTS } from '@/constants/constants'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import moment from 'moment'
+import SwitchTerceros from './SwitchTerceros'
 
 export default {
   name: 'ProcesoDetalle',
   directives: { elDragDialog },
-  components: { Sticky },
+  components: { Sticky, SwitchTerceros },
   props: {
     isDetail: {
       type: Boolean,
