@@ -47,7 +47,7 @@ class TercerosRepository:
                 EMAIL = :EMAIL_ARG
 	        WHERE IDTERCEROS = :IDTERCERO_ARG;
         '''
-        self.db.engine.execute(text(sql), IDTERCERO_ARG=terceros["idterceros"], IDTIPOPERSONA_ARG=terceros["persona"], DOCUMENTO_ARG=terceros["documento"], NOMBRE_ARG=terceros["nombre"], DIRECCION_ARG=terceros["direccion"], EMAIL_ARG=terceros["email"])
+        self.db.engine.execute(text(sql), IDTERCERO_ARG=terceros["idtercero"], IDTIPOPERSONA_ARG=terceros["persona"], DOCUMENTO_ARG=terceros["documento"], NOMBRE_ARG=terceros["nombre"], DIRECCION_ARG=terceros["direccion"], EMAIL_ARG=terceros["email"])
             
                         
     def terceros_delete_bd(self, idtercero):

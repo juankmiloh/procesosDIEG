@@ -55,4 +55,13 @@ export const CONSTANTS = {
             width: 230
         }
     ],
+    dataPersona: [{
+            idpersona: 1,
+            nombre: 'Persona natural'
+        },
+        {
+            idpersona: 2,
+            nombre: 'Persona jurídica'
+        }
+    ]
 };

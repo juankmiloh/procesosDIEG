@@ -45,13 +45,11 @@
         >
           <el-form-item label="" prop="persona">
             <el-radio-group v-model="formTercero.persona">
-              <el-radio-button label="Persona natural" />
-              <el-radio-button label="Persona jurídica" />
-              <!-- <el-radio-button
-                v-for="item in datapersona"
+              <el-radio-button
+                v-for="item in dataPersona"
                 :key="item.idpersona"
                 :label="item.nombre"
-              /> -->
+              />
             </el-radio-group>
           </el-form-item>
           <transition name="el-zoom-in-center">
@@ -89,12 +87,12 @@
           </el-form-item>
           <el-form-item>
             <el-button
-              @click="closeModalTercero('formTercero');"
+              @click="closeModalTercero();"
             >Cancelar</el-button>
             <el-button
               type="success"
               @click="submitFormTercero('formTercero')"
-            >Agregar</el-button>
+            >{{ textActionTercero }}</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -184,6 +182,7 @@
         </div>
       </div>
     </el-drawer>
+    <modal-delete titulo="Advertencia" :mensaje="mensajeModalConfirm" :modalvisible="deleteDialogVisible" @confirmar="submitDelete" />
   </el-col>
 </template>
 
@@ -191,14 +190,19 @@
 import CountTo from 'vue-count-to'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import Sticky from '@/components/Sticky' // 粘性header组件
+import ModalDelete from '@/components/ModalConfirm'
 import { CONSTANTS } from '../constants/constants'
 import { getTercerosProceso } from '@/api/procesosDIEG/terceros'
+import { createTercero } from '@/api/procesosDIEG/terceros'
+import { updateTercero } from '@/api/procesosDIEG/terceros'
+import { deleteTercero } from '@/api/procesosDIEG/terceros'
 
 export default {
   directives: { elDragDialog },
   components: {
     CountTo,
-    Sticky
+    Sticky,
+    ModalDelete
   },
   props: {
     idproceso: {
@@ -217,9 +221,12 @@ export default {
       dialogDrawer: false,
       datosTerceros: [],
       countTerceros: 0,
-      agregarTerceroInit: true,
       busquedaTercero: '',
-      textActionTercero: 'Agregar'
+      textActionTercero: 'Agregar',
+      dataPersona: CONSTANTS.dataPersona,
+      mensajeModalConfirm: '',
+      deleteDialogVisible: false,
+      terceroDel: ''
     }
   },
   watch: {
@@ -227,15 +234,16 @@ export default {
       deep: true,
       handler(val) {
         this.formTercero = {}
+        this.resetForm()
+        console.log(val)
         if (this.countTerceros > 0) {
           this.valSwitch = true
           this.switchDisable = true
         } else {
-          if (this.agregarTerceroInit) {
-            this.resetForm()
+          this.switchDisable = false
+          this.valSwitch = false
+          if (!this.dialogDrawer) {
             this.openModalTercero = true
-          } else {
-            this.agregarTerceroInit = true
           }
         }
       }
@@ -245,6 +253,26 @@ export default {
     this.getTerceros(this.idproceso)
   },
   methods: {
+    handleDelete(data) {
+      // console.log(data)
+      this.terceroDel = data.idtercero
+      this.mensajeModalConfirm = `¿Realmente desea eliminar a <b>${data.nombre}</b>?`
+      this.deleteDialogVisible = true
+    },
+    async submitDelete(confirm) {
+      if (confirm) {
+        await deleteTercero(this.terceroDel).then(async(response) => {
+          this.$notify({
+            title: 'Información',
+            message: 'Se ha eliminado el tercero!',
+            type: 'success',
+            duration: 2000
+          })
+          this.getTerceros(this.idproceso)
+          this.deleteDialogVisible = false
+        })
+      }
+    },
     resetForm() {
       if (this.$refs['formTercero']) {
         this.formTercero = {}
@@ -267,26 +295,61 @@ export default {
     handleClose(done) {
       done()
     },
-    closeModalTercero(formName) {
+    closeModalTercero() {
       this.formTercero = {}
-      this.agregarTerceroInit = false
-      this.valSwitch = false
       this.openModalTercero = false
     },
     submitFormTercero(formName) {
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(async(valid) => {
         if (valid) {
-          console.log(this.formTercero)
+          this.formTercero.idproceso = this.idproceso
+          this.formTercero.persona = this.dataPersona.find((persona) => persona.nombre === this.formTercero.persona).idpersona
+          // console.log(this.formTercero)
+          if (this.textActionTercero === 'Agregar') {
+            await createTercero(this.formTercero).then(async(response) => {
+              this.resetForm()
+              this.$notify({
+                title: 'Buen trabajo!',
+                message: 'Tercero agregado con éxito',
+                type: 'success',
+                duration: 2000
+              })
+            }, (err) => {
+              console.log(err)
+              this.$notify({
+                title: 'Advertencia',
+                message: 'Doumento de usuario ya registrado!',
+                type: 'warning',
+                duration: 2000
+              })
+            })
+          } else {
+            await updateTercero(this.formTercero).then(async(response) => {
+              this.resetForm()
+              this.$notify({
+                title: 'Buen trabajo!',
+                message: 'Tercero actualizado con éxito',
+                type: 'success',
+                duration: 2000
+              })
+            }, (err) => {
+              console.log(err)
+            })
+          }
+          this.openModalTercero = false
+          this.getTerceros(this.idproceso)
         }
       })
     },
     async getTerceros(idproceso) {
       await getTercerosProceso(idproceso).then((response) => {
-        // console.log('TERCEROS -> ', response)
+        // console.log('TERCEROS -> ', response.length)
         this.countTerceros = response.length
         this.datosTerceros = response
         if (this.countTerceros > 0) {
           this.valSwitch = true
+        } else {
+          this.valSwitch = false
         }
       })
     }

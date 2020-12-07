@@ -26,10 +26,10 @@ export function updateTercero(data) {
     });
 }
 
-export function deleteTercero(etapa) {
+export function deleteTercero(id) {
     return request({
         url: '/terceros',
         method: 'delete',
-        data: etapa
+        params: { 'idtercero': id }
     });
 }

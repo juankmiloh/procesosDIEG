@@ -50,6 +50,6 @@ class TercerosService:
         terceros_repository.terceros_update_bd(dataterceros)
         return add_wrapper(['terceros actualizada con éxito!'])
 
-    def terceros_delete(self, terceros_repository: TercerosRepository, terceros):
-        terceros_repository.terceros_delete_bd(terceros)
+    def terceros_delete(self, terceros_repository: TercerosRepository, idtercero):
+        terceros_repository.terceros_delete_bd(idtercero)
         return add_wrapper(['terceros borrada con éxito!'])

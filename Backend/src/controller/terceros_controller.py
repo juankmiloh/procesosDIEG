@@ -34,6 +34,6 @@ def updateTerceros(terceros_service: TercerosService, terceros_repository: Terce
 # Eliminar un tercero
 @controller.route(API_ROOT_PATH + 'terceros', methods=['DELETE'])
 def deleteTerceros(terceros_service: TercerosService, terceros_repository: TercerosRepository):
-    # Datos terceros
-    dataterceros = request.json
-    return json.dumps(terceros_service.terceros_delete(terceros_repository, dataterceros))
+    # ID tercero
+    idtercero = request.args.get('idtercero', default='', type=str)
+    return json.dumps(terceros_service.terceros_delete(terceros_repository, idtercero))
