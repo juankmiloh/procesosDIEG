@@ -17,7 +17,7 @@ class TercerosRepository:
     def get_terceros_proceso_bd(self, idProceso):
         sql = '''
             SELECT T.IDTERCEROS, TP.NOMBRE AS PERSONA, T.DOCUMENTO, T.NOMBRE, T.DIRECCION, T.EMAIL FROM TERCEROS T, TIPOPERSONA TP
-            WHERE T.IDTIPOPERSONA = TP.IDTIPOPERSONA AND T.IDPROCESO = :IDPROCESO_ARG;
+            WHERE T.IDTIPOPERSONA = TP.IDTIPOPERSONA AND T.IDPROCESO = :IDPROCESO_ARG ORDER BY T.IDTERCEROS DESC;
         '''
         return self.db.engine.execute(text(sql), IDPROCESO_ARG=idProceso).fetchall()
 

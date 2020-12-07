@@ -7,7 +7,7 @@
           (<count-to :start-val="0" :end-val="countTerceros" :duration="5000" class="card-panel-num" />)
         </el-col>
         <el-col :md="countTerceros > 0 ? 4 : 5">
-          <el-switch v-model="valSwitch" :disabled="switchDisable" />
+          <el-switch v-model="valSwitch" active-color="#13ce66" :disabled="switchDisable" />
         </el-col>
         <el-col v-if="countTerceros > 0" :md="countTerceros > 0 ? 1 : 0">
           <div>
@@ -104,7 +104,7 @@
       :visible.sync="dialogDrawer"
       direction="rtl"
       custom-class="demo-drawer"
-      size="70%"
+      size="30%"
     >
       <div style="background: #f7fbff; height: 100%;">
         <sticky class-name="sub-navbar">
@@ -115,61 +115,42 @@
           </el-row>
         </sticky>
 
-        <!-- Tabla donde se listan los terceros interesados -->
+        <!-- Card donde se listan los terceros interesados -->
 
         <div class="app-container">
-          <el-card class="box-card">
-            <el-table
-              :z-index="0"
-              :data="
-                datosTerceros.filter(
-                  (data) =>
-                    !busquedaTercero ||
-                    String(data.documento)
-                      .toLowerCase()
-                      .includes(busquedaTercero.toLowerCase())
-                )
-              "
-              style="width: 100%; border: 1px solid #d8ebff"
-              border
-            >
-              <el-table-column
-                v-for="column in tableColumns"
-                :key="column.label"
-                :label="column.label"
-                :prop="column.prop"
-                align="center"
-                sortable
-                :width="column.width"
-              />
-              <el-table-column align="center" :width="140">
-                <!-- eslint-disable-next-line -->
-              <template slot="header" slot-scope="scope">
-                  <el-input
-                    v-model="busquedaTercero"
-                    size="mini"
-                    placeholder="No. documento"
-                  />
-                </template>
-                <template slot-scope="scope">
-                  <el-button
-                    size="mini"
-                    type="success"
-                    icon="el-icon-edit"
-                    @click="handleEditTercero(scope.row)"
-                  />
-                  <el-button
-                    size="mini"
-                    type="danger"
-                    icon="el-icon-delete-solid"
-                    @click="handleDelete(scope.row)"
-                  />
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-card>
           <el-row>
-            <el-col :span="24" style="text-align: center; padding-top: 2%;">
+            <transition name="el-fade-in-linear">
+              <el-col v-show="countTerceros > 0" v-loading="loading" :span="24">
+                <el-card class="box-card" style="overflow-y: scroll; height: 70vh;">
+                  <el-card v-for="item in datosTerceros" :key="item.idtercero" style="width: 100%; margin-bottom: 3%;">
+                    <div slot="header" class="clearfix">
+                      <span><b>{{ item.nombre }}</b></span>
+                      <div style="float: right;">
+                        <el-button size="mini" type="danger" icon="el-icon-delete-solid" @click="handleDelete(item)" />
+                      </div>
+                      <div style="float: right; padding-right: 2%;">
+                        <el-button size="mini" type="success" icon="el-icon-edit" @click="handleEditTercero(item)" />
+                      </div>
+                    </div>
+                    <div class="text item">
+                      {{ item.persona }}
+                    </div>
+                    <div class="text item">
+                      Documento: {{ item.documento }}
+                    </div>
+                    <div class="text item">
+                      Dirección: {{ item.direccion }}
+                    </div>
+                    <div class="text item">
+                      e-mail: {{ item.email }}
+                    </div>
+                  </el-card>
+                </el-card>
+              </el-col>
+            </transition>
+          </el-row>
+          <el-row>
+            <el-col :span="24" style="text-align: center; padding-top: 5%;">
               <el-button
                 style="border: 1px solid #67c23a"
                 type="primary"
@@ -226,7 +207,8 @@ export default {
       dataPersona: CONSTANTS.dataPersona,
       mensajeModalConfirm: '',
       deleteDialogVisible: false,
-      terceroDel: ''
+      terceroDel: '',
+      loading: false
     }
   },
   watch: {
@@ -261,6 +243,7 @@ export default {
     },
     async submitDelete(confirm) {
       if (confirm) {
+        this.loading = true
         await deleteTercero(this.terceroDel).then(async(response) => {
           this.$notify({
             title: 'Información',
@@ -271,6 +254,8 @@ export default {
           this.getTerceros(this.idproceso)
           this.deleteDialogVisible = false
         })
+      } else {
+        this.deleteDialogVisible = false
       }
     },
     resetForm() {
@@ -302,6 +287,7 @@ export default {
     submitFormTercero(formName) {
       this.$refs[formName].validate(async(valid) => {
         if (valid) {
+          this.loading = true
           this.formTercero.idproceso = this.idproceso
           this.formTercero.persona = this.dataPersona.find((persona) => persona.nombre === this.formTercero.persona).idpersona
           // console.log(this.formTercero)
@@ -351,6 +337,7 @@ export default {
         } else {
           this.valSwitch = false
         }
+        this.loading = false
       })
     }
   }
@@ -371,4 +358,29 @@ export default {
 .dialog-class-lista .el-dialog__body {
   padding-top: 0 !important;
 }
+</style>
+
+<style>
+  .el-carousel__item h3 {
+    color: #475669;
+    font-size: 14px;
+    opacity: 0.75;
+    line-height: 200px;
+    margin: 0;
+  }
+
+  .el-carousel__item:nth-child(2n) {
+    background-color: #99a9bf;
+  }
+
+  .el-carousel__item:nth-child(2n+1) {
+    background-color: #d3dce6;
+  }
+  .text {
+    font-size: 14px;
+  }
+
+  .item {
+    margin-bottom: 15px;
+  }
 </style>
