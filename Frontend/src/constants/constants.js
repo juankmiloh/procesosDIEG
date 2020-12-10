@@ -1,63 +1,87 @@
 /* jshint esversion: 6 */
 /* eslint-disable */
 export const CONSTANTS = {
-    tableColumnsAdmin: [{
-            label: '#',
-            prop: 'idproceso'
-        },
+    tableColumnsAdmin: [
+        // {
+        //     label: '#',
+        //     prop: 'idproceso',
+        //     width: 67
+        // },
         {
             label: 'Expediente',
-            prop: 'expediente'
+            prop: 'expediente',
+            width: 156,
+            filter: 'filterExpediente'
+        },
+        {
+            label: 'Servicio',
+            prop: 'servicio',
+            width: 112,
+            filter: 'filterServicio'
         },
         {
             label: 'Empresa',
-            prop: 'empresa'
-        },
-        // {
-        //     label: 'Servicio',
-        //     prop: 'servicio'
-        // },
-        {
-            label: 'Estado',
-            prop: 'estado'
+            prop: 'empresa',
+            width: 185,
+            filter: 'filterEmpresa'
         },
         {
             label: 'Caducidad',
-            prop: 'caducidad'
+            prop: 'caducidad',
+            width: 130,
+            filter: 'filterCaducidad'
+        },
+        {
+            label: 'Estado',
+            prop: 'estado',
+            width: 187,
+            filter: 'filterEstado'
         },
         {
             label: 'Abogado',
-            prop: 'usuario'
+            prop: 'usuario',
+            width: 145,
+            filter: 'filterAbogado'
         }
     ],
-    tableColumnsAbogado: [{
-            label: '#',
-            prop: 'idproceso'
-        },
+    tableColumnsAbogado: [
+        // {
+        //     label: '#',
+        //     prop: 'idproceso',
+        //     width: 70
+        // },
         {
             label: 'Expediente',
-            prop: 'expediente'
+            prop: 'expediente',
+            filter: 'filterExpediente'
+        },
+        {
+            label: 'Servicio',
+            prop: 'servicio',
+            filter: 'filterServicio'
         },
         {
             label: 'Empresa',
-            prop: 'empresa'
-        },
-        // {
-        //     label: 'Servicio',
-        //     prop: 'servicio'
-        // },
-        {
-            label: 'Estado',
-            prop: 'estado'
+            prop: 'empresa',
+            width: 270,
+            filter: 'filterEmpresa'
         },
         {
             label: 'Caducidad',
-            prop: 'caducidad'
-        }
+            prop: 'caducidad',
+            filter: 'filterCaducidad'
+        },
+        {
+            label: 'Estado',
+            prop: 'estado',
+            width: 210,
+            filter: 'filterEstado'
+        },
     ],
     tableColumnsEtapas: [{
             label: '#',
-            prop: 'idetapa'
+            prop: 'idetapa',
+            width: 70
         },
         {
             label: 'Radicado',
@@ -65,7 +89,8 @@ export const CONSTANTS = {
         },
         {
             label: 'Etapa',
-            prop: 'nombreEtapa'
+            prop: 'nombreEtapa',
+            width: 300
         },
         {
             label: 'Fecha de inicio',
@@ -77,10 +102,11 @@ export const CONSTANTS = {
         },
         {
             label: 'Observación',
-            prop: 'observacionEtapa'
+            prop: 'observacionEtapa',
+            width: 300
         }
     ],
-    filters: [
+    filter: [
         { text: 'Energía', value: 'Energía' },
         { text: 'Gas', value: 'Gas' },
         { text: 'GLP', value: 'GLP' },
@@ -88,7 +114,7 @@ export const CONSTANTS = {
     rulesFormProceso: {
         radicado: [
             { required: true, message: 'Ingrese un expediente', trigger: 'blur' },
-            { min: 15, max: 15, message: 'La longitud del expediente debe ser de 15 caracteres', trigger: 'blur' }
+            { min: 17, max: 17, message: 'La longitud del expediente debe ser de 17 caracteres', trigger: 'blur' }
         ],
         servicio: [{
             required: true,
@@ -133,7 +159,7 @@ export const CONSTANTS = {
     rulesDetalleProceso: {
         expediente: [
             { required: true, message: 'Ingrese un expediente', trigger: 'blur' },
-            { min: 15, max: 15, message: 'La longitud debe ser de 15 caracteres', trigger: 'blur' }
+            { min: 17, max: 17, message: 'La longitud debe ser de 17 caracteres', trigger: 'blur' }
         ],
         empresa: [{
             required: true,
@@ -165,7 +191,7 @@ export const CONSTANTS = {
             trigger: 'change'
         }],
         caducidad: [{
-            required: true,
+            required: false,
             message: 'Ingrese una fecha válida',
             trigger: 'change'
         }]

@@ -14,11 +14,13 @@ class ProcesosService:
         procesos = []
         data = procesos_repository.get_procesos_bd()
         for result in data:
+            print('-------------------- CADUCIDAD -----------------', result[2])
+    
             procesos.append(
                 {
                     'idproceso': result[0],
                     'expediente': result[1],
-                    'caducidad': format_date(result[2]),
+                    'caducidad': str(result[2]),
                     'empresa': result[3].capitalize(),
                     'estado': result[4],
                     'servicio': result[5],
@@ -32,12 +34,17 @@ class ProcesosService:
         proceso = []
         data = procesos_repository.get_proceso_inicial_bd(idProceso)
         for result in data:
+            caducidad = None
+            print('-------------------- CADUCIDAD -----------------', result[2])
 
+            if result[2]:
+                caducidad = str(result[2])
+    
             proceso.append(
                 {
                     'idproceso': result[0],
                     'expediente': result[1],
-                    'caducidad': str(result[2]),
+                    'caducidad': caducidad,
                     'empresa': result[3].capitalize(),
                     'estado': result[4],
                     'etapa': result[5],
@@ -52,12 +59,17 @@ class ProcesosService:
         proceso = []
         data = procesos_repository.get_proceso_bd(idProceso)
         for result in data:
+            caducidad = None
+            print('-------------------- CADUCIDAD -----------------', result[2])
 
+            if result[2]:
+                caducidad = str(result[2])
+    
             proceso.append(
                 {
                     'idproceso': result[0],
                     'expediente': result[1],
-                    'caducidad': str(result[2]),
+                    'caducidad': caducidad,
                     'empresa': result[3].capitalize(),
                     'causa': result[4],
                     'fecha_hechos': str(result[5]),

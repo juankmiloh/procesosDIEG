@@ -1,5 +1,5 @@
 <template>
-  <div class="createPost-container" style="background: #f7fbff">
+  <div class="createPost-container" style="background: #f7fbff; height: 89vh;">
     <sticky class-name="sub-navbar">
       <div style="border: 0px solid red; text-align: center">
         <!-- Boton para agregar nuevo expediente al aplicativo -->
@@ -57,7 +57,7 @@
               v-model="formAgregar.radicado"
               autocomplete="off"
               placeholder="Ingrese No. del expediente"
-              maxlength="15"
+              maxlength="17"
               show-word-limit
               clearable
               class="control-modal"
@@ -114,14 +114,14 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="Caducidad" prop="fecha_caducidad" clearable>
+          <!-- <el-form-item label="Caducidad" prop="fecha_caducidad" clearable>
             <el-date-picker
               v-model="formAgregar.fecha_caducidad"
               type="date"
               placeholder="Seleccione la fecha"
               class="control-modal"
             />
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item>
             <el-button
               @click="
@@ -227,62 +227,48 @@
 
     <div class="app-container">
       <el-card class="box-card">
+        <el-input v-model="filename" placeholder="Nombre de archivo (defecto lista-excel)" style="width:300px;" prefix-icon="el-icon-document" />
+        <el-button :loading="downloadLoading" style="margin-bottom:20px" type="primary" icon="el-icon-document" @click="handleDownload">
+          Exportar a Excel los procesos seleccionados
+        </el-button>
         <el-table
+          ref="multipleTable"
           v-loading="loading"
-          :z-index="0"
-          :data="
-            datosProcesos.filter(
-              (data) =>
-                !busquedaExpediente ||
-                data.expediente
-                  .toLowerCase()
-                  .includes(busquedaExpediente.toLowerCase())
-            )
-          "
           style="width: 100%; border: 1px solid #d8ebff"
+          height="65vh"
+          element-loading-text=""
           border
+          fit
+          highlight-current-row
+          :data="datosProcesos"
+          @selection-change="handleSelectionChange"
         >
+          <el-table-column type="selection" align="center" />
           <el-table-column
             v-for="column in tableColumns"
             :key="column.label"
             :label="column.label"
             :prop="column.prop"
             align="center"
-            :width="
-              showOnlyAdmin
-                ? column.prop === 'expediente'
-                  ? 150
-                  : column.prop === 'caducidad'
-                    ? 120
-                    : column.prop === 'usuario'
-                      ? 140
-                      : column.prop === 'idproceso'
-                        ? 70
-                        : column.prop === 'empresa'
-                          ? 210
-                          : ''
-                : column.prop === 'idproceso'
-                  ? 70
-                  : column.prop === 'empresa' ? 270 : column.prop === 'estado' ? 210 : ''
-            "
+            :width="column.width"
             sortable
-          />
-          <el-table-column
-            prop="servicio"
-            label="Servicio"
-            align="center"
-            sortable
-            :width="showOnlyAdmin ? 112 : ''"
-            :filters="filtersServicio"
+            :filters="getFilters(column.filter)"
             :filter-method="filterHandler"
-          />
-          <el-table-column align="center" :width="showOnlyAdmin ? 230 : ''">
+          >
+            <template slot-scope="scope">
+              <div v-if="column.prop === 'usuario'"><el-tag>{{ scope.row[column.prop] }}</el-tag></div>
+              <div v-else-if="column.prop === 'caducidad'"><i class="el-icon-time" /> {{ convertDate(scope.row[column.prop]) }}</div>
+              <div v-else>{{ scope.row[column.prop] }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" :width="showOnlyAdmin ? 190 : ''">
             <!-- eslint-disable-next-line -->
             <template slot="header" slot-scope="scope">
               <el-input
                 v-model="busquedaExpediente"
                 size="mini"
                 placeholder="No. Expediente"
+                @input="buscarProcesos"
               />
             </template>
             <template slot-scope="scope">
@@ -290,15 +276,14 @@
                 v-show="showOnlyAdmin"
                 style="border: 1px solid #409eff"
                 size="mini"
+                icon="el-icon-user-solid"
                 @click="handlePermisos(scope.row)"
-              ><b>Permisos</b></el-button>
-              <!-- <router-link :to="'/example/edit/'+scope.row.idproceso"> -->
+              />
               <el-button
                 size="mini"
                 type="success"
                 @click="handleProceso(scope.row)"
               ><b>Ver</b></el-button>
-              <!-- </router-link> -->
               <el-button
                 v-show="showOnlyAdmin"
                 size="mini"
@@ -331,6 +316,7 @@ import { getAllEmpresas } from '@/api/procesosDIEG/empresas'
 // import { addRole } from '@/api/role'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import Sticky from '@/components/Sticky' // 粘性header组件
+import moment from 'moment'
 
 export default {
   name: 'ViewProcesos',
@@ -341,7 +327,13 @@ export default {
       dialogTableVisible: false,
       /* Datos para mostrar en la tabla */
       tableColumns: [],
-      filtersServicio: CONSTANTS.filters,
+      filters: {},
+      filterExpediente: [],
+      filterEmpresa: [],
+      filterServicio: [],
+      filterEstado: [],
+      filterCaducidad: [],
+      filterAbogado: [],
       datosProcesos: [],
       datosUsuarios: [],
       datosServicios: [],
@@ -363,7 +355,10 @@ export default {
       delIdproceso: '',
       loading: true,
       disableEmpresas: true,
-      showOnlyAdmin: false
+      showOnlyAdmin: false,
+      multipleSelection: [],
+      downloadLoading: false,
+      filename: ''
     }
   },
   computed: {
@@ -373,6 +368,49 @@ export default {
     this.initView()
   },
   methods: {
+    convertDate(val) {
+      // console.log('convertDate -> ', val)
+      if (val !== 'No registra') {
+        return moment(val).format('DD/MM/YYYY')
+      } else {
+        return 'No registra'
+      }
+    },
+    buscarProcesos() {
+      const procesos = JSON.parse(window.localStorage.getItem('procesos'))
+      this.datosProcesos = procesos.filter((data) => !this.busquedaExpediente || data.expediente.toLowerCase().includes(this.busquedaExpediente.toLowerCase()))
+    },
+    handleSelectionChange(val) {
+      // console.log(val)
+      this.multipleSelection = val
+    },
+    handleDownload() {
+      if (this.multipleSelection.length) {
+        this.downloadLoading = true
+        import('@/vendor/Export2Excel').then(excel => {
+          const tHeader = ['EXPEDIENTE', 'SERVICIO', 'EMPRESA', 'CADUCIDAD O FECHA VENCIMIENTO/ TÉRMINO PARA RESOLVER REP(DD-MM-AA)', 'ESTADO', 'ABOGADO']
+          const filterVal = ['expediente', 'servicio', 'empresa', 'caducidad', 'estado', 'usuario']
+          const list = this.multipleSelection
+          const data = this.formatJson(filterVal, list)
+          console.log(data)
+          excel.export_json_to_excel({
+            header: tHeader,
+            data,
+            filename: this.filename
+          })
+          this.$refs.multipleTable.clearSelection()
+          this.downloadLoading = false
+        })
+      } else {
+        this.$message({
+          message: 'Seleccione al menos un proceso',
+          type: 'warning'
+        })
+      }
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]))
+    },
     initView() {
       if (this.roles[0] === 'administrador') {
         this.showOnlyAdmin = true
@@ -393,10 +431,64 @@ export default {
         } else {
           procesos = response.filter((proceso) => proceso.idusuario === this.idusuario)
         }
+        procesos = procesos.map((proceso) => {
+          if (proceso.caducidad !== 'None') {
+            const mes = moment(proceso.caducidad).format('MM')
+            const ano = moment(proceso.caducidad).format('YYYY')
+            proceso.textCaducidad = ano + '-' + mes
+            proceso.valueCaducidad = mes + '/' + ano
+            proceso.caducidad = new Date(moment(proceso.caducidad).format('YYYY/MM/DD HH:mm:ss')) // Se transforma la caducidad a tipo fecha
+          } else {
+            proceso.textCaducidad = 'No registra'
+            proceso.valueCaducidad = 'No registra'
+            proceso.caducidad = 'No registra'
+          }
+          // console.log(proceso.caducidad)
+          return proceso
+        })
+        window.localStorage.setItem('procesos', JSON.stringify(procesos))
         this.datosProcesos = procesos
         this.loading = false
         // console.log('Procesos -> ', this.datosProcesos)
+        this.setFilters()
       })
+    },
+    setFilters() {
+      this.datosProcesos.forEach((item) => {
+        this.filterExpediente.push({ text: item.expediente, value: item.expediente })
+        this.filterEmpresa.push({ text: item.empresa, value: item.empresa })
+        this.filterServicio.push({ text: item.servicio, value: item.servicio })
+        this.filterEstado.push({ text: item.estado, value: item.estado })
+        this.filterCaducidad.push({ text: item.textCaducidad, value: item.valueCaducidad })
+        this.filterAbogado.push({ text: item.usuario, value: item.usuario })
+      })
+      this.filters.filterExpediente = this.getUniqueListBy(this.filterExpediente, 'text')
+      this.filters.filterEmpresa = this.getUniqueListBy(this.filterEmpresa, 'text')
+      this.filters.filterServicio = this.getUniqueListBy(this.filterServicio, 'text')
+      this.filters.filterEstado = this.getUniqueListBy(this.filterEstado, 'text')
+      this.filters.filterCaducidad = this.getUniqueListBy(this.filterCaducidad, 'text')
+      this.filters.filterCaducidad = this.orderByDate(this.filters.filterCaducidad)
+      this.filters.filterAbogado = this.getUniqueListBy(this.filterAbogado, 'text')
+    },
+    getUniqueListBy(arr, key) {
+      return [...new Map(arr.map(item => [item[key], item])).values()]
+    },
+    getFilters(val) {
+      // console.log(this.filters[val])
+      return this.filters[val]
+    },
+    orderByDate(arr) {
+      arr.forEach((item, index) => {
+        if (item.text === 'No registra') {
+          arr.splice(index, 1)
+        }
+      })
+      const newArr = [...arr.sort((a, b) => {
+        // console.log(a.text.substring(0, 4), '-', b.text.substring(0, 4))
+        return b.text.substring(0, 4) - a.text.substring(0, 4)
+      })]
+      newArr.unshift({ text: 'No registra', value: 'No registra' })
+      return newArr
     },
     async getUsuarios() {
       await getListUsuarios().then((response) => {
@@ -422,7 +514,14 @@ export default {
     /* Metodo para realizar la busqueda de los filtros ubicado en las columnas */
     filterHandler(value, row, column) {
       const property = column['property']
-      return row[property] === value
+      let valueProperty = row[property]
+      if (property === 'caducidad') {
+        if (valueProperty !== 'No registra') {
+          valueProperty = moment(valueProperty).format('DD/MM/YYYY').substring(3, 10)
+        }
+      }
+      // console.log('value -> ', value, ' row -> ', valueProperty, ' column -> ', property)
+      return valueProperty === value
     },
     /* Evento click boton permisos */
     handlePermisos(data) {

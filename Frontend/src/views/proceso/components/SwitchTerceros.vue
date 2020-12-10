@@ -126,10 +126,10 @@
                     <div slot="header" class="clearfix">
                       <span><b>{{ item.nombre }}</b></span>
                       <div style="float: right;">
-                        <el-button size="mini" type="danger" icon="el-icon-delete-solid" @click="handleDelete(item)" />
+                        <el-button size="mini" type="danger" icon="el-icon-delete-solid" :disabled="!abogadoEditar" @click="handleDelete(item)" />
                       </div>
                       <div style="float: right; padding-right: 2%;">
-                        <el-button size="mini" type="success" icon="el-icon-edit" @click="handleEditTercero(item)" />
+                        <el-button size="mini" type="success" icon="el-icon-edit" :disabled="!abogadoEditar" @click="handleEditTercero(item)" />
                       </div>
                     </div>
                     <div class="text item">
@@ -156,6 +156,7 @@
                 type="primary"
                 icon="el-icon-circle-plus"
                 round
+                :disabled="!abogadoEditar"
                 @click="handleAgregarTercero()"
               >Agregar</el-button>
             </el-col>
@@ -189,6 +190,10 @@ export default {
     idproceso: {
       type: String,
       required: true
+    },
+    editar: {
+      type: Boolean,
+      required: true
     }
   },
   data() {
@@ -208,7 +213,8 @@ export default {
       mensajeModalConfirm: '',
       deleteDialogVisible: false,
       terceroDel: '',
-      loading: false
+      loading: false,
+      abogadoEditar: this.editar
     }
   },
   watch: {
@@ -232,6 +238,7 @@ export default {
     }
   },
   created() {
+    console.log(':disabled="!abogadoEditar" -> ', this.abogadoEditar)
     this.getTerceros(this.idproceso)
   },
   methods: {
@@ -297,6 +304,7 @@ export default {
               this.$notify({
                 title: 'Buen trabajo!',
                 message: 'Tercero agregado con éxito',
+                position: 'bottom-left',
                 type: 'success',
                 duration: 2000
               })
@@ -305,6 +313,7 @@ export default {
               this.$notify({
                 title: 'Advertencia',
                 message: 'Doumento de usuario ya registrado!',
+                position: 'bottom-left',
                 type: 'warning',
                 duration: 2000
               })
@@ -315,6 +324,7 @@ export default {
               this.$notify({
                 title: 'Buen trabajo!',
                 message: 'Tercero actualizado con éxito',
+                position: 'bottom-left',
                 type: 'success',
                 duration: 2000
               })

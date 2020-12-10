@@ -165,7 +165,7 @@
               sortable
               :width="
                 column.prop === 'expediente'
-                  ? 150
+                  ? 180
                   : column.prop === 'idproceso'
                     ? 70
                     : column.prop === 'empresa'

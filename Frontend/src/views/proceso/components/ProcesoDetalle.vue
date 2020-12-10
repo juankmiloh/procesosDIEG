@@ -39,7 +39,7 @@
                   v-model="formProceso.expediente"
                   autocomplete="off"
                   placeholder="Ingrese No. del expediente"
-                  maxlength="15"
+                  maxlength="17"
                   show-word-limit
                   clearable
                   class="control-modal"
@@ -142,7 +142,7 @@
                 />
               </el-form-item>
 
-              <el-form-item label="Decisión" prop="decision">
+              <el-form-item label="Decisión final" prop="decision">
                 <el-select
                   v-model="formProceso.decision"
                   :disabled="!abogadoEditar"
@@ -210,7 +210,7 @@
                 </el-card>
               </el-col>
               <!-- Card terceros interesados -->
-              <switch-terceros v-if="id" :idproceso="id" />
+              <switch-terceros v-if="id" :idproceso="id" :editar="abogadoEditar" />
             </el-row>
           </el-col>
 
@@ -228,10 +228,10 @@
                   <el-form-item label="Caducidad" prop="caducidad">
                     <el-date-picker
                       v-model="formProceso.caducidad"
+                      :disabled="!abogadoEditar"
                       type="date"
                       placeholder="Seleccione una fecha"
                       class="control-modal"
-                      :disabled="!editarProceso"
                     />
                   </el-form-item>
                 </el-card>
@@ -352,6 +352,8 @@
               )
             "
             style="width: 100%; border: 1px solid #d8ebff"
+            height="80vh"
+            highlight-current-row
             border
           >
             <el-table-column
@@ -360,9 +362,16 @@
               :label="column.label"
               :prop="column.prop"
               align="center"
-              :width="column.prop === 'observacionEtapa' ? 300 : column.prop === 'nombreEtapa' ? 300 : column.prop === 'idetapa' ? 70 : ''"
+              :width="column.width"
               sortable
-            />
+            >
+              <template slot-scope="scope">
+                <div v-if="column.prop === 'estado'"><el-tag>{{ scope.row[column.prop] }}</el-tag></div>
+                <div v-if="column.prop === 'fechaInicioEtapa'"><i class="el-icon-time" /> {{ scope.row[column.prop] }}</div>
+                <div v-else-if="column.prop === 'fechaFinEtapa'"><i v-if="scope.row[column.prop] !== 'No registra'" class="el-icon-time" /> {{ scope.row[column.prop] }}</div>
+                <div v-else>{{ scope.row[column.prop] }}</div>
+              </template>
+            </el-table-column>
             <el-table-column align="center" width="230">
               <!-- eslint-disable-next-line -->
               <template slot="header" slot-scope="scope">
@@ -725,7 +734,7 @@ export default {
         this.loading = false
         this.showButtons = true
         this.formProceso = modelProceso
-        // console.log('Model proceso -> ', this.formProceso)
+        console.log('Model proceso -> ', this.formProceso)
         // set tagsview title
         this.setTagsViewTitle()
         // set page title

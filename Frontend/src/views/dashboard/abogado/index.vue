@@ -49,7 +49,7 @@ export default {
 
   .dashboard-abogado-container {
     background-color: #e3e3e3;
-    min-height: 100vh;
+    min-height: 89vh;
     padding: 50px 60px 0px;
     .pan-info-roles {
       font-size: 12px;
