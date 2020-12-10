@@ -1,13 +1,13 @@
 <template>
-  <el-col :md="24" style="border: 0px solid blue; padding-top: 10px">
-    <el-card class="box-card">
+  <el-col :md="24" style="border: 0px solid blue; padding-top: 10px;">
+    <el-card class="box-card" style="padding-bottom: 4px; padding-top: 9px;">
       <el-row>
         <el-col :md="19">
           <span>Terceros interesados</span>
           (<count-to :start-val="0" :end-val="countTerceros" :duration="5000" class="card-panel-num" />)
         </el-col>
         <el-col :md="countTerceros > 0 ? 4 : 5">
-          <el-switch v-model="valSwitch" active-color="#13ce66" :disabled="switchDisable" />
+          <el-switch v-model="valSwitch" active-color="#13ce66" :disabled="switchDisable || !abogadoEditar" />
         </el-col>
         <el-col v-if="countTerceros > 0" :md="countTerceros > 0 ? 1 : 0">
           <div>
@@ -235,10 +235,17 @@ export default {
           }
         }
       }
+    },
+    editar: {
+      deep: true,
+      handler(val) {
+        console.log('antes !abogadoEditar" -> ', this.editar)
+        this.abogadoEditar = val
+        console.log('despues !abogadoEditar" -> ', this.editar)
+      }
     }
   },
   created() {
-    console.log(':disabled="!abogadoEditar" -> ', this.abogadoEditar)
     this.getTerceros(this.idproceso)
   },
   methods: {
@@ -255,6 +262,7 @@ export default {
           this.$notify({
             title: 'Información',
             message: 'Se ha eliminado el tercero!',
+            position: 'top-left',
             type: 'success',
             duration: 2000
           })
@@ -304,7 +312,7 @@ export default {
               this.$notify({
                 title: 'Buen trabajo!',
                 message: 'Tercero agregado con éxito',
-                position: 'bottom-left',
+                position: 'top-left',
                 type: 'success',
                 duration: 2000
               })
@@ -313,7 +321,7 @@ export default {
               this.$notify({
                 title: 'Advertencia',
                 message: 'Doumento de usuario ya registrado!',
-                position: 'bottom-left',
+                position: 'top-left',
                 type: 'warning',
                 duration: 2000
               })
@@ -324,7 +332,7 @@ export default {
               this.$notify({
                 title: 'Buen trabajo!',
                 message: 'Tercero actualizado con éxito',
-                position: 'bottom-left',
+                position: 'top-left',
                 type: 'success',
                 duration: 2000
               })

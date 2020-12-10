@@ -204,7 +204,7 @@
                       :disabled="!abogadoEditar"
                       type="textarea"
                       class="control-modal"
-                      rows="3"
+                      rows="11"
                     />
                   </el-form-item>
                 </el-card>

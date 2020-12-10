@@ -171,7 +171,7 @@
                     : column.prop === 'empresa'
                       ? 270
                       : column.prop === 'causa'
-                        ? 270
+                        ? 300
                         : column.prop === 'fase' ? 100 : ''
               "
             />
