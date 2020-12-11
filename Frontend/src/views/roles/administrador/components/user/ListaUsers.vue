@@ -19,10 +19,10 @@
             <span style="font-size: small; color: #909399;"><b>{{ user.privilegio }}</b></span>
           </el-col>
           <el-col :span="3" :xs="24" style="padding-top: 5%; border: 0px solid red; text-align: center;">
-            <el-button type="danger" size="mini" icon="el-icon-delete-solid" @click="confirmDeleteUser(user)" />
+            <el-button type="danger" plain size="mini" icon="el-icon-delete" @click="confirmDeleteUser(user)" />
           </el-col>
           <el-col :span="3" :xs="24" style="padding-top: 5%; border: 0px solid red; text-align: center;">
-            <el-button type="success" size="mini" icon="el-icon-top-right" @click="returnUser(user)" />
+            <el-button style="border: 1px solid #67C23A;" type="success" plain size="mini" icon="el-icon-top-right" @click="returnUser(user)" />
           </el-col>
         </el-row>
       </el-card>

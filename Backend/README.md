@@ -8,6 +8,5 @@ python3 manage.py runserver -h 0.0.0.0 -p 5000
 <!-- $env:FLASK_ENV = "production" -->
 $env:FLASK_ENV = "development"
 python manage.py runserver -h 0.0.0.0 -p 5000
-<!-- python manage.py runserver -h 192.168.43.184 -p 5000 -->
 
 <!-- python3 manage.py runserver -h 0.0.0.0 -p 5000 -->

@@ -163,7 +163,7 @@
 
           <!-- Form datos causal -->
 
-          <el-col :md="8" style="border: 0px solid blue">
+          <el-col :md="9" style="border: 0px solid blue">
             <el-row :gutter="10">
               <el-col :md="24">
                 <el-card class="box-card">
@@ -175,15 +175,18 @@
                     <el-select
                       v-model="formProceso.causa"
                       :disabled="!abogadoEditar"
+                      multiple
+                      collapse-tags
                       filterable
                       placeholder="Seleccione una causal"
                       class="control-modal"
+                      size="medium"
                     >
                       <el-option
                         v-for="item in datosCausal"
                         :key="item.idcausal"
                         :label="item.nombre"
-                        :value="item.idcausal"
+                        :value="item.nombre"
                       />
                     </el-select>
                   </el-form-item>
@@ -216,16 +219,16 @@
 
           <!-- Datos caducidad / etapas -->
 
-          <el-col :md="8" style="border: 0px solid blue">
+          <el-col :md="7" style="border: 0px solid blue">
             <el-row :gutter="10">
               <!-- Card datos caducidad -->
 
-              <el-col :md="24" style="border: 0px solid blue">
+              <el-col :md="24" class="input-caducidad" style="border: 0px solid blue">
                 <el-card class="box-card">
                   <div slot="header" class="clearfix">
                     <span>Caducidad</span>
                   </div>
-                  <el-form-item label="Caducidad" prop="caducidad">
+                  <el-form-item label="" prop="caducidad">
                     <el-date-picker
                       v-model="formProceso.caducidad"
                       :disabled="!abogadoEditar"
@@ -241,31 +244,49 @@
 
               <el-col
                 :md="24"
+                class="input-etapas"
                 style="border: 0px solid blue; padding-top: 10px"
               >
-                <el-card class="box-card">
+                <el-card class="box-card" style="padding: 0; margin: 0;">
                   <div slot="header" class="clearfix">
                     <span>Etapas</span>
                   </div>
-                  <el-form-item label="Actual" prop="etapa">
-                    <el-input
-                      v-model="formProceso.etapa"
-                      autocomplete="off"
-                      placeholder="Etapa actual"
-                      style="width: 18em"
-                      readonly
-                    />
-                  </el-form-item>
-
-                  <el-form-item label="Siguiente" prop="prox_etapa">
-                    <el-input
-                      v-model="prox_etapa"
-                      autocomplete="off"
-                      placeholder="Siguiente etapa"
-                      style="width: 18em"
-                      readonly
-                    />
-                  </el-form-item>
+                  <el-row>
+                    <el-col :span="24" style="border: 0px solid red;">
+                      <el-form-item label="" prop="etapa">
+                        <el-row>
+                          <el-col :span="24">
+                            <label style="color: #606266">Actual</label>
+                          </el-col>
+                          <el-col :span="24">
+                            <el-input
+                              v-model="formProceso.etapa"
+                              autocomplete="off"
+                              placeholder="Etapa actual"
+                              readonly
+                            />
+                          </el-col>
+                        </el-row>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="24" style="border: 0px solid;">
+                      <el-form-item label="" prop="prox_etapa">
+                        <el-row>
+                          <el-col :span="24">
+                            <label style="color: #606266">Siguiente</label>
+                          </el-col>
+                          <el-col :span="24">
+                            <el-input
+                              v-model="prox_etapa"
+                              autocomplete="off"
+                              placeholder="Siguiente etapa"
+                              readonly
+                            />
+                          </el-col>
+                        </el-row>
+                      </el-form-item>
+                    </el-col>
+                  </el-row>
                 </el-card>
               </el-col>
 
@@ -279,14 +300,14 @@
                 >
                   <el-button
                     v-show="showOnlyAdmin"
-                    style="border: 0px solid #67c23a; width: 10em"
+                    style="border: 0px solid #67c23a; width: 9em"
                     :type="editarProceso ? 'danger' : 'primary'"
                     :icon="editarProceso ? 'el-icon-error' : 'el-icon-edit'"
                     @click="editarProceso = !editarProceso; editarForm();"
                   >{{ textEditarProceso }}</el-button>
                   <el-button
                     :disabled="!abogadoEditar"
-                    style="width: 10em"
+                    style="width: 9em"
                     :type="editarProceso ? 'primary' : 'success'"
                     :icon="editarProceso ? 'el-icon-circle-check' : 'el-icon-check'"
                     @click="submitForm('formProceso')"
@@ -337,70 +358,84 @@
           </div>
         </sticky>
       </div>
-      <div class="app-container" style="background: #f7fbff;">
-        <el-card class="box-card">
-          <el-table
-            v-loading="loading"
-            :z-index="0"
-            :data="
-              datosEtapaProceso.filter(
-                (data) =>
-                  !busquedaEtapa ||
-                  data.nombreEtapa
-                    .toLowerCase()
-                    .includes(busquedaEtapa.toLowerCase())
-              )
-            "
-            style="width: 100%; border: 1px solid #d8ebff"
-            height="80vh"
-            highlight-current-row
-            border
-          >
-            <el-table-column
-              v-for="column in tableColumns"
-              :key="column.label"
-              :label="column.label"
-              :prop="column.prop"
-              align="center"
-              :width="column.width"
-              sortable
-            >
-              <template slot-scope="scope">
-                <div v-if="column.prop === 'estado'"><el-tag>{{ scope.row[column.prop] }}</el-tag></div>
-                <div v-if="column.prop === 'fechaInicioEtapa'"><i class="el-icon-time" /> {{ scope.row[column.prop] }}</div>
-                <div v-else-if="column.prop === 'fechaFinEtapa'"><i v-if="scope.row[column.prop] !== 'No registra'" class="el-icon-time" /> {{ scope.row[column.prop] }}</div>
-                <div v-else>{{ scope.row[column.prop] }}</div>
-              </template>
-            </el-table-column>
-            <el-table-column align="center" width="230">
-              <!-- eslint-disable-next-line -->
-              <template slot="header" slot-scope="scope">
-                <el-input
-                  v-model="busquedaEtapa"
-                  size="mini"
-                  placeholder="Nombre etapa"
-                />
-              </template>
-              <template slot-scope="scope">
-                <el-button
-                  :disabled="!abogadoEditar"
-                  style="border: 1px solid #409eff"
-                  size="mini"
-                  type="success"
-                  icon="el-icon-edit"
-                  @click="handleEditarEtapa(scope);"
-                ><b>Editar</b></el-button>
-                <el-button
-                  :disabled="scope.row.nombreEtapa === 'Memorando IG' || !abogadoEditar"
-                  size="mini"
-                  type="danger"
-                  icon="el-icon-delete-solid"
-                  @click="handleBorrarEtapa(scope.row)"
-                />
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-card>
+      <div class="app-container" style="background: #f7fbff; padding-top: 0;">
+        <el-row :gutter="20">
+          <el-card v-loading="loadingEtapa" style="overflow-y: scroll; height: 86vh;">
+            <el-col v-for="item in datosEtapaProceso" :key="item.idtercero" :span="6" style="border: 0px solid red; padding-top: 1%; padding-bottom: 1%;">
+              <el-card class="card-etapa" style="border: 1px solid #DCDFE6;">
+                <div slot="header" class="clearfix" style="border: 0px solid red; padding: 0;">
+                  <div style="border-radius: 3px;padding-top: 2%;padding-right: 4%;height: 8vh;background: linear-gradient(38deg, rgba(255,255,255,1) 84%, rgba(33,133,208,1) 85%, rgba(33,133,208,1) 86%);">
+                    <el-row>
+                      <el-col :span="24" style="border: 0px solid red; text-align: right; color: white;">
+                        <b>{{ item.idetapa }}</b>
+                      </el-col>
+                      <el-col :span="24" style="border: 0px solid red; padding-left: 8%; color: #303133;">
+                        <b>{{ item.nombreEtapa }}</b>
+                      </el-col>
+                    </el-row>
+                  </div>
+                </div>
+                <el-row>
+                  <el-col :span="24" style="border: 0px solid; padding: 5% 10%;">
+                    <div class="text item">
+                      <span style="color: #303133;"><b>{{ item.radicadoEtapa }}</b></span>
+                    </div>
+                    <div class="text item">
+                      <el-row>
+                        <el-col :span="11">
+                          <span style="color: #303133;"><b>Inicio</b></span>
+                        </el-col>
+                        <el-col :span="13">
+                          <span style="color: #606266;"><i class="el-icon-time" /> {{ item.fechaInicioEtapa }}</span>
+                        </el-col>
+                      </el-row>
+                    </div>
+                    <div class="text item">
+                      <el-row>
+                        <el-col :span="11">
+                          <span style="color: #303133;"><b>Final</b></span>
+                        </el-col>
+                        <el-col :span="13">
+                          <span style="color: #606266;"><i v-if="item.fechaFinEtapa !== 'No registra'" class="el-icon-time" /> {{ item.fechaFinEtapa }}</span>
+                        </el-col>
+                      </el-row>
+                    </div>
+                    <el-divider />
+                    <div class="text item">
+                      <span style="color: #303133;"><b>Observación</b></span><br><br>
+                      <el-input
+                        v-model="item.observacionEtapa"
+                        type="textarea"
+                        class="control-modal"
+                        rows="6"
+                        readonly
+                      />
+                    </div>
+                  </el-col>
+                  <el-col :span="24" style="border: 0px solid; text-align: center; padding: 2%; background: #F2F6FC;">
+                    <el-button
+                      :disabled="!abogadoEditar"
+                      style="border: 1px solid #67C23A"
+                      size="mini"
+                      type="success"
+                      plain
+                      icon="el-icon-edit"
+                      @click="handleEditarEtapa(item);"
+                    ><b>Editar</b></el-button>
+                    <el-button
+                      :disabled="item.nombreEtapa === 'Memorando IG' || !abogadoEditar"
+                      size="mini"
+                      type="danger"
+                      plain
+                      icon="el-icon-delete"
+                      @click="handleBorrarEtapa(item)"
+                    />
+                  </el-col>
+                </el-row>
+              </el-card>
+            </el-col>
+          </el-card>
+        </el-row>
       </div>
     </el-dialog>
 
@@ -586,7 +621,8 @@ export default {
       showButtons: false,
       showButtonsModal: false,
       showOnlyAdmin: false,
-      abogadoEditar: false
+      abogadoEditar: false,
+      loadingEtapa: false
     }
   },
   computed: {
@@ -669,6 +705,7 @@ export default {
     },
     async getCausal() {
       await getListCausal().then((response) => {
+        console.log('causales - > ', response)
         this.datosCausal = response
       })
     },
@@ -753,7 +790,7 @@ export default {
         modelProceso.estado = await this.datosEstado.find((estado) => estado.nombre === modelProceso.estado).idestado
         modelProceso.empresa = await this.datosEmpresas.find((empresa) => empresa.nombre === modelProceso.empresa.toUpperCase()).id_empresa
         modelProceso.servicio = await this.datosServicios.find((servicio) => servicio.servicio === modelProceso.servicio).idservicio
-        modelProceso.causa = await this.datosCausal.find((causal) => causal.nombre === modelProceso.causa).idcausal
+        // modelProceso.causa = await this.datosCausal.find((causal) => causal.nombre === modelProceso.causa).idcausal
         modelProceso.decision = await this.datosDecision.find((decision) => decision.nombre === modelProceso.decision).iddecision
         modelProceso.tipo_sancion = await this.datosTiposancion.find((tiposancion) => tiposancion.nombre === modelProceso.tipo_sancion).idtiposancion
       } else { // Si el proceso NO TRAE toda lainformacion (Es nuevo)
@@ -788,6 +825,7 @@ export default {
       this.showButtonsModal = false
     },
     clickAgregarEtapa() {
+      this.loadingEtapa = true
       this.editarEtapa = false
       this.textEditarEtapa = 'Agregar'
       this.formAgregar = {}
@@ -827,6 +865,7 @@ export default {
               await this.getEtapas()
               this.fetchData(this.formProceso.idproceso)
               this.loading = false
+              this.loadingEtapa = false
             })
           } else {
             console.log('error submit!!')
@@ -855,6 +894,7 @@ export default {
               await this.getEtapas()
               this.fetchData(this.formProceso.idproceso)
               this.loading = false
+              this.loadingEtapa = false
             })
           } else {
             // console.log('error submit!!')
@@ -872,9 +912,11 @@ export default {
         this.$refs['formAgregar'].resetFields()
       }
       this.msgAgregarEtapaVisible = false
+      this.loadingEtapa = false
       // console.log('closeModalAgregar -> ', this.$refs['formAgregar'])
     },
     handleEditarEtapa(etapa) {
+      this.loadingEtapa = true
       this.editarEtapa = true
       this.textEditarEtapa = 'Actualizar'
       this.formAgregar = CONSTANTS.formAgregarEtapa
@@ -885,12 +927,12 @@ export default {
       // console.log('clickAgregarEtapa -> ', this.$refs['formAgregar'])
       const modelEditarEtapa = {}
       try {
-        modelEditarEtapa.radicadoEtapa = etapa.row.radicadoEtapa
-        modelEditarEtapa.etapa = etapa.row.nombreEtapa
-        modelEditarEtapa.observacionEtapa = etapa.row.observacionEtapa
-        modelEditarEtapa.fechaInicioEtapa = moment(etapa.row.fechaInicioEtapa).format('YYYY/MM/DD HH:mm:ss')
-        if (etapa.row.fechaFinEtapa !== 'No registra') {
-          modelEditarEtapa.fechaFinEtapa = moment(etapa.row.fechaFinEtapa).format('YYYY/MM/DD HH:mm:ss')
+        modelEditarEtapa.radicadoEtapa = etapa.radicadoEtapa
+        modelEditarEtapa.etapa = etapa.nombreEtapa
+        modelEditarEtapa.observacionEtapa = etapa.observacionEtapa
+        modelEditarEtapa.fechaInicioEtapa = moment(etapa.fechaInicioEtapa).format('YYYY/MM/DD HH:mm:ss')
+        if (etapa.fechaFinEtapa !== 'No registra') {
+          modelEditarEtapa.fechaFinEtapa = moment(etapa.fechaFinEtapa).format('YYYY/MM/DD HH:mm:ss')
         } else {
           modelEditarEtapa.fechaFinEtapa = null
         }
@@ -906,6 +948,7 @@ export default {
       this.deleteDialogVisible = true
     },
     async borrarEtapa() {
+      this.loadingEtapa = true
       const modelEtapaDel = {
         idproceso: this.formProceso.idproceso,
         radicadoEtapa: this.delradEtapa
@@ -916,13 +959,14 @@ export default {
         this.$notify({
           title: 'Información',
           message: 'Se ha eliminado la etapa',
-          type: 'warning',
+          type: 'success',
           duration: 2000
         })
         await this.getEtapasProceso(this.formProceso.idproceso)
         await this.getEtapas()
         this.fetchData(this.formProceso.idproceso)
         this.loading = false
+        this.loadingEtapa = false
       })
     },
     async selectServicio(idservicio) {
@@ -1014,9 +1058,34 @@ export default {
 .control-modal-agregar {
   width: 25em;
 }
+
+.dashboard-editor-container {
+  // padding: 32px;
+  background-color: rgb(240, 242, 245);
+  position: relative;
+  .github-corner {
+    position: absolute;
+    top: 0px;
+    border: 0;
+    right: 0;
+  }
+  .chart-wrapper {
+    background: #fff;
+    // padding: 16px 16px 0;
+    // margin-bottom: 32px;
+  }
+}
 </style>
 
 <style lang="scss">
+.card-etapa .el-card__header {
+  padding: 0;
+}
+
+.card-etapa .el-card__body {
+  padding: 0;
+}
+
 .dialog-class-ldetalle .el-dialog__header {
   border-radius: 10px;
   display: none;
@@ -1030,5 +1099,13 @@ export default {
 
 .dialog-color {
   background: #f7fbff;
+}
+
+.input-caducidad .el-form-item .el-form-item__content {
+  margin-left: 0% !important;
+}
+
+.input-etapas .el-form-item .el-form-item__content {
+  margin-left: 0% !important;
 }
 </style>

@@ -22,13 +22,13 @@ export const CONSTANTS = {
         {
             label: 'Empresa',
             prop: 'empresa',
-            width: 185,
+            width: 245,
             filter: 'filterEmpresa'
         },
         {
             label: 'Caducidad',
             prop: 'caducidad',
-            width: 130,
+            width: 135,
             filter: 'filterCaducidad'
         },
         {
@@ -40,7 +40,7 @@ export const CONSTANTS = {
         {
             label: 'Abogado',
             prop: 'usuario',
-            width: 145,
+            width: 150,
             filter: 'filterAbogado'
         }
     ],
@@ -154,6 +154,7 @@ export const CONSTANTS = {
         tipo_sancion: '',
         decision: '',
         sancion: '',
+        causa: [],
         descripcion: ''
     },
     rulesDetalleProceso: {

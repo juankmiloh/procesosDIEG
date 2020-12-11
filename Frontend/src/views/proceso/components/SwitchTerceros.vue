@@ -126,10 +126,10 @@
                     <div slot="header" class="clearfix">
                       <span><b>{{ item.nombre }}</b></span>
                       <div style="float: right;">
-                        <el-button size="mini" type="danger" icon="el-icon-delete-solid" :disabled="!abogadoEditar" @click="handleDelete(item)" />
+                        <el-button size="mini" type="danger" icon="el-icon-delete" :disabled="!abogadoEditar" @click="handleDelete(item)" />
                       </div>
                       <div style="float: right; padding-right: 2%;">
-                        <el-button size="mini" type="success" icon="el-icon-edit" :disabled="!abogadoEditar" @click="handleEditTercero(item)" />
+                        <el-button style="border: 1px solid #67C23A;" size="mini" type="success" icon="el-icon-edit" :disabled="!abogadoEditar" @click="handleEditTercero(item)"><b>Editar</b></el-button>
                       </div>
                     </div>
                     <div class="text item">
@@ -262,7 +262,7 @@ export default {
           this.$notify({
             title: 'Información',
             message: 'Se ha eliminado el tercero!',
-            position: 'top-left',
+            position: 'bottom-right',
             type: 'success',
             duration: 2000
           })
@@ -312,7 +312,7 @@ export default {
               this.$notify({
                 title: 'Buen trabajo!',
                 message: 'Tercero agregado con éxito',
-                position: 'top-left',
+                position: 'bottom-right',
                 type: 'success',
                 duration: 2000
               })
@@ -321,7 +321,7 @@ export default {
               this.$notify({
                 title: 'Advertencia',
                 message: 'Doumento de usuario ya registrado!',
-                position: 'top-left',
+                position: 'bottom-right',
                 type: 'warning',
                 duration: 2000
               })
@@ -332,7 +332,7 @@ export default {
               this.$notify({
                 title: 'Buen trabajo!',
                 message: 'Tercero actualizado con éxito',
-                position: 'top-left',
+                position: 'bottom-right',
                 type: 'success',
                 duration: 2000
               })

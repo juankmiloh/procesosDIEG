@@ -14,7 +14,7 @@ class ProcesosService:
         procesos = []
         data = procesos_repository.get_procesos_bd()
         for result in data:
-            print('-------------------- CADUCIDAD -----------------', result[2])
+            # print('-------------------- CADUCIDAD -----------------', result[2])
     
             procesos.append(
                 {
@@ -35,7 +35,7 @@ class ProcesosService:
         data = procesos_repository.get_proceso_inicial_bd(idProceso)
         for result in data:
             caducidad = None
-            print('-------------------- CADUCIDAD -----------------', result[2])
+            # print('-------------------- CADUCIDAD -----------------', result[2])
 
             if result[2]:
                 caducidad = str(result[2])
@@ -60,7 +60,7 @@ class ProcesosService:
         data = procesos_repository.get_proceso_bd(idProceso)
         for result in data:
             caducidad = None
-            print('-------------------- CADUCIDAD -----------------', result[2])
+            print('-------------------- DATA PROCESO -----------------', result)
 
             if result[2]:
                 caducidad = str(result[2])

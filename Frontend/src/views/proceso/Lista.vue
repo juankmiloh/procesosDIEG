@@ -227,14 +227,14 @@
 
     <div class="app-container">
       <el-card class="box-card">
-        <el-input v-model="filename" placeholder="Nombre de archivo (defecto lista-excel)" style="width:300px;" prefix-icon="el-icon-document" />
-        <el-button :loading="downloadLoading" style="margin-bottom:20px" type="primary" icon="el-icon-document" @click="handleDownload">
-          Exportar a Excel los procesos seleccionados
+        <!-- <el-input v-model="filename" placeholder="Nombre de archivo (defecto lista-excel)" size="mini" style="width:300px;" prefix-icon="el-icon-document" /> -->
+        <el-button :loading="downloadLoading" style="margin-bottom:20px; border: 2px solid #67C23A;" size="mini" type="success" plain icon="el-icon-download" @click="handleDownload">
+          <span><b>Exportar a Excel los procesos seleccionados</b></span>
         </el-button>
         <el-table
           ref="multipleTable"
           v-loading="loading"
-          style="width: 100%; border: 1px solid #d8ebff"
+          style="width: 100%; border: 1px solid #d8ebff;"
           height="65vh"
           element-loading-text=""
           border
@@ -256,7 +256,7 @@
             :filter-method="filterHandler"
           >
             <template slot-scope="scope">
-              <div v-if="column.prop === 'usuario'"><el-tag>{{ scope.row[column.prop] }}</el-tag></div>
+              <div v-if="column.prop === 'usuario'"><el-tag type="primary">{{ scope.row[column.prop] }}</el-tag></div>
               <div v-else-if="column.prop === 'caducidad'"><i class="el-icon-time" /> {{ convertDate(scope.row[column.prop]) }}</div>
               <div v-else>{{ scope.row[column.prop] }}</div>
             </template>
@@ -274,7 +274,7 @@
             <template slot-scope="scope">
               <el-button
                 v-show="showOnlyAdmin"
-                style="border: 1px solid #409eff"
+                style="border: 1px solid #409eff;"
                 size="mini"
                 icon="el-icon-user-solid"
                 @click="handlePermisos(scope.row)"
@@ -392,7 +392,6 @@ export default {
           const filterVal = ['expediente', 'servicio', 'empresa', 'caducidad', 'estado', 'usuario']
           const list = this.multipleSelection
           const data = this.formatJson(filterVal, list)
-          console.log(data)
           excel.export_json_to_excel({
             header: tHeader,
             data,
@@ -561,6 +560,10 @@ export default {
       })
     },
     async selectServicio(idservicio) {
+      if (this.formAgregar.empresa) {
+        this.disableEmpresas = true
+        delete this.formAgregar.empresa
+      }
       if (idservicio) {
         await getListEmpresas(idservicio).then((response) => {
           this.datosEmpresas = response.items

@@ -11,24 +11,9 @@
       </div>
     </sticky>
 
-    <div v-loading="loadingEmpresas" class="dashboard-editor-container">
-      <el-row v-if="!loadingEmpresas && pieChartDataEmpresas.datos.length > 0" :gutter="32">
-        <el-col :xs="24" :sm="24" :lg="12">
-          <div v-loading="loadingEmpresas" class="chart-wrapper">
-            <el-row>
-              <el-col :md="23">
-                <div style="text-align: center;"><label for="">Empresas</label></div>
-              </el-col>
-              <el-col :md="1">
-                <div style="cursor: pointer;" @click="handleDataPie(pieChartDataEmpresas, 'empresas')">
-                  <i class="el-icon-link" />
-                </div>
-              </el-col>
-            </el-row>
-            <pie-chart :chart-data="pieChartDataEmpresas" style="height: 45vh;" />
-          </div>
-        </el-col>
-        <el-col v-if="!loadingCausas && pieChartDataCausas.datos.length > 0" :xs="24" :sm="24" :lg="12">
+    <div v-loading="loadingEstado" class="dashboard-editor-container">
+      <el-row v-if="!loadingEstado && pieChartDataEstado.datos.length > 0" :gutter="32">
+        <!-- <el-col v-if="!loadingCausas && pieChartDataCausas.datos.length > 0" :xs="24" :sm="24" :lg="12">
           <div v-loading="loadingCausas" class="chart-wrapper">
             <el-row>
               <el-col :md="23">
@@ -42,7 +27,7 @@
             </el-row>
             <pie-chart :chart-data="pieChartDataCausas" style="height: 45vh;" />
           </div>
-        </el-col>
+        </el-col> -->
         <el-col :xs="24" :sm="24" :lg="12">
           <div v-loading="loadingEstado" class="chart-wrapper">
             <el-row>
@@ -71,6 +56,21 @@
               </el-col>
             </el-row>
             <pie-chart :chart-data="pieChartDataUsuarios" style="height: 45vh;" />
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :lg="24">
+          <div v-loading="loadingEmpresas" class="chart-wrapper">
+            <el-row>
+              <el-col :md="23">
+                <div style="text-align: center;"><label for="">Empresas</label></div>
+              </el-col>
+              <el-col :md="1">
+                <div style="cursor: pointer;" @click="handleDataPie(pieChartDataEmpresas, 'empresas')">
+                  <i class="el-icon-link" />
+                </div>
+              </el-col>
+            </el-row>
+            <pie-chart :chart-data="pieChartDataEmpresas" style="height: 60vh;" />
           </div>
         </el-col>
       </el-row>
@@ -275,7 +275,7 @@ export default {
     },
     async getData(idservicio) {
       this.getDataEmpresas(idservicio)
-      this.getDataCausas(idservicio)
+      // this.getDataCausas(idservicio)
       this.getDataEstado(idservicio)
       this.getServicios(idservicio)
       this.getDataUsuarios(idservicio)
