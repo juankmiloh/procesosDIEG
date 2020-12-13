@@ -228,7 +228,7 @@
     <div class="app-container">
       <el-card class="box-card">
         <!-- <el-input v-model="filename" placeholder="Nombre de archivo (defecto lista-excel)" size="mini" style="width:300px;" prefix-icon="el-icon-document" /> -->
-        <el-button :loading="downloadLoading" style="margin-bottom:20px; border: 2px solid #67C23A;" size="mini" type="success" plain icon="el-icon-download" @click="handleDownload">
+        <el-button :loading="downloadLoading" round style="margin-bottom:20px; border: 1px solid #67C23A;" size="mini" type="success" plain icon="el-icon-download" @click="handleDownload">
           <span><b>Exportar a Excel los procesos seleccionados</b></span>
         </el-button>
         <el-table

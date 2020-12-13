@@ -337,104 +337,112 @@
         >
           <div style="border: 0px solid red">
 
-            <!-- Boton para agregar nueva etapa al aplicativo -->
-            <transition name="el-zoom-in-center">
-              <div v-show="showButtonsModal">
-                <el-button
-                  :disabled="!abogadoEditar"
-                  style="border: 2px solid #67c23a"
-                  size="medium"
-                  icon="el-icon-circle-plus"
-                  @click="clickAgregarEtapa();"
-                >Agregar etapa</el-button>
-                <el-button
-                  style="border: 1px solid #67c23a"
-                  type="warning"
-                  size="medium"
-                  @click="closeModalEtapa();"
-                >Cerrar</el-button>
-              </div>
-            </transition>
+            <div style="text-align: center; color: white">
+              <el-row>
+                <el-col :span="20" style="padding-left: 15%;">
+                  <label style="font-size: x-large">Etapas expediente {{ formProceso.expediente }}</label>
+                </el-col>
+                <el-col :span="4">
+                  <!-- Boton para agregar nueva etapa al aplicativo -->
+                  <transition name="el-zoom-in-center">
+                    <div v-show="showButtonsModal">
+                      <el-button
+                        :disabled="!abogadoEditar"
+                        style="border: 2px solid #67c23a"
+                        size="medium"
+                        icon="el-icon-circle-plus"
+                        @click="clickAgregarEtapa();"
+                      >Agregar etapa</el-button>
+                      <el-button
+                        style="border: 1px solid #67c23a"
+                        type="warning"
+                        size="medium"
+                        @click="closeModalEtapa();"
+                      >Cerrar</el-button>
+                    </div>
+                  </transition>
+                </el-col>
+              </el-row>
+            </div>
           </div>
         </sticky>
       </div>
-      <div class="app-container" style="background: #f7fbff; padding-top: 0;">
-        <el-row :gutter="20">
-          <el-card v-loading="loadingEtapa" style="overflow-y: scroll; height: 86vh;">
-            <el-col v-for="item in datosEtapaProceso" :key="item.idtercero" :span="6" style="border: 0px solid red; padding-top: 1%; padding-bottom: 1%;">
-              <el-card class="card-etapa" style="border: 1px solid #DCDFE6;">
-                <div slot="header" class="clearfix" style="border: 0px solid red; padding: 0;">
-                  <div style="border-radius: 3px;padding-top: 2%;padding-right: 4%;height: 8vh;background: linear-gradient(38deg, rgba(255,255,255,1) 84%, rgba(33,133,208,1) 85%, rgba(33,133,208,1) 86%);">
+      <div v-loading="loadingEtapa" class="app-container" style="background: #f7fbff; padding-top: 0;">
+        <el-row :gutter="30" style="border: 0px solid; padding-left: 6%; padding-right: 6%; overflow-y: scroll; height: 89vh;">
+          <el-col v-for="item in datosEtapaProceso" :key="item.idtercero" :span="6" style="border: 0px solid red; padding-top: 1%; padding-bottom: 1.5%;">
+            <el-card class="card-etapa" style="border: 1px solid #DCDFE6;">
+              <div slot="header" class="clearfix" style="border: 0px solid red; padding: 0;">
+                <div style="border-radius: 3px;padding-top: 2%;padding-right: 4%;height: 8vh;background: linear-gradient(38deg, rgba(255,255,255,1) 84%, rgba(33,133,208,1) 85%, rgba(33,133,208,1) 86%);">
+                  <el-row>
+                    <el-col :span="24" style="border: 0px solid red; text-align: right; color: white;">
+                      <b>{{ item.idetapa }}</b>
+                    </el-col>
+                    <el-col :span="24" style="border: 0px solid red; padding-left: 8%; color: #2184d0;">
+                      <b>{{ item.nombreEtapa }}</b>
+                    </el-col>
+                  </el-row>
+                </div>
+              </div>
+              <el-row>
+                <el-col :span="24" style="border: 0px solid; padding: 5% 10%;">
+                  <div class="text item" style="text-align: center; padding-top: 3%;">
+                    <span style="color: #303133;"><b>{{ item.radicadoEtapa }}</b></span>
+                    <el-divider />
+                  </div>
+                  <div class="text item">
                     <el-row>
-                      <el-col :span="24" style="border: 0px solid red; text-align: right; color: white;">
-                        <b>{{ item.idetapa }}</b>
+                      <el-col :span="7">
+                        <span style="color: #303133;"><b>Inicio</b></span>
                       </el-col>
-                      <el-col :span="24" style="border: 0px solid red; padding-left: 8%; color: #303133;">
-                        <b>{{ item.nombreEtapa }}</b>
+                      <el-col :span="17">
+                        <span style="color: #606266;"><i class="el-icon-time" /> {{ item.fechaInicioEtapa }}</span>
                       </el-col>
                     </el-row>
                   </div>
-                </div>
-                <el-row>
-                  <el-col :span="24" style="border: 0px solid; padding: 5% 10%;">
-                    <div class="text item">
-                      <span style="color: #303133;"><b>{{ item.radicadoEtapa }}</b></span>
-                    </div>
-                    <div class="text item">
-                      <el-row>
-                        <el-col :span="11">
-                          <span style="color: #303133;"><b>Inicio</b></span>
-                        </el-col>
-                        <el-col :span="13">
-                          <span style="color: #606266;"><i class="el-icon-time" /> {{ item.fechaInicioEtapa }}</span>
-                        </el-col>
-                      </el-row>
-                    </div>
-                    <div class="text item">
-                      <el-row>
-                        <el-col :span="11">
-                          <span style="color: #303133;"><b>Final</b></span>
-                        </el-col>
-                        <el-col :span="13">
-                          <span style="color: #606266;"><i v-if="item.fechaFinEtapa !== 'No registra'" class="el-icon-time" /> {{ item.fechaFinEtapa }}</span>
-                        </el-col>
-                      </el-row>
-                    </div>
-                    <el-divider />
-                    <div class="text item">
-                      <span style="color: #303133;"><b>Observación</b></span><br><br>
-                      <el-input
-                        v-model="item.observacionEtapa"
-                        type="textarea"
-                        class="control-modal"
-                        rows="6"
-                        readonly
-                      />
-                    </div>
-                  </el-col>
-                  <el-col :span="24" style="border: 0px solid; text-align: center; padding: 2%; background: #F2F6FC;">
-                    <el-button
-                      :disabled="!abogadoEditar"
-                      style="border: 1px solid #67C23A"
-                      size="mini"
-                      type="success"
-                      plain
-                      icon="el-icon-edit"
-                      @click="handleEditarEtapa(item);"
-                    ><b>Editar</b></el-button>
-                    <el-button
-                      :disabled="item.nombreEtapa === 'Memorando IG' || !abogadoEditar"
-                      size="mini"
-                      type="danger"
-                      plain
-                      icon="el-icon-delete"
-                      @click="handleBorrarEtapa(item)"
+                  <div class="text item">
+                    <el-row>
+                      <el-col :span="7">
+                        <span style="color: #303133;"><b>Final</b></span>
+                      </el-col>
+                      <el-col :span="17">
+                        <span style="color: #606266;"><i v-if="item.fechaFinEtapa !== 'No registra'" class="el-icon-time" /> {{ item.fechaFinEtapa }}</span>
+                      </el-col>
+                    </el-row>
+                  </div>
+                  <el-divider />
+                  <div class="text item">
+                    <span style="color: #303133;"><b>Observación</b></span><br><br>
+                    <el-input
+                      v-model="item.observacionEtapa"
+                      type="textarea"
+                      class="control-modal"
+                      rows="4"
+                      readonly
                     />
-                  </el-col>
-                </el-row>
-              </el-card>
-            </el-col>
-          </el-card>
+                  </div>
+                </el-col>
+                <el-col :span="24" style="border: 0px solid; text-align: center; padding: 2%; background: #F2F6FC;">
+                  <el-button
+                    :disabled="!abogadoEditar"
+                    style="border: 1px solid #67C23A"
+                    size="mini"
+                    type="success"
+                    plain
+                    icon="el-icon-edit"
+                    @click="handleEditarEtapa(item);"
+                  ><b>Editar</b></el-button>
+                  <el-button
+                    :disabled="item.nombreEtapa === 'Memorando IG' || !abogadoEditar"
+                    size="mini"
+                    type="danger"
+                    plain
+                    icon="el-icon-delete"
+                    @click="handleBorrarEtapa(item)"
+                  />
+                </el-col>
+              </el-row>
+            </el-card>
+          </el-col>
         </el-row>
       </div>
     </el-dialog>
@@ -482,6 +490,18 @@
             </el-select>
           </el-form-item>
 
+          <el-form-item label="Radicado" prop="radicadoEtapa">
+            <el-input
+              v-model="formAgregar.radicadoEtapa"
+              autocomplete="off"
+              placeholder="Ingrese No. del radicado"
+              maxlength="14"
+              show-word-limit
+              clearable
+              class="control-modal-agregar"
+            />
+          </el-form-item>
+
           <el-form-item label="Fecha inicio" prop="fechaInicioEtapa">
             <el-date-picker
               v-model="formAgregar.fechaInicioEtapa"
@@ -505,7 +525,7 @@
               v-model="formAgregar.observacionEtapa"
               type="textarea"
               class="control-modal-agregar"
-              rows="8"
+              rows="7"
             />
           </el-form-item>
 
@@ -614,6 +634,7 @@ export default {
       /* Si es o no visible el cuadro de confirmación de eliminación */
       deleteDialogVisible: false,
       delradEtapa: '',
+      delIdetapa: '',
       delEtapa: '',
       estampillaEtapa: '',
       editarEtapa: false,
@@ -705,7 +726,7 @@ export default {
     },
     async getCausal() {
       await getListCausal().then((response) => {
-        console.log('causales - > ', response)
+        // console.log('causales - > ', response)
         this.datosCausal = response
       })
     },
@@ -825,7 +846,6 @@ export default {
       this.showButtonsModal = false
     },
     clickAgregarEtapa() {
-      this.loadingEtapa = true
       this.editarEtapa = false
       this.textEditarEtapa = 'Agregar'
       this.formAgregar = {}
@@ -839,8 +859,9 @@ export default {
         const modelAgregarEtapa = this.formAgregar
         this.$refs['formAgregar'].validate(async(valid) => {
           if (valid) {
+            this.loadingEtapa = true
             modelAgregarEtapa.idproceso = this.formProceso.idproceso
-            modelAgregarEtapa.radicadoEtapa = `P${this.formProceso.idproceso}${this.estampillaEtapa}`
+            // modelAgregarEtapa.radicadoEtapa = `P${this.formProceso.idproceso}${this.estampillaEtapa}`
             if (!modelAgregarEtapa.hasOwnProperty('fechaFinEtapa')) {
               // console.log('esta vacio fecha fin!')
               modelAgregarEtapa.fechaFinEtapa = null
@@ -876,7 +897,7 @@ export default {
         const modelEditarEtapa = this.formAgregar
         this.$refs['formAgregar'].validate(async(valid) => {
           if (valid) {
-            this.msgAgregarEtapaVisible = false
+            this.loadingEtapa = true
             this.loading = true
             this.datosEtapa = []
             delete modelEditarEtapa['etapa']
@@ -890,6 +911,7 @@ export default {
                 type: 'success',
                 duration: 2000
               })
+              this.msgAgregarEtapaVisible = false
               await this.getEtapasProceso(this.formProceso.idproceso)
               await this.getEtapas()
               this.fetchData(this.formProceso.idproceso)
@@ -897,7 +919,7 @@ export default {
               this.loadingEtapa = false
             })
           } else {
-            // console.log('error submit!!')
+            console.log('error submit!!')
             return false
           }
         })
@@ -916,7 +938,6 @@ export default {
       // console.log('closeModalAgregar -> ', this.$refs['formAgregar'])
     },
     handleEditarEtapa(etapa) {
-      this.loadingEtapa = true
       this.editarEtapa = true
       this.textEditarEtapa = 'Actualizar'
       this.formAgregar = CONSTANTS.formAgregarEtapa
@@ -927,6 +948,8 @@ export default {
       // console.log('clickAgregarEtapa -> ', this.$refs['formAgregar'])
       const modelEditarEtapa = {}
       try {
+        modelEditarEtapa.idetapa = etapa.idetapa
+        modelEditarEtapa.radicadoActual = etapa.radicadoEtapa
         modelEditarEtapa.radicadoEtapa = etapa.radicadoEtapa
         modelEditarEtapa.etapa = etapa.nombreEtapa
         modelEditarEtapa.observacionEtapa = etapa.observacionEtapa
@@ -944,6 +967,7 @@ export default {
     },
     handleBorrarEtapa(data) {
       this.delradEtapa = data.radicadoEtapa
+      this.delIdetapa = data.idetapa
       this.delEtapa = data.nombreEtapa
       this.deleteDialogVisible = true
     },
@@ -951,6 +975,7 @@ export default {
       this.loadingEtapa = true
       const modelEtapaDel = {
         idproceso: this.formProceso.idproceso,
+        idetapa: this.delIdetapa,
         radicadoEtapa: this.delradEtapa
       }
       await deleteEtapa(modelEtapaDel).then(async(response) => {

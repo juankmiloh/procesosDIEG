@@ -1,17 +1,19 @@
 <template>
   <el-col :md="24" style="border: 0px solid blue; padding-top: 10px;">
-    <el-card class="box-card" style="padding-bottom: 4px; padding-top: 9px;">
-      <el-row>
-        <el-col :md="19">
+    <el-card class="box-card">
+      <el-row :style="countTerceros ? '' : 'padding-top: 9px; padding-bottom: 4px;'">
+        <el-col :md="countTerceros > 0 ? 17 : 20">
           <span>Terceros interesados</span>
-          (<count-to :start-val="0" :end-val="countTerceros" :duration="5000" class="card-panel-num" />)
+          <!-- (<count-to :start-val="0" :end-val="countTerceros" :duration="5000" class="card-panel-num" />) -->
         </el-col>
-        <el-col :md="countTerceros > 0 ? 4 : 5">
+        <el-col :md="countTerceros > 0 ? 5 : 4">
           <el-switch v-model="valSwitch" active-color="#13ce66" :disabled="switchDisable || !abogadoEditar" />
         </el-col>
-        <el-col v-if="countTerceros > 0" :md="countTerceros > 0 ? 1 : 0">
-          <div>
-            <el-link icon="el-icon-user-solid" :underline="false" @click="dialogDrawer=true" />
+        <el-col v-show="countTerceros > 0" :md="countTerceros > 0 ? 2 : 0">
+          <div class="badge-tercero">
+            <el-badge :value="countTerceros" class="item" type="success">
+              <el-link icon="el-icon-user-solid" :underline="false" @click="dialogDrawer=true" />
+            </el-badge>
           </div>
         </el-col>
       </el-row>
@@ -164,7 +166,14 @@
         </div>
       </div>
     </el-drawer>
-    <modal-delete titulo="Advertencia" :mensaje="mensajeModalConfirm" :modalvisible="deleteDialogVisible" @confirmar="submitDelete" />
+
+    <!-- Modal de confirmacion para borrar un tercero -->
+    <modal-delete
+      titulo="Advertencia"
+      :mensaje="mensajeModalConfirm"
+      :modalvisible="deleteDialogVisible"
+      @confirmar="submitDelete"
+    />
   </el-col>
 </template>
 
@@ -223,7 +232,7 @@ export default {
       handler(val) {
         this.formTercero = {}
         this.resetForm()
-        console.log(val)
+        // console.log('valSwitch - > ', val)
         if (this.countTerceros > 0) {
           this.valSwitch = true
           this.switchDisable = true
@@ -301,7 +310,7 @@ export default {
     },
     submitFormTercero(formName) {
       this.$refs[formName].validate(async(valid) => {
-        if (valid) {
+        if (valid) { // Crear tercero
           this.loading = true
           this.formTercero.idproceso = this.idproceso
           this.formTercero.persona = this.dataPersona.find((persona) => persona.nombre === this.formTercero.persona).idpersona
@@ -326,7 +335,7 @@ export default {
                 duration: 2000
               })
             })
-          } else {
+          } else { // Actualizar tercero
             await updateTercero(this.formTercero).then(async(response) => {
               this.resetForm()
               this.$notify({
@@ -336,6 +345,7 @@ export default {
                 type: 'success',
                 duration: 2000
               })
+              this.textActionTercero = 'Agregar'
             }, (err) => {
               console.log(err)
             })
@@ -400,5 +410,10 @@ export default {
 
   .item {
     margin-bottom: 15px;
+  }
+
+  .badge-tercero .item {
+    border: 0px solid red;
+    padding-right: 6%;
   }
 </style>

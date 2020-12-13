@@ -199,6 +199,7 @@ export const CONSTANTS = {
     },
     formAgregarEtapa: {
         etapa: '',
+        radicadoEtapa: '',
         fechaInicioEtapa: null,
         fechaFinEtapa: null,
         observacionEtapa: ''
@@ -209,6 +210,10 @@ export const CONSTANTS = {
             message: 'Seleccione una etapa',
             trigger: 'change'
         }],
+        radicadoEtapa: [
+            { required: true, message: 'Ingrese un radicado', trigger: 'blur' },
+            { min: 14, max: 14, message: 'La longitud del radicado debe ser de 14 caracteres', trigger: 'blur' }
+        ],
         fechaInicioEtapa: [{
             required: true,
             message: 'Ingrese una fecha válida',
