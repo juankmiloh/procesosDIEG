@@ -175,7 +175,6 @@
                     <el-select
                       v-model="formProceso.causa"
                       :disabled="!abogadoEditar"
-                      multiple
                       collapse-tags
                       filterable
                       placeholder="Seleccione una causal"
@@ -186,7 +185,7 @@
                         v-for="item in datosCausal"
                         :key="item.idcausal"
                         :label="item.nombre"
-                        :value="item.nombre"
+                        :value="item.idcausal"
                       />
                     </el-select>
                   </el-form-item>
@@ -811,7 +810,7 @@ export default {
         modelProceso.estado = await this.datosEstado.find((estado) => estado.nombre === modelProceso.estado).idestado
         modelProceso.empresa = await this.datosEmpresas.find((empresa) => empresa.nombre === modelProceso.empresa.toUpperCase()).id_empresa
         modelProceso.servicio = await this.datosServicios.find((servicio) => servicio.servicio === modelProceso.servicio).idservicio
-        // modelProceso.causa = await this.datosCausal.find((causal) => causal.nombre === modelProceso.causa).idcausal
+        modelProceso.causa = await this.datosCausal.find((causal) => causal.nombre === modelProceso.causa).idcausal
         modelProceso.decision = await this.datosDecision.find((decision) => decision.nombre === modelProceso.decision).iddecision
         modelProceso.tipo_sancion = await this.datosTiposancion.find((tiposancion) => tiposancion.nombre === modelProceso.tipo_sancion).idtiposancion
       } else { // Si el proceso NO TRAE toda lainformacion (Es nuevo)
