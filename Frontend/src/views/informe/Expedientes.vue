@@ -70,7 +70,8 @@
                 </div>
               </el-col>
             </el-row>
-            <pie-chart :chart-data="pieChartDataEmpresas" style="height: 60vh;" />
+            <bar-chart :chart-data="pieChartDataEmpresas" style="height: 60vh;" />
+            <!-- <pie-chart :chart-data="pieChartDataEmpresas" style="height: 60vh;" /> -->
           </div>
         </el-col>
       </el-row>
@@ -203,7 +204,8 @@
 import Sticky from '@/components/Sticky' // 粘性header组件
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import PanelGroupProceso from './components/PanelGroupProceso'
-import PieChart from './components/PieChart'
+import PieChart from './components/graph/PieChart'
+import BarChart from './components/graph/BarChart'
 import { getListProcesosEmpresa } from '@/api/procesosDIEG/informes'
 import { getListProcesosCausal } from '@/api/procesosDIEG/informes'
 import { getListProcesosEstado } from '@/api/procesosDIEG/informes'
@@ -216,6 +218,7 @@ export default {
   directives: { elDragDialog },
   components: {
     PieChart,
+    BarChart,
     PanelGroupProceso,
     Sticky
   },
@@ -293,7 +296,7 @@ export default {
     },
     async getDataEmpresas(idservicio) {
       await getListProcesosEmpresa(idservicio).then((response) => {
-        // console.log('PIECHART_EMPRESAS -> ', response)
+        console.log('PIECHART_EMPRESAS -> ', response)
         this.dataEmpresas = response
         this.pieChartDataEmpresas = this.dataEmpresas['activos']
         this.loadingEmpresas = false

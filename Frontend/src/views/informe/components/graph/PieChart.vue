@@ -1,24 +1,15 @@
 <template>
-  <div :class="className" :style="{height:height,width:width,display:'none'}" />
+  <div :class="className" :style="{height:height,width:width}" />
 </template>
 
 <script>
 import echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
-import { debounce } from '@/utils'
-
-const animationDuration = 3000
+import resize from '../mixins/resize'
 
 export default {
+  mixins: [resize],
   props: {
-    data: {
-      type: Array,
-      default: function() { return [] }
-    },
-    valueTitle: {
-      type: String,
-      default: 'Valor'
-    },
     className: {
       type: String,
       default: 'chart'
@@ -29,7 +20,15 @@ export default {
     },
     height: {
       type: String,
-      default: '600px'
+      default: '300px'
+    },
+    autoResize: {
+      type: Boolean,
+      default: true
+    },
+    chartData: {
+      type: Object,
+      required: true
     }
   },
   data() {
@@ -38,59 +37,54 @@ export default {
     }
   },
   watch: {
-    data: function(newVal, oldVal) {
-      this.$el.style.display = null
-      this.initChart(newVal)
-      this.__resizeHandler = debounce(() => {
-        if (this.chart) {
-          this.chart.resize()
-        }
-      }, 100)
-      window.addEventListener('resize', this.__resizeHandler)
+    chartData: {
+      deep: true,
+      handler(val) {
+        console.log('PieChart -> ', val)
+        this.setOptions(val)
+      }
     }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.initChart()
+    })
   },
   beforeDestroy() {
     if (!this.chart) {
       return
     }
-    window.removeEventListener('resize', this.__resizeHandler)
     this.chart.dispose()
     this.chart = null
   },
   methods: {
-    initChart(data) {
+    initChart() {
       this.chart = echarts.init(this.$el, 'macarons')
-
-      if (!data) return
-
-      var values = []
-      for (var i = 0; i < data.length; i++) {
-        values.push({
-          value: data[i].values,
-          name: data[i].names.length > 45 ? data[i].names.substring(0, 45) + '..' : data[i].names })
-      }
-      console.log(values)
+      this.setOptions(this.chartData)
+    },
+    setOptions({ title, leyenda, datos } = {}) {
       this.chart.setOption({
-        backgroundColor: '#344b58',
-        title: {
-          text: this.valueTitle,
-          left: 'center',
-          top: 20,
-          textStyle: {
-            color: '#ffffff'
-          }
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c} ({d}%)'
         },
-        series: [{
-          name: this.valueTitle,
-          type: 'pie',
-          stack: 'vistors',
-          barWidth: '60%',
-          data: values,
-          animationDuration,
-          label: {
-            formatter: '{b}:  {d}%'
+        legend: {
+          left: 'center',
+          bottom: '10',
+          data: leyenda
+        },
+        series: [
+          {
+            name: title,
+            type: 'pie',
+            roseType: 'radius',
+            radius: [15, 95],
+            center: ['50%', '38%'],
+            data: datos,
+            animationEasing: 'cubicInOut',
+            animationDuration: 2600
           }
-        }]
+        ]
       })
     }
   }

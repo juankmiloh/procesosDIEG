@@ -148,6 +148,8 @@ class InformeService:
                 'data': dataEliminados
             }
         }
+
+        print(pieChartData)
         return pieChartData
 
     def get_cantidad_procesos_causal(self, informe_repository: InformeRepository, idservicio):
