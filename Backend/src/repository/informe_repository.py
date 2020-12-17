@@ -25,7 +25,8 @@ class InformeRepository:
                 AND (P.IDSERVICIO = :IDSERVICIO_ARG OR 0 = :IDSERVICIO_ARG)
                 AND P.EMPRESA = EMP.IDEMPRESA
                 AND P.IDSERVICIO = EMP.SERVICIO
-            GROUP BY EMP.NOMBRE;
+            GROUP BY EMP.NOMBRE
+            ORDER BY COUNT(*) ASC;
         '''
         return self.db.engine.execute(text(sql), FASE_ARG=fase, IDSERVICIO_ARG=idservicio).fetchall()
 

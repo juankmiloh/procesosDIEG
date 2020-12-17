@@ -43,8 +43,8 @@ class UsuariosService:
                     'idusuario': result[0],
                     'nombre': result[1],
                     'apellido': str(result[2]),
-                    'rol': result[5],
-                    'password': result[7],
+                    'rol': result[6],
+                    'password': result[8],
                 }
             )
         return usuarios
@@ -59,12 +59,12 @@ class UsuariosService:
                     'idusuario': result[1],
                     'nombre': result[2],
                     'apellido': str(result[3]),
-                    'nickname': str(result[4]),
-                    'descripcion': result[5],
-                    'rol': result[6],
-                    'avatar': result[7],
+                    'nickname': str(result[5]),
+                    'descripcion': result[6],
+                    'rol': result[7],
+                    'avatar': result[8],
                     'contrasena': '',
-                    'token': result[9],
+                    'token': result[10],
                     'genero': result[11]
                 }
             )

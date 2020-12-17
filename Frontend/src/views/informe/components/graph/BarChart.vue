@@ -67,7 +67,7 @@ export default {
         grid: {
           top: '5%',
           left: '5%',
-          right: '4%',
+          right: '6%',
           bottom: '5%',
           containLabel: true
         },
@@ -89,7 +89,7 @@ export default {
           }
         }],
         xAxis: [{
-          name: '%',
+          name: 'Procesos',
           type: 'value',
           axisTick: {
             show: false
