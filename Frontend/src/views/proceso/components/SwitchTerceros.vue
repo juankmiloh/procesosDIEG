@@ -1,7 +1,8 @@
 <template>
-  <el-col :md="24" style="border: 0px solid blue; padding-top: 10px;">
-    <el-card class="box-card">
-      <el-row :style="countTerceros ? '' : 'padding-top: 9px; padding-bottom: 4px;'">
+  <el-col :md="24" style="border: 0px solid blue; padding-top: 10px;" class="div-terceros">
+    <el-card class="box-card div-terceros-body" style="height: 8vh;">
+      <!-- <el-row :style="countTerceros ? '' : 'padding-top: 9px; padding-bottom: 4px;'"> -->
+      <el-row>
         <el-col :md="countTerceros > 0 ? 17 : 20">
           <span>Terceros interesados</span>
           <!-- (<count-to :start-val="0" :end-val="countTerceros" :duration="5000" class="card-panel-num" />) -->
@@ -126,7 +127,7 @@
                 <el-card class="box-card" style="overflow-y: scroll; height: 70vh;">
                   <el-card v-for="item in datosTerceros" :key="item.idtercero" style="width: 100%; margin-bottom: 3%;">
                     <div slot="header" class="clearfix">
-                      <span><b>{{ item.nombre }}</b></span>
+                      <span style="color: #303133;"><b>{{ item.nombre }}</b></span>
                       <div style="float: right;">
                         <el-button size="mini" type="danger" icon="el-icon-delete" :disabled="!abogadoEditar" @click="handleDelete(item)" />
                       </div>
@@ -135,16 +136,16 @@
                       </div>
                     </div>
                     <div class="text item">
-                      {{ item.persona }}
+                      <span style="color: #606266;"><b>{{ item.persona }}</b></span>
                     </div>
                     <div class="text item">
-                      Documento: {{ item.documento }}
+                      <span style="color: #606266;"><b>Documento: </b></span>{{ item.documento }}
                     </div>
                     <div class="text item">
-                      Dirección: {{ item.direccion }}
+                      <span style="color: #606266;"><b>Dirección: </b></span>{{ item.direccion }}
                     </div>
                     <div class="text item">
-                      e-mail: {{ item.email }}
+                      <span style="color: #606266;"><b>e-mail: </b></span>{{ item.email }}
                     </div>
                   </el-card>
                 </el-card>
@@ -178,7 +179,6 @@
 </template>
 
 <script>
-import CountTo from 'vue-count-to'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import Sticky from '@/components/Sticky' // 粘性header组件
 import ModalDelete from '@/components/ModalConfirm'
@@ -191,7 +191,6 @@ import { deleteTercero } from '@/api/procesosDIEG/terceros'
 export default {
   directives: { elDragDialog },
   components: {
-    CountTo,
     Sticky,
     ModalDelete
   },
@@ -329,7 +328,7 @@ export default {
               console.log(err)
               this.$notify({
                 title: 'Advertencia',
-                message: 'Doumento de usuario ya registrado!',
+                message: 'Documento de usuario ya registrado!',
                 position: 'bottom-right',
                 type: 'warning',
                 duration: 2000
@@ -415,5 +414,11 @@ export default {
   .badge-tercero .item {
     border: 0px solid red;
     padding-right: 6%;
+  }
+
+  .div-terceros .div-terceros-body .el-card__body {
+    padding-top: 4%;
+    padding-left: 4%;
+    height: 7vh;
   }
 </style>

@@ -57,13 +57,13 @@ class ProcesosRepository:
                 SELECT 
                     P.IDPROCESO,
                     P.RADICADOPROCESO AS EXPEDIENTE,
+                    S.IDSERVICIO AS SERVICIO,
+                    EMP.IDEMPRESA AS EMPRESA,
+                    U.IDUSUARIO AS IDUSUARIO,
+                    ES.IDESTADO AS ESTADO,
                     P.FECHACADUCIDAD AS CADUCIDAD,
-                    EMP.NOMBRE AS EMPRESA,
-                    ES.NOMBREESTADO AS ESTADO,
                     E.NOMBRE AS ACTUALETAPA,
                     (SELECT NOMBRE FROM ETAPA WHERE IDETAPA=E.SIGUIENTEETAPA) AS PROXETAPA,
-                    S.NOMBRE AS SERVICIO,
-                    U.IDUSUARIO AS IDUSUARIO,
                     U.NOMBRE || ' ' || U.APELLIDO AS USUARIO,
                     EP.ETAPA
                 FROM
@@ -104,22 +104,19 @@ class ProcesosRepository:
                 SELECT 
                     P.IDPROCESO,
                     P.RADICADOPROCESO AS EXPEDIENTE,
+                    S.IDSERVICIO AS SERVICIO,
+                    EMP.IDEMPRESA AS EMPRESA,
+                    U.IDUSUARIO AS IDUSUARIO,
+                    ES.IDESTADO AS ESTADO,
+                    TS.IDTIPOSANCION AS TIPOSANCION,
+                    P.MONTOSANCION,
+                    DR.IDDESCISIONRECURSO AS DECISION,
                     P.FECHACADUCIDAD AS CADUCIDAD,
-                    EMP.NOMBRE AS EMPRESA,
-                    C.NOMBRECAUSAL,
-                    PC.FECHAHECHOS,
-                    PC.DESCRIPCION,
-                    ES.NOMBREESTADO AS ESTADO,
                     E.NOMBRE AS ACTUALETAPA,
                     (SELECT NOMBRE FROM ETAPA WHERE IDETAPA=E.SIGUIENTEETAPA) AS PROXETAPA,
-                    DR.TIPODESCISIONRECURSO AS DECISION,
-                    TS.NOMBRETIPOSANCION AS TIPOSANCION,
-                    P.MONTOSANCION,
-                    S.NOMBRE AS SERVICIO,
-                    U.IDUSUARIO AS IDUSUARIO,
                     EP.ETAPA
                 FROM
-                    EMPRESA EMP, SERVICIO S, PROCESO P, USUARIOS U, ETAPA_PROCESO EP, ETAPA E, ESTADO ES, PROCESO_CAUSAL PC, CAUSAL C, TIPOSANCION TS, DESCISIONRECURSO DR
+                    EMPRESA EMP, SERVICIO S, PROCESO P, USUARIOS U, ETAPA_PROCESO EP, ETAPA E, ESTADO ES, TIPOSANCION TS, DESCISIONRECURSO DR
                 WHERE
                     P.IDPROCESO = EP.PROCESO
                     AND EP.ETAPA = E.IDETAPA
@@ -127,8 +124,6 @@ class ProcesosRepository:
                     AND P.EMPRESA = EMP.IDEMPRESA
                     AND EMP.SERVICIO = S.IDSERVICIO
                     AND P.IDSERVICIO = S.IDSERVICIO
-                    AND P.IDPROCESO = PC.IDPROCESO
-                    AND PC.IDCAUSAL = C.IDCAUSAL
                     AND P.USUARIOASIGNADO = U.IDUSUARIO
                     AND P.TIPOSANCION = TS.IDTIPOSANCION
                     AND P.DESCISIONRECURSO = DR.IDDESCISIONRECURSO
@@ -195,21 +190,7 @@ class ProcesosRepository:
 	        WHERE
                 IDPROCESO = :IDPROCESO_ARG;
         '''
-        resultsql = self.db.engine.execute(text(sql), IDPROCESO_ARG=dataProceso["idproceso"], RADICADO_ARG=dataProceso["expediente"], USUARIO_ARG=dataProceso["usuario"], EMPRESA_ARG=dataProceso["empresa"], SERVICIO_ARG=dataProceso["servicio"], TIPOSANCION_ARG=dataProceso["tipo_sancion"], DECISION_ARG=dataProceso["decision"], SANCION_ARG=dataProceso["sancion"], CADUCIDAD_ARG=dataProceso["caducidad"])
-
-        sql = '''
-            UPDATE 
-                PROCESO_CAUSAL
-            SET
-                IDCAUSAL = :CAUSAL_ARG,
-                FECHAHECHOS = :FECHAHECHOS_ARG,
-                DESCRIPCION = :DESCRIPCION_ARG
-            WHERE
-                IDPROCESO = :IDPROCESO_ARG;
-        '''
-        resultsql = self.db.engine.execute(text(sql), IDPROCESO_ARG=dataProceso["idproceso"], CAUSAL_ARG=dataProceso["causa"], FECHAHECHOS_ARG=dataProceso["fecha_hechos"], DESCRIPCION_ARG=dataProceso["descripcion"])
-
-        return resultsql
+        self.db.engine.execute(text(sql), IDPROCESO_ARG=dataProceso["idproceso"], RADICADO_ARG=dataProceso["expediente"], USUARIO_ARG=dataProceso["usuario"], EMPRESA_ARG=dataProceso["empresa"], SERVICIO_ARG=dataProceso["servicio"], TIPOSANCION_ARG=dataProceso["tipo_sancion"], DECISION_ARG=dataProceso["decision"], SANCION_ARG=dataProceso["sancion"], CADUCIDAD_ARG=dataProceso["caducidad"])
     
     def proceso_delete_bd(self, idProceso):
         print('-------------------------------------')

@@ -63,5 +63,29 @@ export const CONSTANTS = {
             idpersona: 2,
             nombre: 'Persona jurídica'
         }
-    ]
+    ],
+    // FORM CAUSAL
+    formCausal: {
+        idproceso: '',
+        idcausal: '',
+        f_hechos: '',
+        descripcion: ''
+    },
+    rulesFormCausal: {
+        idcausal: [{
+            required: true,
+            message: 'Seleccione una causal',
+            trigger: 'change'
+        }],
+        f_hechos: [{
+            required: true,
+            message: 'Ingrese una fecha válida',
+            trigger: 'change'
+        }],
+        descripcion: [{
+            required: true,
+            message: 'Ingrese una descripción del usuario',
+            trigger: 'change'
+        }],
+    },
 };

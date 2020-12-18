@@ -19,3 +19,30 @@ class CausalService:
                 }
             )
         return causal
+
+    def get_causal_proceso(self, causal_repository: CausalRepository, idproceso):
+        causal = []
+        data = causal_repository.get_causal_proceso_bd(idproceso)
+        for result in data:                
+            causal.append(
+                {
+                    'idproceso': result[0],
+                    'idcausal': result[1],
+                    'f_hechos': str(result[2]),
+                    'descripcion': result[3],
+                    'nombrecausal': result[4]
+                }
+            )
+        return causal
+
+    def causal_insert(self, causal_repository: CausalRepository, causal):
+        causal_repository.causal_insert_bd(causal)
+        return add_wrapper(['causal registrada con éxito!'])
+
+    def causal_update(self, causal_repository: CausalRepository, datacausal):
+        causal_repository.causal_update_bd(datacausal)
+        return add_wrapper(['causal actualizada con éxito!'])
+
+    def causal_delete(self, causal_repository: CausalRepository, idcausal):
+        causal_repository.causal_delete_bd(idcausal)
+        return add_wrapper(['causal borrada con éxito!'])

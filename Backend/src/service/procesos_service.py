@@ -37,20 +37,20 @@ class ProcesosService:
             caducidad = None
             # print('-------------------- CADUCIDAD -----------------', result[2])
 
-            if result[2]:
-                caducidad = str(result[2])
+            if result[6]:
+                caducidad = str(result[6])
     
             proceso.append(
                 {
                     'idproceso': result[0],
                     'expediente': result[1],
+                    'servicio': result[2],
+                    'empresa': result[3],
+                    'usuario': result[4],
+                    'estado': result[5],
                     'caducidad': caducidad,
-                    'empresa': result[3].capitalize(),
-                    'estado': result[4],
-                    'etapa': result[5],
-                    'proxetapa': result[6],
-                    'servicio': result[7],
-                    'usuario': result[8]
+                    'etapa': result[7],
+                    'proxetapa': result[8],
                 }
             )
         return proceso
@@ -62,26 +62,23 @@ class ProcesosService:
             caducidad = None
             print('-------------------- DATA PROCESO -----------------', result)
 
-            if result[2]:
-                caducidad = str(result[2])
+            if result[9]:
+                caducidad = str(result[9])
     
             proceso.append(
                 {
                     'idproceso': result[0],
                     'expediente': result[1],
+                    'servicio': result[2],
+                    'empresa': result[3],
+                    'usuario': result[4],
+                    'estado': result[5],
+                    'tipo_sancion': result[6],
+                    'sancion': result[7],
+                    'decision': result[8],
                     'caducidad': caducidad,
-                    'empresa': result[3].capitalize(),
-                    'causa': result[4],
-                    'fecha_hechos': str(result[5]),
-                    'descripcion': result[6],
-                    'estado': result[7],
-                    'etapa': result[8],
-                    'proxetapa': result[9],
-                    'decision': result[10],
-                    'tipo_sancion': result[11],
-                    'sancion': result[12],
-                    'servicio': result[13],
-                    'usuario': result[14]
+                    'etapa': result[10],
+                    'proxetapa': result[11],
                 }
             )
         return proceso

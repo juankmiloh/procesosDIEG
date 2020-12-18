@@ -27,10 +27,10 @@ class TercerosService:
         return terceros
 
     def get_terceros_proceso(self, terceros_repository: TercerosRepository, idproceso):
-        terceross = []
+        terceros = []
         data = terceros_repository.get_terceros_proceso_bd(idproceso)
         for result in data:                
-            terceross.append(
+            terceros.append(
                 {
                     'idtercero': result[0],
                     'persona': result[1],
@@ -40,7 +40,7 @@ class TercerosService:
                     'email': result[5],
                 }
             )
-        return terceross
+        return terceros
 
     def terceros_insert(self, terceros_repository: TercerosRepository, terceros):
         terceros_repository.terceros_insert_bd(terceros)

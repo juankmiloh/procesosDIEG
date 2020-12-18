@@ -166,53 +166,13 @@
           <el-col :md="9" style="border: 0px solid blue">
             <el-row :gutter="10">
               <el-col :md="24">
-                <el-card class="box-card">
-                  <div slot="header" class="clearfix">
-                    <span>Causal</span>
-                  </div>
-
-                  <el-form-item label="Causa" prop="causa">
-                    <el-select
-                      v-model="formProceso.causa"
-                      :disabled="!abogadoEditar"
-                      collapse-tags
-                      filterable
-                      placeholder="Seleccione una causal"
-                      class="control-modal"
-                      size="medium"
-                    >
-                      <el-option
-                        v-for="item in datosCausal"
-                        :key="item.idcausal"
-                        :label="item.nombre"
-                        :value="item.idcausal"
-                      />
-                    </el-select>
-                  </el-form-item>
-
-                  <el-form-item label="Fecha hechos" prop="fecha_hechos">
-                    <el-date-picker
-                      v-model="formProceso.fecha_hechos"
-                      :disabled="!abogadoEditar"
-                      type="date"
-                      placeholder="Seleccione una fecha"
-                      class="control-modal"
-                    />
-                  </el-form-item>
-
-                  <el-form-item label="Descripción">
-                    <el-input
-                      v-model="formProceso.descripcion"
-                      :disabled="!abogadoEditar"
-                      type="textarea"
-                      class="control-modal"
-                      rows="11"
-                    />
-                  </el-form-item>
-                </el-card>
+                <!-- Tabla de causales -->
+                <tabla-causas v-if="id" :idproceso="id" :editar="abogadoEditar" />
               </el-col>
-              <!-- Card terceros interesados -->
-              <switch-terceros v-if="id" :idproceso="id" :editar="abogadoEditar" />
+              <el-col :md="24">
+                <!-- Card terceros interesados -->
+                <switch-terceros v-if="id" :idproceso="id" :editar="abogadoEditar" />
+              </el-col>
             </el-row>
           </el-col>
 
@@ -575,7 +535,6 @@ import { getListServicios } from '@/api/procesosDIEG/servicios'
 import { getListEstado } from '@/api/procesosDIEG/estado'
 import { getListTiposancion } from '@/api/procesosDIEG/tiposancion'
 import { getListDecision } from '@/api/procesosDIEG/decision'
-import { getListCausal } from '@/api/procesosDIEG/causal'
 import { updateProceso } from '@/api/procesosDIEG/procesos'
 import { getListEmpresas } from '@/api/procesosDIEG/empresas'
 import { getListEtapas } from '@/api/procesosDIEG/etapas'
@@ -588,11 +547,12 @@ import { CONSTANTS } from '@/constants/constants'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import moment from 'moment'
 import SwitchTerceros from './SwitchTerceros'
+import TablaCausas from './TablaCausas'
 
 export default {
   name: 'ProcesoDetalle',
   directives: { elDragDialog },
-  components: { Sticky, SwitchTerceros },
+  components: { Sticky, SwitchTerceros, TablaCausas },
   props: {
     isDetail: {
       type: Boolean,
@@ -609,7 +569,6 @@ export default {
       datosEstado: [],
       datosTiposancion: [],
       datosDecision: [],
-      datosCausal: [],
       formProceso: CONSTANTS.formDetalleProceso,
       /* Si es o no visible el cuadro de dialogo de agregar o editar etapa */
       msgAgregarEtapaVisible: false,
@@ -688,7 +647,6 @@ export default {
       this.getEstado()
       this.getTiposancion()
       this.getDecision()
-      this.getCausal()
       await this.getEtapas()
       await this.fetchData(this.id)
     },
@@ -723,12 +681,6 @@ export default {
         this.datosDecision = response
       })
     },
-    async getCausal() {
-      await getListCausal().then((response) => {
-        // console.log('causales - > ', response)
-        this.datosCausal = response
-      })
-    },
     async getEtapas() {
       await getListEtapas().then((response) => {
         this.datosEtapa = response
@@ -749,20 +701,20 @@ export default {
       await getProceso(id).then(async(response) => {
         // console.log('RESPONSE PROCESO -> ', response)
         if (response.length > 0) { // Se obtienen los datos del proceso si ya esta diligenciado en su totalidad
-          // console.log('RESPONSE proceso completo -> ', response)
+          console.log('RESPONSE proceso completo -> ', response)
           modelProceso = response[0]
           this.getEmpresasProceso(modelProceso)
-          modelProceso = await this.verificarDataModel(modelProceso, true)
+          // modelProceso = await this.verificarDataModel(modelProceso, true)
         } else { // Sino se cargan los datos del proceso completos (Esto pasa cuando se crea un proceso nuevo)
           await getProcesoInicial(id).then(async(response) => {
-            // console.log('RESPONSE inicial -> ', response)
+            console.log('RESPONSE inicial -> ', response)
             modelProceso = response[0]
             modelProceso.tipo_sancion = 9 // Se agrega el atributo al modelo del proceso
             modelProceso.decision = 6 // Se agrega el atributo al modelo del proceso un valor por defecto
             modelProceso.sancion = 0 // Se agrega el atributo al modelo del proceso
             modelProceso.descripcion = '' // Se agrega el atributo al modelo del proceso
             this.getEmpresasProceso(modelProceso)
-            modelProceso = await this.verificarDataModel(modelProceso, false)
+            // modelProceso = await this.verificarDataModel(modelProceso, false)
           })
         }
         if (this.roles[0] === 'abogado' && modelProceso.usuario === this.idusuario) {
@@ -806,14 +758,14 @@ export default {
       })
     },
     async verificarDataModel(modelProceso, infoCompleta) {
-      if (infoCompleta) { // Si el proceso TRAE toda lainformacion
+      console.log('infoCompleta -> ', infoCompleta)
+      if (infoCompleta) { // Si el proceso TRAE toda la informacion
         modelProceso.estado = await this.datosEstado.find((estado) => estado.nombre === modelProceso.estado).idestado
         modelProceso.empresa = await this.datosEmpresas.find((empresa) => empresa.nombre === modelProceso.empresa.toUpperCase()).id_empresa
         modelProceso.servicio = await this.datosServicios.find((servicio) => servicio.servicio === modelProceso.servicio).idservicio
-        modelProceso.causa = await this.datosCausal.find((causal) => causal.nombre === modelProceso.causa).idcausal
         modelProceso.decision = await this.datosDecision.find((decision) => decision.nombre === modelProceso.decision).iddecision
         modelProceso.tipo_sancion = await this.datosTiposancion.find((tiposancion) => tiposancion.nombre === modelProceso.tipo_sancion).idtiposancion
-      } else { // Si el proceso NO TRAE toda lainformacion (Es nuevo)
+      } else { // Si el proceso NO TRAE toda la informacion (Es nuevo)
         modelProceso.estado = await this.datosEstado.find((estado) => estado.nombre === modelProceso.estado).idestado
         modelProceso.empresa = await this.datosEmpresas.find((empresa) => empresa.nombre === modelProceso.empresa.toUpperCase()).id_empresa
         modelProceso.servicio = await this.datosServicios.find((servicio) => servicio.servicio === modelProceso.servicio).idservicio
@@ -822,7 +774,8 @@ export default {
     },
     getEmpresasProceso(modelProceso) {
       // const empresas = JSON.parse(window.localStorage.getItem('empresas')) // Se capturan los datos de las empresas
-      this.datosEmpresas = this.empresas.filter((empresa) => empresa.servicio === modelProceso.servicio) // Se obtienen las empresas asociadas al servicio publico del proceso
+      this.datosEmpresas = this.empresas.filter((empresa) => empresa.idservicio === modelProceso.servicio) // Se obtienen las empresas asociadas al servicio publico del proceso
+      console.log('getEmpresasProceso -> ', this.datosEmpresas)
     },
     setTagsViewTitle() {
       const title = 'Expediente'
@@ -1049,7 +1002,7 @@ export default {
               modelProceso = response[0]
               this.textEditarProceso = 'Editar'
               this.textActualizar = 'Actualizar'
-              modelProceso = await this.verificarDataModel(modelProceso, true)
+              // modelProceso = await this.verificarDataModel(modelProceso, true)
               this.$notify({
                 title: 'Bien hecho!',
                 message: 'Expediente actualizado con éxito',
