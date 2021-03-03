@@ -483,7 +483,7 @@ export default {
     padding-top: 4%;
     padding-left: 4%;
     height: 7vh;
-  } */
+  }
 
   .card-causas .el-card__body {
     border: 0px solid;

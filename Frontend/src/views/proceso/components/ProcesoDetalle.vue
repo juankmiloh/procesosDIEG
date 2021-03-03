@@ -102,7 +102,6 @@
               <el-form-item label="Estado">
                 <el-select
                   v-model="formProceso.estado"
-                  filterable
                   placeholder="Seleccione un estado"
                   class="control-modal"
                 >
@@ -198,6 +197,19 @@
                   </el-form-item>
                 </el-card>
               </el-col>
+
+              <!-- card carpetas reservadas -->
+              <!-- <el-col :md="24" style="border: 0px solid blue; padding-top: 0px;" class="div-causas">
+                <el-card class="box-card div-causas-header" style="height: 8vh;">
+                  <div slot="header" class="clearfix">
+                    <el-row>
+                      <el-col>
+                        <span>Carpetas reservadas</span>
+                      </el-col>
+                    </el-row>
+                  </div>
+                </el-card>
+              </el-col> -->
 
               <!-- Card datos etapa -->
 
@@ -1084,5 +1096,11 @@ export default {
 
 .input-etapas .el-form-item .el-form-item__content {
   margin-left: 0% !important;
+}
+
+.div-causas .div-causas-header .el-card__header {
+  padding-top: 4%;
+  padding-left: 4%;
+  height: 7vh;
 }
 </style>

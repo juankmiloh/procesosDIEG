@@ -70,7 +70,7 @@
                 </div>
               </el-col>
             </el-row>
-            <bar-chart :chart-data="pieChartDataEmpresas" style="height: 60vh;" />
+            <bar-chart :chart-data="pieChartDataEmpresas" style="height: 70vh;" />
             <!-- <pie-chart :chart-data="pieChartDataEmpresas" style="height: 60vh;" /> -->
           </div>
         </el-col>
