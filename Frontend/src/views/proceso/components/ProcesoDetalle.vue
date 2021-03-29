@@ -310,10 +310,10 @@
 
             <div style="text-align: center; color: white">
               <el-row>
-                <el-col :span="20" style="padding-left: 15%;">
+                <el-col :span="19" style="padding-left: 15%;">
                   <label style="font-size: x-large">Etapas expediente {{ formProceso.expediente }}</label>
                 </el-col>
-                <el-col :span="4">
+                <el-col :span="5">
                   <!-- Boton para agregar nueva etapa al aplicativo -->
                   <transition name="el-zoom-in-center">
                     <div v-show="showButtonsModal">

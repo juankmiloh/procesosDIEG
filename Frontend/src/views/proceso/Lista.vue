@@ -114,14 +114,14 @@
               />
             </el-select>
           </el-form-item>
-          <!-- <el-form-item label="Caducidad" prop="fecha_caducidad" clearable>
+          <el-form-item label="Caducidad" prop="fecha_caducidad" clearable>
             <el-date-picker
               v-model="formAgregar.fecha_caducidad"
               type="date"
               placeholder="Seleccione la fecha"
               class="control-modal"
             />
-          </el-form-item> -->
+          </el-form-item>
           <el-form-item>
             <el-button
               @click="
@@ -581,7 +581,7 @@ export default {
           this.msgAgregarVisible = false
           // console.log(this.formAgregar)
           this.loading = true
-          // console.log('FORMAGREGAR -> ', this.formAgregar)
+          console.log('FORMAGREGAR -> ', this.formAgregar)
           createProceso(this.formAgregar).then((response) => {
             this.$notify({
               title: 'Buen trabajo!',
