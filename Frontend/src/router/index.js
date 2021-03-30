@@ -218,7 +218,7 @@ export const asyncRoutes = [{
                 name: 'UserCreate',
                 meta: {
                     title: 'Usuarios',
-                    icon: 'user',
+                    // icon: 'user',
                     roles: ['administrador']
                 }
             },
@@ -229,12 +229,19 @@ export const asyncRoutes = [{
     {
         path: '/procesos',
         component: Layout,
+        alwaysShow: true, // will always show the root menu
+        name: 'Procesos',
+        meta: {
+            title: 'Expedientes',
+            icon: 'component',
+            roles: ['administrador', 'abogado', 'consulta'] // you can set roles in root nav
+        },
         children: [{
                 path: 'expedientes',
                 component: () =>
                     import ('@/views/proceso/Lista'),
                 name: 'Procesos',
-                meta: { title: 'Procesos', icon: 'example', noCache: false, roles: ['administrador', 'abogado'] }
+                meta: { title: 'Detalle', noCache: false, roles: ['administrador', 'abogado'] }
             },
             {
                 path: 'detalle/:id',
@@ -244,8 +251,19 @@ export const asyncRoutes = [{
                 component: () =>
                     import ('@/views/proceso/Detalle'),
                 name: 'DetalleProceso',
-                meta: { title: 'Detalle proceso', icon: 'example', noCache: false, activeMenu: '/procesos/expedientes', roles: ['administrador', 'abogado', 'consulta'] },
+                meta: { title: 'Detalle proceso', noCache: false, activeMenu: '/procesos/expedientes', roles: ['administrador', 'abogado', 'consulta'] },
                 hidden: true
+            },
+            {
+                path: 'cargarProcesos',
+                component: () =>
+                    import ('@/views/proceso/components/CargarProcesos'),
+                name: 'cargarProcesos',
+                meta: {
+                    title: 'Carga',
+                    // icon: 'guide',
+                    roles: ['administrador', 'abogado', 'consulta']
+                }
             },
         ]
     },
@@ -288,7 +306,7 @@ export const asyncRoutes = [{
                 name: 'procesos_activos',
                 meta: {
                     title: 'Expedientes',
-                    icon: 'excel',
+                    // icon: 'excel',
                     roles: ['administrador', 'abogado', 'consulta']
                 }
             },
