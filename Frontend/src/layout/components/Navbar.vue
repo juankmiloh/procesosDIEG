@@ -23,7 +23,7 @@
         </div>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/profile/index">
-            <el-dropdown-item>Perfil</el-dropdown-item>
+            <el-dropdown-item>Ver tu perfil</el-dropdown-item>
           </router-link>
           <el-dropdown-item divided>
             <span style="display:block;" @click="logout">{{ $t("navbar.logOut") }}</span>

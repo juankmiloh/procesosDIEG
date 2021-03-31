@@ -86,7 +86,7 @@ export default {
         externalLink: 'Enlace externo'
     },
     navbar: {
-        logOut: 'Salir',
+        logOut: 'Cerrar sesión',
         dashboard: 'Panel de control',
         github: 'Github',
         theme: 'Tema',
