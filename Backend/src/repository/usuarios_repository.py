@@ -39,7 +39,7 @@ class UsuariosRepository:
 
     def get_usuarios_bd(self):
         sql = '''
-            SELECT * FROM USUARIOS WHERE ROL <> 3 ORDER BY NOMBRE ASC;
+            SELECT * FROM USUARIOS WHERE ROL <> 3 AND IDUSUARIO <> 12 ORDER BY NOMBRE ASC;
         '''
         return self.db.engine.execute(text(sql)).fetchall()
 
@@ -55,7 +55,8 @@ class UsuariosRepository:
                 G.NOMBRE
             FROM USUARIOS U, ROL R, GENERO G
             WHERE 
-                U.ROL = R.IDROL
+                IDUSUARIO <> 12
+                AND U.ROL = R.IDROL
                 AND U.GENERO = G.IDGENERO
             ORDER BY U.NOMBRE ASC;
         '''

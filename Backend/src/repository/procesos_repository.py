@@ -43,7 +43,7 @@ class ProcesosRepository:
             WHERE
                 PROCESO.IDPROCESO = ETAPA.IDPROCESO
                 AND PROCESO.ETAPA = ETAPA.IDETAPA
-            ORDER BY PROCESO.IDPROCESO DESC;
+            ORDER BY PROCESO.IDPROCESO ASC;
         '''
         return self.db.engine.execute(text(sql)).fetchall()
     

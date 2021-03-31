@@ -230,7 +230,7 @@ export const asyncRoutes = [{
         path: '/procesos',
         component: Layout,
         alwaysShow: true, // will always show the root menu
-        name: 'Procesos',
+        name: 'Expedientes',
         meta: {
             title: 'Expedientes',
             icon: 'component',
@@ -305,7 +305,7 @@ export const asyncRoutes = [{
                     import ('@/views/informe/Expedientes'),
                 name: 'procesos_activos',
                 meta: {
-                    title: 'Expedientes',
+                    title: 'Procesos',
                     // icon: 'excel',
                     roles: ['administrador', 'abogado', 'consulta']
                 }

@@ -4,15 +4,18 @@
       :on-success="handleSuccess"
       :before-upload="beforeUpload"
     />
-    <div style="padding-top: 2%;">
+    <div v-if="tableData.length" style="padding-top: 2%;">
       <el-button
-        v-if="tableData.length"
+        :loading="loading"
         style="border: 1px solid #67c23a;"
         size="medium"
         icon="el-icon-upload"
         round
         @click="clickCargar();"
-      >Cargar expedientes</el-button>
+      >Cargar {{ tableData.length }} expedientes</el-button>
+      <div style="padding-top: 2%;">
+        <el-progress :text-inside="true" :stroke-width="24" :percentage="uploadProgress" :color="customColorMethod" status="success" />
+      </div>
     </div>
     <el-table
       :data="tableData"
@@ -25,7 +28,19 @@
         :key="item"
         :prop="item"
         :label="item"
+        align="center"
       />
+      <el-table-column align="center">
+        <template slot-scope="scope">
+          <el-button
+            type="text"
+            size="small"
+            @click="deleteRow(scope.$index, tableData)"
+          >
+            Eliminar
+          </el-button>
+        </template>
+      </el-table-column>
     </el-table>
   </div>
 </template>
@@ -40,7 +55,9 @@ export default {
   data() {
     return {
       tableData: [],
-      tableHeader: []
+      tableHeader: [],
+      uploadProgress: 0,
+      loading: false
     }
   },
   methods: {
@@ -59,29 +76,69 @@ export default {
       this.tableData = results
       this.tableHeader = header
     },
-    clickCargar() {
-      // console.log(this.tableData)
-      this.tableData.forEach(element => {
-        // console.log(moment(this.numeroAFecha(element.fecha_caducidad, true)).format('DD/MM/YYYY'))
+    deleteRow(index, rows) {
+      rows.splice(index, 1)
+    },
+    async clickCargar() {
+      this.loading = true
+      const procesosLength = this.tableData.length
+      let countProgress = 0
+      let procesosCargados = 0
+      let procesosError = 0
+      while (this.tableData.length) {
+        const element = this.tableData[0]
         if (!isNaN(element.fecha_caducidad)) { // Si es un numero
           element.fecha_caducidad = moment(this.numeroAFecha(element.fecha_caducidad, true)).format('DD/MM/YYYY')
         }
-        createProceso(element).then((response) => {
-          console.log('Expediente cargado con exito')
+        await createProceso(element).then((response) => {
+          procesosCargados += 1
+          this.deleteRow(0, this.tableData)
+          countProgress = countProgress + 100
+          this.uploadProgress = parseInt(countProgress / procesosLength)
+        }, (err) => {
+          console.log(err)
+          procesosError += 1
+          this.deleteRow(0, this.tableData)
+          countProgress = countProgress + 100
+          this.uploadProgress = parseInt(countProgress / procesosLength)
         })
-      })
-      this.$notify({
-        title: 'Buen trabajo!',
-        message: 'Expedientes cargados con éxito',
-        type: 'success',
-        duration: 2000
-      })
-      this.tableData = []
+      }
+      if (procesosCargados > 0) {
+        this.$notify({
+          title: 'Buen trabajo!',
+          message: `Expedientes cargados con éxito: ${procesosCargados} `,
+          type: 'success',
+          duration: 3000,
+          showClose: false
+        })
+      }
+      if (procesosError > 0) {
+        this.$notify({
+          title: 'Error',
+          message: `Expedientes con error en la carga: ${procesosError}`,
+          type: 'error',
+          duration: 3000,
+          position: 'bottom-right',
+          showClose: false
+        })
+      }
+      this.uploadProgress = 0
+      this.tableHeader = []
+      this.loading = false
     },
     numeroAFecha(numeroDeDias, esExcel = false) {
       var diasDesde1900 = esExcel ? 25567 + 1 : 25567
       // 86400 es el número de segundos en un día, luego multiplicamos por 1000 para obtener milisegundos.
       return new Date((numeroDeDias - diasDesde1900) * 86400 * 1000)
+    },
+    customColorMethod(percentage) {
+      if (percentage < 30) {
+        return '#f56c6c'
+      } else if (percentage < 70) {
+        return '#e6a23c'
+      } else {
+        return '#67c23a'
+      }
     }
   }
 }

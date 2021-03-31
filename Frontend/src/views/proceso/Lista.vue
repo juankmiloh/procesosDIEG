@@ -591,6 +591,16 @@ export default {
             })
             this.getProcesos()
             this.$refs['formAgregar'].resetFields()
+          }, (err) => {
+            console.log(err)
+            this.$notify({
+              title: 'Error',
+              message: 'Número de expediente ya existe',
+              type: 'error',
+              duration: 2000
+            })
+            this.getProcesos()
+            this.$refs['formAgregar'].resetFields()
           })
         } else {
           // console.log('error submit!!')
