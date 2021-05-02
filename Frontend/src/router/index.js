@@ -233,7 +233,7 @@ export const asyncRoutes = [{
         name: 'Expedientes',
         meta: {
             title: 'Expedientes',
-            icon: 'component',
+            icon: 'form',
             roles: ['administrador', 'abogado', 'consulta'] // you can set roles in root nav
         },
         children: [{

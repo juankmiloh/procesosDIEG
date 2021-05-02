@@ -2,13 +2,15 @@ import Cookies from 'js-cookie'
 
 const state = {
   sidebar: {
-    opened: Cookies.get('sidebarStatus') ? !!+Cookies.get('sidebarStatus') : true,
+    opened: Cookies.get('sidebarStatus') ? !!+Cookies.get('sidebarStatus') : false,
     withoutAnimation: false
   },
   device: 'desktop',
   language: Cookies.get('language') ? Cookies.get('language') : 'es',
   size: Cookies.get('size') || 'medium'
 }
+
+// console.log(state.sidebar.opened)
 
 const mutations = {
   TOGGLE_SIDEBAR: state => {
