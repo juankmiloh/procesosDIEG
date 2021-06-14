@@ -201,6 +201,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import Sticky from '@/components/Sticky' // 粘性header组件
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import PanelGroupProceso from './components/PanelGroupProceso'
@@ -254,6 +255,9 @@ export default {
       titleDialog: ''
     }
   },
+  computed: {
+    ...mapGetters(['name', 'roles', 'usuario', 'idusuario', 'dependencia'])
+  },
   created() {
     this.initView()
   },
@@ -295,7 +299,7 @@ export default {
       }
     },
     async getDataEmpresas(idservicio) {
-      await getListProcesosEmpresa(idservicio).then((response) => {
+      await getListProcesosEmpresa(idservicio, this.dependencia).then((response) => {
         console.log('PIECHART_EMPRESAS -> ', response)
         this.dataEmpresas = response
         this.pieChartDataEmpresas = this.dataEmpresas['activos']
@@ -311,7 +315,7 @@ export default {
       })
     },
     async getDataEstado(idservicio) {
-      await getListProcesosEstado(idservicio).then((response) => {
+      await getListProcesosEstado(idservicio, this.dependencia).then((response) => {
         // console.log(response)
         this.dataEstado = response
         this.pieChartDataEstado = this.dataEstado['activos']
@@ -319,7 +323,7 @@ export default {
       })
     },
     async getDataUsuarios(idservicio) {
-      await getListProcesosUsuario(idservicio).then((response) => {
+      await getListProcesosUsuario(idservicio, this.dependencia).then((response) => {
         // console.log(response)
         this.DataUsuarios = response
         this.pieChartDataUsuarios = this.DataUsuarios['activos']
@@ -327,7 +331,7 @@ export default {
       })
     },
     async getServicios() {
-      await getListServicios().then((response) => {
+      await getListServicios(this.dependencia).then((response) => {
         this.datosServicios = response
         this.datosServicios.unshift({
           'idservicio': 0,

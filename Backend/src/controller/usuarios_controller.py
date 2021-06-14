@@ -20,7 +20,15 @@ def userinfo(usuarios_service: UsuariosService, usuarios_repository: UsuariosRep
     
 @controller.route(API_ROOT_PATH + 'usuarios', methods=['GET'])
 def usuarios(usuarios_service: UsuariosService, usuarios_repository: UsuariosRepository):
-    return json.dumps(usuarios_service.get_usuarios(usuarios_repository))
+    # Id dependencia
+    dependencia = request.args.get('dependencia', default='', type=str)
+    return json.dumps(usuarios_service.get_usuarios(usuarios_repository, dependencia))
+
+@controller.route(API_ROOT_PATH + 'revisores', methods=['GET'])
+def revisores(usuarios_service: UsuariosService, usuarios_repository: UsuariosRepository):
+    # Id dependencia
+    dependencia = request.args.get('dependencia', default='', type=str)
+    return json.dumps(usuarios_service.get_revisores(usuarios_repository, dependencia))
 
 @controller.route(API_ROOT_PATH + 'rol', methods=['GET'])
 def roles(usuarios_service: UsuariosService, usuarios_repository: UsuariosRepository):
@@ -37,7 +45,9 @@ def createUser(usuarios_service: UsuariosService, usuarios_repository: UsuariosR
 
 @controller.route(API_ROOT_PATH + 'lista_usuarios', methods=['GET'])
 def listaUsuarios(usuarios_service: UsuariosService, usuarios_repository: UsuariosRepository):
-    return json.dumps(usuarios_service.get_lista_usuarios(usuarios_repository))
+    # Id dependencia
+    dependencia = request.args.get('dependencia', default='', type=str)
+    return json.dumps(usuarios_service.get_lista_usuarios(usuarios_repository, dependencia))
 
 @controller.route(API_ROOT_PATH + 'usuarios', methods=['DELETE'])
 def deleteUser(usuarios_service: UsuariosService, usuarios_repository: UsuariosRepository):

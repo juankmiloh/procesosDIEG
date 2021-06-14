@@ -56,6 +56,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import CountTo from 'vue-count-to'
 import { getListCantidadProcesos } from '@/api/procesosDIEG/informes'
 
@@ -76,6 +77,9 @@ export default {
       countEliminados: 0,
       nombreServicio: 'Todos'
     }
+  },
+  computed: {
+    ...mapGetters(['name', 'roles', 'usuario', 'idusuario', 'dependencia'])
   },
   watch: {
     servicio: {
@@ -98,7 +102,7 @@ export default {
     },
     async getCantidadProcesos(idservicio) {
       // console.log('Servicio observable -> ', idservicio)
-      await getListCantidadProcesos(idservicio).then((response) => {
+      await getListCantidadProcesos(idservicio, this.dependencia).then((response) => {
         // console.log(response)
         this.countActivos = response['En curso'].cantidad
         this.countTerminados = response['Finalizado'].cantidad

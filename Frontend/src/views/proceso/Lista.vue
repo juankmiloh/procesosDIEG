@@ -98,16 +98,32 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="Abogado" prop="usuario">
+          <el-form-item label="Proyectista" prop="usuario">
             <el-select
               v-model="formAgregar.usuario"
               filterable
-              placeholder="Seleccione un usuario"
+              placeholder="Seleccione un abogado"
               class="control-modal"
               clearable
             >
               <el-option
                 v-for="item in datosUsuarios"
+                :key="item.idusuario"
+                :label="item.nombre + ' ' + item.apellido"
+                :value="item.idusuario"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="Revisor" prop="revisor">
+            <el-select
+              v-model="formAgregar.revisor"
+              filterable
+              placeholder="Seleccione un revisor"
+              class="control-modal"
+              clearable
+            >
+              <el-option
+                v-for="item in datosRevisor"
                 :key="item.idusuario"
                 :label="item.nombre + ' ' + item.apellido"
                 :value="item.idusuario"
@@ -150,7 +166,7 @@
     >
       <sticky class-name="sub-navbar">
         <div style="border: 0px solid red; color: white; text-align: center">
-          <h2>Asignar abogado</h2>
+          <h2>Modificar asignación de usuarios</h2>
         </div>
       </sticky>
       <div
@@ -170,15 +186,30 @@
               readonly
             />
           </el-form-item>
-          <el-form-item label="Usuario">
+          <el-form-item label="Proyectista">
             <el-select
               v-model="formUsuario.usuario"
               filterable
-              placeholder="Seleccione un usuario"
+              placeholder="Seleccione un abogado"
               class="control-modal"
             >
               <el-option
                 v-for="item in datosUsuarios"
+                :key="item.idusuario"
+                :label="item.nombre + ' ' + item.apellido"
+                :value="item.idusuario"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="Revisor">
+            <el-select
+              v-model="formUsuario.revisor"
+              filterable
+              placeholder="Seleccione un revisor"
+              class="control-modal"
+            >
+              <el-option
+                v-for="item in datosRevisor"
                 :key="item.idusuario"
                 :label="item.nombre + ' ' + item.apellido"
                 :value="item.idusuario"
@@ -308,7 +339,7 @@ import {
   updateProcesoUsuario,
   deleteProceso
 } from '@/api/procesosDIEG/procesos'
-import { getListUsuarios } from '@/api/procesosDIEG/usuarios'
+import { getListUsuarios, getListRevisores } from '@/api/procesosDIEG/usuarios'
 import { getListServicios } from '@/api/procesosDIEG/servicios'
 import { getListEmpresas } from '@/api/procesosDIEG/empresas'
 import { getAllEmpresas } from '@/api/procesosDIEG/empresas'
@@ -334,8 +365,10 @@ export default {
       filterEstado: [],
       filterCaducidad: [],
       filterAbogado: [],
+      filterRevisor: [],
       datosProcesos: [],
       datosUsuarios: [],
+      datosRevisor: [],
       datosServicios: [],
       datosEmpresas: [],
       allDataEmpresas: [],
@@ -362,7 +395,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['name', 'roles', 'usuario', 'idusuario'])
+    ...mapGetters(['name', 'roles', 'usuario', 'idusuario', 'dependencia'])
   },
   created() {
     this.initView()
@@ -419,14 +452,17 @@ export default {
       }
       this.getProcesos()
       this.getUsuarios()
+      this.getRevisores()
       this.getServicios()
       this.getEmpresas()
     },
     async getProcesos() {
-      await getListProcesos().then((response) => {
+      await getListProcesos(this.dependencia).then((response) => {
         let procesos = []
         if (this.roles[0] === 'administrador') {
           procesos = response
+        } else if (this.roles[0] === 'revisor') {
+          procesos = response.filter((proceso) => proceso.idrevisor === this.idusuario)
         } else {
           procesos = response.filter((proceso) => proceso.idusuario === this.idusuario)
         }
@@ -454,12 +490,14 @@ export default {
     },
     setFilters() {
       this.datosProcesos.forEach((item) => {
+        // console.log(item)
         this.filterExpediente.push({ text: item.expediente, value: item.expediente })
         this.filterEmpresa.push({ text: item.empresa, value: item.empresa })
         this.filterServicio.push({ text: item.servicio, value: item.servicio })
         this.filterEstado.push({ text: item.estado, value: item.estado })
         this.filterCaducidad.push({ text: item.textCaducidad, value: item.valueCaducidad })
         this.filterAbogado.push({ text: item.usuario, value: item.usuario })
+        this.filterRevisor.push({ text: item.revisor, value: item.revisor })
       })
       this.filters.filterExpediente = this.getUniqueListBy(this.filterExpediente, 'text')
       this.filters.filterEmpresa = this.getUniqueListBy(this.filterEmpresa, 'text')
@@ -468,6 +506,7 @@ export default {
       this.filters.filterCaducidad = this.getUniqueListBy(this.filterCaducidad, 'text')
       this.filters.filterCaducidad = this.orderByDate(this.filters.filterCaducidad)
       this.filters.filterAbogado = this.getUniqueListBy(this.filterAbogado, 'text')
+      this.filters.filterRevisor = this.getUniqueListBy(this.filterRevisor, 'text')
     },
     getUniqueListBy(arr, key) {
       return [...new Map(arr.map(item => [item[key], item])).values()]
@@ -490,13 +529,19 @@ export default {
       return newArr
     },
     async getUsuarios() {
-      await getListUsuarios().then((response) => {
+      await getListUsuarios(this.dependencia).then((response) => {
         // console.log('Usuarios -> ', response)
         this.datosUsuarios = response
       })
     },
+    async getRevisores() {
+      await getListRevisores(this.dependencia).then((response) => {
+        // console.log('Revisores -> ', response)
+        this.datosRevisor = response
+      })
+    },
     async getServicios() {
-      await getListServicios().then((response) => {
+      await getListServicios(this.dependencia).then((response) => {
         this.datosServicios = response
       })
     },
@@ -524,8 +569,10 @@ export default {
     },
     /* Evento click boton permisos */
     handlePermisos(data) {
+      this.formUsuario.idproceso = data.idproceso
       this.formUsuario.expediente = data.expediente
       this.formUsuario.usuario = data.idusuario
+      this.formUsuario.revisor = data.idrevisor
       this.msgUsuarioVisible = true
     },
     /* Evento clic boton permisos */
@@ -581,6 +628,7 @@ export default {
           this.msgAgregarVisible = false
           // console.log(this.formAgregar)
           this.loading = true
+          this.formAgregar.dependencia = this.dependencia
           console.log('FORMAGREGAR -> ', this.formAgregar)
           createProceso(this.formAgregar).then((response) => {
             this.$notify({

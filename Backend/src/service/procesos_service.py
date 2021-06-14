@@ -5,9 +5,9 @@ from ..util.web_util import add_wrapper
 
 class ProcesosService:
 
-    def get_procesos(self, procesos_repository: ProcesosRepository):
+    def get_procesos(self, procesos_repository: ProcesosRepository, iddependencia):
         procesos = []
-        data = procesos_repository.get_procesos_bd()
+        data = procesos_repository.get_procesos_bd(iddependencia)
         for result in data:
             # print('-------------------- CADUCIDAD -----------------', result[2])
     
@@ -21,6 +21,8 @@ class ProcesosService:
                     'servicio': result[5],
                     'idusuario': result[6],
                     'usuario': result[7],
+                    'idrevisor': result[8],
+                    'revisor': result[9]
                 }
             )
         return procesos
@@ -46,6 +48,7 @@ class ProcesosService:
                     'caducidad': caducidad,
                     'etapa': result[7],
                     'proxetapa': result[8],
+                    'revisor': result[10],
                 }
             )
         return proceso
@@ -74,6 +77,7 @@ class ProcesosService:
                     'caducidad': caducidad,
                     'etapa': result[10],
                     'proxetapa': result[11],
+                    'revisor': result[13]
                 }
             )
         return proceso

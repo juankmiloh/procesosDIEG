@@ -93,7 +93,7 @@
                       />
                     </el-form-item>
                   </el-col>
-                  <el-col :span="24" :xs="24" style="border: 0px solid red;">
+                  <el-col :span="12" :xs="24" style="border: 0px solid red;">
                     <el-form-item label="" prop="rol">
                       <el-select v-model="formUsuario.rol" placeholder="Tipo de usuario" class="control-modal">
                         <el-option
@@ -103,6 +103,17 @@
                           :value="item.idrol"
                         />
                       </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12" :xs="24" style="border: 0px solid red;">
+                    <el-form-item label="" prop="email">
+                      <el-input
+                        v-model="formUsuario.email"
+                        autocomplete="off"
+                        placeholder="Correo electrónico"
+                        clearable
+                        class="control-modal"
+                      />
                     </el-form-item>
                   </el-col>
                   <el-col :span="24" :xs="24" style="border: 0px solid red;">
@@ -172,7 +183,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['name', 'roles'])
+    ...mapGetters(['name', 'roles', 'dependencia'])
   },
   created() {
     this.initView()
@@ -282,7 +293,8 @@ export default {
             modelUser.rol = Number(modelUser.rol)
             modelUser.contrasena = md5(modelUser.contrasena)
             modelUser.genero = this.dataGenero.find((genero) => genero.nombre === modelUser.genero).idgenero
-            // console.log('Guardar modelUser -> ', modelUser)
+            modelUser.dependencia = this.dependencia
+            console.log('Guardar modelUser -> ', modelUser)
             await createUser(modelUser).then(async(response) => {
               this.$notify({
                 title: 'Bien hecho!',
@@ -295,36 +307,31 @@ export default {
               this.imageUrl = DATA.imageURL
               this.viewRefresh = { action: true }
             })
-            // this.$refs[formName].resetFields()
-            // this.imageUrl = DATA.imageURL
-            // this.viewRefresh = { action: true }
           } else {
             // console.log('error submit!!')
             return false
           }
         } else { // Si se actualiza usuario
-          const modelUser = this.formUsuario
-          modelUser.token = `${modelUser.nickname}-token`
-          modelUser.genero = this.dataGenero.find((genero) => genero.nombre === modelUser.genero).idgenero
-          if (modelUser.contrasena !== '') {
-            modelUser.contrasena = md5(modelUser.contrasena)
-          }
-          // console.log('actualizar modelUser -> ', modelUser)
-          await updateUsuario(modelUser).then(async(response) => {
-            this.$notify({
-              title: 'Bien hecho!',
-              message: 'Usuario actualizado con éxito',
-              position: 'top-right',
-              type: 'success',
-              duration: 2000
+          if (valid) {
+            const modelUser = this.formUsuario
+            modelUser.token = `${modelUser.nickname}-token`
+            modelUser.genero = this.dataGenero.find((genero) => genero.nombre === modelUser.genero).idgenero
+            if (modelUser.contrasena !== '') {
+              modelUser.contrasena = md5(modelUser.contrasena)
+            }
+            // console.log('actualizar modelUser -> ', modelUser)
+            await updateUsuario(modelUser).then(async(response) => {
+              this.$notify({
+                title: 'Bien hecho!',
+                message: 'Usuario actualizado con éxito',
+                position: 'top-right',
+                type: 'success',
+                duration: 2000
+              })
+              this.$refs[formName].resetFields()
+              this.viewRefresh = { idusuario: modelUser.idusuario, action: true }
             })
-            this.$refs[formName].resetFields()
-            this.viewRefresh = { idusuario: modelUser.idusuario, action: true }
-          })
-          // this.formUsuario = CONSTANTS.formUser
-          // this.$refs[formName].resetFields()
-          // this.imageUrl = DATA.imageURL
-          // this.viewRefresh = { idusuario: modelUser.idusuario, action: true }
+          }
         }
       })
     },
@@ -364,4 +371,3 @@ export default {
   padding-left: 12.5vw;
 }
 </style>
-

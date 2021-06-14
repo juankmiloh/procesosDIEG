@@ -82,7 +82,7 @@
                 </el-select>
               </el-form-item>
 
-              <el-form-item label="Usuario" prop="usuario">
+              <el-form-item label="Proyectista" prop="usuario">
                 <el-select
                   v-model="formProceso.usuario"
                   filterable
@@ -92,6 +92,23 @@
                 >
                   <el-option
                     v-for="item in datosUsuarios"
+                    :key="item.idusuario"
+                    :label="item.nombre + ' ' + item.apellido"
+                    :value="item.idusuario"
+                  />
+                </el-select>
+              </el-form-item>
+
+              <el-form-item label="Revisor" prop="revisor">
+                <el-select
+                  v-model="formProceso.revisor"
+                  filterable
+                  placeholder="Seleccione un revisor"
+                  class="control-modal"
+                  :disabled="!editarProceso"
+                >
+                  <el-option
+                    v-for="item in datosRevisor"
                     :key="item.idusuario"
                     :label="item.nombre + ' ' + item.apellido"
                     :value="item.idusuario"
@@ -542,7 +559,7 @@
 import { mapGetters } from 'vuex'
 import { getProceso, getProcesoInicial } from '@/api/procesosDIEG/procesos'
 import { getAllEmpresas } from '@/api/procesosDIEG/empresas'
-import { getListUsuarios } from '@/api/procesosDIEG/usuarios'
+import { getListUsuarios, getListRevisores } from '@/api/procesosDIEG/usuarios'
 import { getListServicios } from '@/api/procesosDIEG/servicios'
 import { getListEstado } from '@/api/procesosDIEG/estado'
 import { getListTiposancion } from '@/api/procesosDIEG/tiposancion'
@@ -575,6 +592,7 @@ export default {
     return {
       id: '',
       datosUsuarios: [],
+      datosRevisor: [],
       datosServicios: [],
       datosEmpresas: [],
       empresas: [],
@@ -617,7 +635,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['name', 'roles', 'idusuario'])
+    ...mapGetters(['name', 'roles', 'idusuario', 'dependencia'])
   },
   created() {
     if (this.isDetail) {
@@ -655,6 +673,7 @@ export default {
       }
       this.getEmpresas()
       this.getUsuarios()
+      this.getRevisores()
       this.getServicios()
       this.getEstado()
       this.getTiposancion()
@@ -668,13 +687,19 @@ export default {
       })
     },
     async getUsuarios() {
-      await getListUsuarios().then((response) => {
+      await getListUsuarios(this.dependencia).then((response) => {
         // console.log('Usuarios -> ', response)
         this.datosUsuarios = response
       })
     },
+    async getRevisores() {
+      await getListRevisores(this.dependencia).then((response) => {
+        // console.log('Revisores -> ', response)
+        this.datosRevisor = response
+      })
+    },
     async getServicios() {
-      await getListServicios().then((response) => {
+      await getListServicios(this.dependencia).then((response) => {
         this.datosServicios = response
       })
     },
@@ -729,7 +754,10 @@ export default {
             // modelProceso = await this.verificarDataModel(modelProceso, false)
           })
         }
-        if (this.roles[0] === 'abogado' && modelProceso.usuario === this.idusuario) {
+        // Condicional para permitir la edicion del proceso por el abogado
+        if (this.roles[0] === 'proyectista' && modelProceso.usuario === this.idusuario) {
+          this.abogadoEditar = true
+        } else if (this.roles[0] === 'revisor' && modelProceso.revisor === this.idusuario) {
           this.abogadoEditar = true
         }
         if (modelProceso.etapa !== 'Memorando IG') {

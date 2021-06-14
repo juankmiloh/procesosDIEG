@@ -23,14 +23,15 @@ class UsuariosService:
                     "usuario": result[3],
                     "idusuario": result[4],
                     "privilegio": result[5],
-                    "avatar": result[6]
+                    "avatar": result[6],
+                    "dependencia": result[7]
                 }
             }
         return responseGetInfo
 
-    def get_usuarios(self, usuarios_repository: UsuariosRepository):
+    def get_usuarios(self, usuarios_repository: UsuariosRepository, dependencia):
         usuarios = []
-        data = usuarios_repository.get_usuarios_bd()
+        data = usuarios_repository.get_usuarios_bd(dependencia)
         for result in data:
             usuarios.append(
                 {
@@ -43,9 +44,24 @@ class UsuariosService:
             )
         return usuarios
     
-    def get_lista_usuarios(self, usuarios_repository: UsuariosRepository):
+    def get_revisores(self, usuarios_repository: UsuariosRepository, dependencia):
+        revisores = []
+        data = usuarios_repository.get_revisores_bd(dependencia)
+        for result in data:
+            revisores.append(
+                {
+                    'idusuario': result[0],
+                    'nombre': result[1],
+                    'apellido': str(result[2]),
+                    'rol': result[6],
+                    'password': result[8],
+                }
+            )
+        return revisores
+    
+    def get_lista_usuarios(self, usuarios_repository: UsuariosRepository, dependencia):
         usuarios = []
-        data = usuarios_repository.get_lista_usuarios_bd()
+        data = usuarios_repository.get_lista_usuarios_bd(dependencia)
         for result in data:
             usuarios.append(
                 {
@@ -59,7 +75,9 @@ class UsuariosService:
                     'avatar': result[8],
                     'contrasena': '',
                     'token': result[10],
-                    'genero': result[11]
+                    'email': result[11],
+                    'dependencia': result[12],
+                    'genero': result[13]
                 }
             )
         return usuarios
@@ -94,7 +112,7 @@ class UsuariosService:
 
     def usuario_update(self, usuarios_repository: UsuariosRepository, usuario):
         usuarios_repository.usuario_update_bd(usuario)
-        return add_wrapper(['Usuario editado con éxito!'])
+        return add_wrapper(['Usuario actualizado con éxito!'])
 
     def usuario_delete(self, usuarios_repository: UsuariosRepository, idusuario):
         usuarios_repository.usuario_delete_bd(idusuario)

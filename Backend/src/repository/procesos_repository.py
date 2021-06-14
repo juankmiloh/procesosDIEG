@@ -5,7 +5,7 @@ class ProcesosRepository:
     def __init__(self, db):
         self.db = db
 
-    def get_procesos_bd(self):
+    def get_procesos_bd(self, iddependencia):
         sql = '''
             SELECT * FROM
             (
@@ -18,11 +18,14 @@ class ProcesosRepository:
                     S.NOMBRE AS SERVICIO,
                     U.IDUSUARIO AS IDUSUARIO,
                     U.NOMBRE || ' ' || U.APELLIDO AS USUARIO,
+                    R.IDUSUARIO AS IDREVISOR,
+                    R.NOMBRE || ' ' || R.APELLIDO AS REVISOR,
                     EP.ETAPA
                 FROM
-                    EMPRESA EMP, SERVICIO S, PROCESO P, USUARIOS U, ETAPA_PROCESO EP, ETAPA E, ESTADO ES
+                    EMPRESA EMP, SERVICIO S, PROCESO P, USUARIOS U, ETAPA_PROCESO EP, ETAPA E, ESTADO ES, USUARIOS R
                 WHERE
-                    P.FASE NOT IN (3)
+                    (U.DEPENDENCIA = :DEPENDENCIA_ARG OR 1 = :DEPENDENCIA_ARG)
+                    AND P.FASE NOT IN (3)
                     AND P.IDPROCESO = EP.PROCESO
                     AND EP.ETAPA = E.IDETAPA
                     AND E.IDESTADO = ES.IDESTADO
@@ -30,6 +33,7 @@ class ProcesosRepository:
                     AND EMP.SERVICIO = S.IDSERVICIO
                     AND P.IDSERVICIO = S.IDSERVICIO
                     AND P.USUARIOASIGNADO = U.IDUSUARIO
+                    AND P.REVISOR = R.IDUSUARIO
             ) PROCESO,
             (
                 SELECT 
@@ -45,7 +49,7 @@ class ProcesosRepository:
                 AND PROCESO.ETAPA = ETAPA.IDETAPA
             ORDER BY PROCESO.CADUCIDAD ASC;
         '''
-        return self.db.engine.execute(text(sql)).fetchall()
+        return self.db.engine.execute(text(sql), DEPENDENCIA_ARG=iddependencia).fetchall()
     
     def get_proceso_inicial_bd(self, idProceso):
         print('-------------------------------------')
@@ -65,9 +69,11 @@ class ProcesosRepository:
                     E.NOMBRE AS ACTUALETAPA,
                     (SELECT NOMBRE FROM ETAPA WHERE IDETAPA=E.SIGUIENTEETAPA) AS PROXETAPA,
                     U.NOMBRE || ' ' || U.APELLIDO AS USUARIO,
+                    R.IDUSUARIO AS IDREVISOR,
+                    R.NOMBRE || ' ' || R.APELLIDO AS REVISOR,
                     EP.ETAPA
                 FROM
-                    EMPRESA EMP, SERVICIO S, PROCESO P, USUARIOS U, ETAPA_PROCESO EP, ETAPA E, ESTADO ES
+                    EMPRESA EMP, SERVICIO S, PROCESO P, USUARIOS U, ETAPA_PROCESO EP, ETAPA E, ESTADO ES, USUARIOS R
                 WHERE
                     P.IDPROCESO = EP.PROCESO
                     AND EP.ETAPA = E.IDETAPA
@@ -77,6 +83,7 @@ class ProcesosRepository:
                     AND P.IDSERVICIO = S.IDSERVICIO
                     AND P.USUARIOASIGNADO = U.IDUSUARIO
                     AND P.IDPROCESO = :IDPROCESO_ARG
+                    AND P.REVISOR = R.IDUSUARIO
             ) PROCESO,
             (
                 SELECT 
@@ -114,9 +121,10 @@ class ProcesosRepository:
                     P.FECHACADUCIDAD AS CADUCIDAD,
                     E.NOMBRE AS ACTUALETAPA,
                     (SELECT NOMBRE FROM ETAPA WHERE IDETAPA=E.SIGUIENTEETAPA) AS PROXETAPA,
-                    EP.ETAPA
+                    EP.ETAPA,
+                    R.IDUSUARIO AS IDREVISOR
                 FROM
-                    EMPRESA EMP, SERVICIO S, PROCESO P, USUARIOS U, ETAPA_PROCESO EP, ETAPA E, ESTADO ES, TIPOSANCION TS, DESCISIONRECURSO DR
+                    EMPRESA EMP, SERVICIO S, PROCESO P, USUARIOS U, ETAPA_PROCESO EP, ETAPA E, ESTADO ES, TIPOSANCION TS, DESCISIONRECURSO DR, USUARIOS R
                 WHERE
                     P.IDPROCESO = EP.PROCESO
                     AND EP.ETAPA = E.IDETAPA
@@ -128,6 +136,7 @@ class ProcesosRepository:
                     AND P.TIPOSANCION = TS.IDTIPOSANCION
                     AND P.DESCISIONRECURSO = DR.IDDESCISIONRECURSO
                     AND P.IDPROCESO = :IDPROCESO_ARG
+                    AND P.REVISOR = R.IDUSUARIO
             ) PROCESO,
             (
                 SELECT 
@@ -150,10 +159,10 @@ class ProcesosRepository:
         print('OBJ PROCESO -> ', proceso)
         print('-------------------------------------')
         sql = '''
-            INSERT INTO PROCESO(RADICADOPROCESO, USUARIOASIGNADO, EMPRESA, IDSERVICIO, FASE, FECHACADUCIDAD, FECHAREGISTRO)
-            VALUES (:RADICADO_ARG, :USUARIO_ARG, :EMPRESA_ARG, :SERVICIO_ARG, :FASE_ARG, :CADUCIDAD_ARG, CURRENT_TIMESTAMP);
+            INSERT INTO PROCESO(RADICADOPROCESO, USUARIOASIGNADO, REVISOR, EMPRESA, IDSERVICIO, FASE, DEPENDENCIA, FECHACADUCIDAD, FECHAREGISTRO)
+            VALUES (:RADICADO_ARG, :USUARIO_ARG, :REVISOR_ARG, :EMPRESA_ARG, :SERVICIO_ARG, :FASE_ARG, :DEPENDENCIA_ARG, :CADUCIDAD_ARG, CURRENT_TIMESTAMP);
         '''
-        resultsql = self.db.engine.execute(text(sql), RADICADO_ARG=proceso["radicado"], USUARIO_ARG=proceso["usuario"], EMPRESA_ARG=proceso["empresa"], SERVICIO_ARG=proceso["servicio"], FASE_ARG=1, CADUCIDAD_ARG=proceso["fecha_caducidad"])
+        resultsql = self.db.engine.execute(text(sql), RADICADO_ARG=proceso["radicado"], USUARIO_ARG=proceso["usuario"], REVISOR_ARG=proceso["revisor"], EMPRESA_ARG=proceso["empresa"], SERVICIO_ARG=proceso["servicio"], FASE_ARG=1, DEPENDENCIA_ARG=proceso["dependencia"], CADUCIDAD_ARG=proceso["fecha_caducidad"])
 
         return resultsql
     
@@ -163,10 +172,12 @@ class ProcesosRepository:
         print('-------------------------------------')
         sql = '''
             UPDATE PROCESO
-            SET USUARIOASIGNADO = :IDUSUARIO_ARG
-            WHERE RADICADOPROCESO = :RADICADO_ARG;
+            SET
+                USUARIOASIGNADO = :IDUSUARIO_ARG,
+                REVISOR = :REVISOR_ARG
+            WHERE IDPROCESO = :IDPROCESO_ARG;
         '''
-        resultsql = self.db.engine.execute(text(sql), RADICADO_ARG=dataProceso["expediente"], IDUSUARIO_ARG=dataProceso["usuario"])
+        resultsql = self.db.engine.execute(text(sql), IDPROCESO_ARG=dataProceso["idproceso"], IDUSUARIO_ARG=dataProceso["usuario"], REVISOR_ARG=dataProceso["revisor"])
 
         return resultsql
 
@@ -181,6 +192,7 @@ class ProcesosRepository:
 	        SET 
                 RADICADOPROCESO = :RADICADO_ARG,
                 USUARIOASIGNADO = :USUARIO_ARG,
+                REVISOR = :REVISOR_ARG,
                 EMPRESA = :EMPRESA_ARG,
                 IDSERVICIO = :SERVICIO_ARG,
                 TIPOSANCION = :TIPOSANCION_ARG, 
@@ -190,7 +202,7 @@ class ProcesosRepository:
 	        WHERE
                 IDPROCESO = :IDPROCESO_ARG;
         '''
-        self.db.engine.execute(text(sql), IDPROCESO_ARG=dataProceso["idproceso"], RADICADO_ARG=dataProceso["expediente"], USUARIO_ARG=dataProceso["usuario"], EMPRESA_ARG=dataProceso["empresa"], SERVICIO_ARG=dataProceso["servicio"], TIPOSANCION_ARG=dataProceso["tipo_sancion"], DECISION_ARG=dataProceso["decision"], SANCION_ARG=dataProceso["sancion"], CADUCIDAD_ARG=dataProceso["caducidad"])
+        self.db.engine.execute(text(sql), IDPROCESO_ARG=dataProceso["idproceso"], RADICADO_ARG=dataProceso["expediente"], USUARIO_ARG=dataProceso["usuario"], REVISOR_ARG=dataProceso["revisor"], EMPRESA_ARG=dataProceso["empresa"], SERVICIO_ARG=dataProceso["servicio"], TIPOSANCION_ARG=dataProceso["tipo_sancion"], DECISION_ARG=dataProceso["decision"], SANCION_ARG=dataProceso["sancion"], CADUCIDAD_ARG=dataProceso["caducidad"])
     
     def proceso_delete_bd(self, idProceso):
         print('-------------------------------------')

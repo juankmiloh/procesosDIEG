@@ -10,7 +10,9 @@ from ..util.constants import API_ROOT_PATH
 # Obtener listado de procesos
 @controller.route(API_ROOT_PATH + 'procesos', methods=['GET'])
 def getListProcesos(procesos_service: ProcesosService, procesos_repository: ProcesosRepository):
-    return json.dumps(procesos_service.get_procesos(procesos_repository))
+    # Id dependencia
+    iddependencia = request.args.get('dependencia', default='', type=str)
+    return json.dumps(procesos_service.get_procesos(procesos_repository, iddependencia))
 
 # Obtener detalle de un proceso inicial
 @controller.route(API_ROOT_PATH + 'proceso/detalle/inicial', methods=['GET'])

@@ -2,10 +2,11 @@
 /* eslint-disable */
 import request from '@/utils/request';
 
-export function getListServicios() {
+export function getListServicios(iddependencia) {
     return request({
         url: '/servicios',
-        method: 'get'
+        method: 'get',
+        params: { 'dependencia': iddependencia }
     });
 }
 

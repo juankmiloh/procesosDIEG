@@ -79,7 +79,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['name', 'roles'])
+    ...mapGetters(['name', 'roles', 'dependencia'])
   },
   watch: {
     data: {
@@ -158,8 +158,8 @@ export default {
       this.getUsuarios()
     },
     async getUsuarios() {
-      await getAllUsuarios().then((response) => {
-        // console.log(response)
+      await getAllUsuarios(this.dependencia).then((response) => {
+        console.log(response)
         this.datosUsuarios = response
         this.loading = false
         this.getNicknames()

@@ -188,7 +188,7 @@ export const asyncRoutes = [{
             //       name: 'PagePermission',
             //       meta: {
             //           title: 'Page Permission',
-            //           roles: ['administrador', 'abogado'] // or you can only set roles in sub nav
+            //           roles: ['administrador', 'proyectista', 'revisor'] // or you can only set roles in sub nav
             //       }
             //   },
             // {
@@ -234,14 +234,14 @@ export const asyncRoutes = [{
         meta: {
             title: 'Expedientes',
             icon: 'form',
-            roles: ['administrador', 'abogado', 'consulta'] // you can set roles in root nav
+            roles: ['administrador', 'proyectista', 'revisor'] // you can set roles in root nav
         },
         children: [{
                 path: 'expedientes',
                 component: () =>
                     import ('@/views/proceso/Lista'),
                 name: 'Procesos',
-                meta: { title: 'Detalle', noCache: false, roles: ['administrador', 'abogado'] }
+                meta: { title: 'Detalle', noCache: false, roles: ['administrador', 'proyectista', 'revisor'] }
             },
             {
                 path: 'detalle/:id',
@@ -251,7 +251,7 @@ export const asyncRoutes = [{
                 component: () =>
                     import ('@/views/proceso/Detalle'),
                 name: 'DetalleProceso',
-                meta: { title: 'Detalle proceso', noCache: false, activeMenu: '/procesos/expedientes', roles: ['administrador', 'abogado', 'consulta'] },
+                meta: { title: 'Detalle proceso', noCache: false, activeMenu: '/procesos/expedientes', roles: ['administrador', 'proyectista', 'revisor'] },
                 hidden: true
             },
             {
@@ -286,7 +286,7 @@ export const asyncRoutes = [{
             //       name: 'PagePermission',
             //       meta: {
             //           title: 'Page Permission',
-            //           roles: ['administrador', 'abogado'] // or you can only set roles in sub nav
+            //           roles: ['administrador', 'proyectista', 'revisor'] // or you can only set roles in sub nav
             //       }
             //   },
             // {

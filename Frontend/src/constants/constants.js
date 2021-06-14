@@ -38,10 +38,16 @@ export const CONSTANTS = {
             filter: 'filterEstado'
         },
         {
-            label: 'Abogado',
+            label: 'Proyectista',
             prop: 'usuario',
             width: 150,
             filter: 'filterAbogado'
+        },
+        {
+            label: 'Revisor',
+            prop: 'revisor',
+            width: 150,
+            filter: 'filterRevisor'
         }
     ],
     tableColumnsAbogado: [
@@ -77,6 +83,18 @@ export const CONSTANTS = {
             width: 210,
             filter: 'filterEstado'
         },
+        {
+            label: 'Proyectista',
+            prop: 'usuario',
+            width: 150,
+            filter: 'filterAbogado'
+        },
+        {
+            label: 'Revisor',
+            prop: 'revisor',
+            width: 150,
+            filter: 'filterRevisor'
+        }
     ],
     tableColumnsEtapas: [{
             label: '#',
@@ -128,7 +146,12 @@ export const CONSTANTS = {
         }],
         usuario: [{
             required: true,
-            message: 'Seleccione un usuario',
+            message: 'Seleccione un abogado',
+            trigger: 'change'
+        }],
+        revisor: [{
+            required: true,
+            message: 'Seleccione un revisor',
             trigger: 'change'
         }],
         fecha_caducidad: [{
@@ -143,11 +166,14 @@ export const CONSTANTS = {
         servicio: '',
         empresa: '',
         usuario: '',
+        revisor: '',
         fecha_caducidad: null
     },
     formUsuario: {
+        idproceso: '',
+        expediente: '',
         usuario: '',
-        expediente: ''
+        revisor: '',
     },
     formDetalleProceso: {
         expediente: '',
@@ -234,7 +260,8 @@ export const CONSTANTS = {
         rol: '',
         descripcion: '',
         avatar: '',
-        token: ''
+        token: '',
+        email: ''
     },
     rulesFormUser: {
         nombre: [
@@ -253,6 +280,9 @@ export const CONSTANTS = {
             message: 'Seleccione un rol',
             trigger: 'change'
         }],
+        email: [
+            { type: "email", required: true, message: 'Ingrese un correo electrónico válido', trigger: 'blur' },
+        ],
         descripcion: [{
             required: true,
             message: 'Ingrese una descripción del usuario',

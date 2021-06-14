@@ -2,17 +2,27 @@
 /* eslint-disable */
 import request from '@/utils/request';
 
-export function getListUsuarios() {
+export function getListUsuarios(iddependencia) {
     return request({
         url: '/usuarios',
-        method: 'get'
+        method: 'get',
+        params: { 'dependencia': iddependencia }
     });
 }
 
-export function getAllUsuarios() {
+export function getListRevisores(iddependencia) {
+    return request({
+        url: '/revisores',
+        method: 'get',
+        params: { 'dependencia': iddependencia }
+    });
+}
+
+export function getAllUsuarios(iddependencia) {
     return request({
         url: '/lista_usuarios',
-        method: 'get'
+        method: 'get',
+        params: { 'dependencia': iddependencia }
     });
 }
 

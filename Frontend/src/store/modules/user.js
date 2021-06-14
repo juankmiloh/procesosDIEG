@@ -12,6 +12,7 @@ const state = {
     roles: [],
     usuario: '',
     privilegio: '',
+    dependencia: '',
     idusuario: ''
 };
 
@@ -36,6 +37,9 @@ const mutations = {
     },
     SET_PRIVILEGIO: (state, privilegio) => {
         state.privilegio = privilegio;
+    },
+    SET_DEPENDENCIA: (state, dependencia) => {
+        state.dependencia = dependencia;
     },
     SET_IDUSUARIO: (state, idusuario) => {
         state.idusuario = idusuario;
@@ -69,7 +73,7 @@ const actions = {
                     reject('Verification failed, please Login again.')
                 }
 
-                const { roles, name, avatar, introduction, usuario, privilegio, idusuario } = data
+                const { roles, name, avatar, introduction, usuario, privilegio, dependencia, idusuario } = data
 
                 // roles must be a non-empty array
                 if (!roles || roles.length <= 0) {
@@ -82,6 +86,7 @@ const actions = {
                 commit('SET_INTRODUCTION', introduction)
                 commit('SET_USERNAME', usuario)
                 commit('SET_PRIVILEGIO', privilegio)
+                commit('SET_DEPENDENCIA', dependencia)
                 commit('SET_IDUSUARIO', idusuario)
                 resolve(data)
             }).catch(error => {

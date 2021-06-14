@@ -2,10 +2,11 @@
 /* eslint-disable */
 import request from '@/utils/request';
 
-export function getListProcesos() {
+export function getListProcesos(iddependencia) {
     return request({
         url: '/procesos',
-        method: 'get'
+        method: 'get',
+        params: { 'dependencia': iddependencia }
     });
 }
 

@@ -1,11 +1,13 @@
---TRUNCATE TABLE PROCESO RESTART IDENTITY CASCADE;
---TRUNCATE TABLE ETAPA_PROCESO RESTART IDENTITY CASCADE;
---TRUNCATE TABLE PROCESO_CAUSAL RESTART IDENTITY CASCADE;
-----------------------------
+-- TRUNCATE TABLE DEPENDENCIA RESTART IDENTITY CASCADE;
+-- TRUNCATE TABLE PROCESO RESTART IDENTITY CASCADE;
+-- TRUNCATE TABLE ETAPA_PROCESO RESTART IDENTITY CASCADE;
+-- TRUNCATE TABLE PROCESO_CAUSAL RESTART IDENTITY CASCADE;
+-- --------------------------
 -- DML TABLA ROL
-----------------------------
+-- --------------------------
 INSERT INTO ROL (DESCRIPCION) VALUES ('administrador');
-INSERT INTO ROL (DESCRIPCION) VALUES ('abogado');
+INSERT INTO ROL (DESCRIPCION) VALUES ('proyectista');
+INSERT INTO ROL (DESCRIPCION) VALUES ('revisor');
 INSERT INTO ROL (DESCRIPCION) VALUES ('consulta');
 
 
@@ -15,12 +17,20 @@ INSERT INTO ROL (DESCRIPCION) VALUES ('consulta');
 INSERT INTO GENERO (NOMBRE) VALUES ('Hombre');
 INSERT INTO GENERO (NOMBRE) VALUES ('Mujer');
 
+----------------------------
+-- DML TABLA DEPENDENCIA
+----------------------------
+INSERT INTO DEPENDENCIA (NOMBRE, DESCRIPCION) VALUES ('Administrador', 'Super administrador');
+INSERT INTO DEPENDENCIA (NOMBRE, DESCRIPCION) VALUES ('Superintendencia Delegada Para Energía y Gas Combustible', 'SDEGC');
+INSERT INTO DEPENDENCIA (NOMBRE, DESCRIPCION) VALUES ('Superintendencia Delegada Para Acueducto, Alcantarillado y Aseo', 'AAA');
+
 
 ----------------------------
 -- DML TABLA USUARIO
 ----------------------------
-INSERT INTO USUARIOS(NOMBRE, APELLIDO, GENERO, NICKNAME, DESCRIPCION, ROL, AVATAR, CONTRASENA, TOKEN) VALUES ('Madia', 'Ortega', 1, 'mortega', 'Directora de investigaciones - Administrador', 1, 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif', MD5('123456'), 'mortega-token');
-
+INSERT INTO USUARIOS(NOMBRE, APELLIDO, GENERO, NICKNAME, DESCRIPCION, ROL, AVATAR, CONTRASENA, TOKEN, EMAIL, DEPENDENCIA) VALUES ('Juan', 'Herrera', 1, 'jherreraa', 'Super administrador', 1, 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif', MD5('123456'), 'jherreraa-token', 'jherreraa@superservicios.gov.co', 1);
+INSERT INTO USUARIOS(NOMBRE, APELLIDO, GENERO, NICKNAME, DESCRIPCION, ROL, AVATAR, CONTRASENA, TOKEN, EMAIL, DEPENDENCIA) VALUES ('Miguel', 'Lozada', 1, 'mlozada', 'Director de investigaciones SDEGC - Administrador', 1, 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif', MD5('123456'), 'mlozada-token', 'mlozada@superservicios.gov.co', 2);
+INSERT INTO USUARIOS(NOMBRE, APELLIDO, GENERO, NICKNAME, DESCRIPCION, ROL, AVATAR, CONTRASENA, TOKEN, EMAIL, DEPENDENCIA) VALUES ('Prueba', 'prueba', 1, 'mprueba', 'Director de investigaciones AAA - Administrador', 1, 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif', MD5('123456'), 'mprueba-token', 'mprueba@superservicios.gov.co', 3);
 
 ----------------------------
 -- DML TABLA TIPOPERSONA
@@ -126,9 +136,12 @@ INSERT INTO ETAPA(IDESTADO, NOMBRE, SIGUIENTEETAPA, ESTAMPILLA) VALUES (1, 'Memo
 ----------------------------
 -- DML TABLA SERVICIO
 ----------------------------
-INSERT INTO SERVICIO (NOMBRE) VALUES ('Energía');
-INSERT INTO SERVICIO (NOMBRE) VALUES ('Gas');
-INSERT INTO SERVICIO (NOMBRE) VALUES ('GLP');
+INSERT INTO SERVICIO (NOMBRE, DEPENDENCIA) VALUES ('Energía', 2);
+INSERT INTO SERVICIO (NOMBRE, DEPENDENCIA) VALUES ('Gas', 2);
+INSERT INTO SERVICIO (NOMBRE, DEPENDENCIA) VALUES ('GLP', 2);
+INSERT INTO SERVICIO (NOMBRE, DEPENDENCIA) VALUES ('Acueducto', 3);
+INSERT INTO SERVICIO (NOMBRE, DEPENDENCIA) VALUES ('Alcantarillado', 3);
+INSERT INTO SERVICIO (NOMBRE, DEPENDENCIA) VALUES ('Aseo', 3);
 
 
 ----------------------------

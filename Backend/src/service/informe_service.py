@@ -4,10 +4,10 @@ from ..util.web_util import add_wrapper
 
 class InformeService:
 
-    def get_cantidad_procesos(self, informe_repository: InformeRepository, idservicio):
+    def get_cantidad_procesos(self, informe_repository: InformeRepository, idservicio, iddependencia):
         print('------------ SERVICIO SELECCIONADO ----', idservicio, '----------------')
         procesos = {}
-        data = informe_repository.get_cantidad_procesos_bd(idservicio)
+        data = informe_repository.get_cantidad_procesos_bd(idservicio, iddependencia)
         for result in data:
             print('------------ CANTIDAD DE PROCESOS ----', result, '----------------')
             procesos[result[1]] = {
@@ -16,7 +16,7 @@ class InformeService:
             }
         return procesos
 
-    def get_cantidad_procesos_empresa(self, informe_repository: InformeRepository, idservicio):
+    def get_cantidad_procesos_empresa(self, informe_repository: InformeRepository, idservicio, iddependencia):
         
         pieChartData = {}
 
@@ -52,7 +52,7 @@ class InformeService:
 
         # PROCESOS ACTIVOS
 
-        data = informe_repository.get_cantidad_procesos_empresa_bd(1, idservicio)
+        data = informe_repository.get_cantidad_procesos_empresa_bd(1, idservicio, iddependencia)
         for result in data:
             empPactivos.append(result[1].capitalize())
             pactivos.append(
@@ -62,7 +62,7 @@ class InformeService:
                 }
             )
 
-        data = informe_repository.get_procesos_empresa_bd(1, idservicio)
+        data = informe_repository.get_procesos_empresa_bd(1, idservicio, iddependencia)
         for result in data:
             dataActivos.append(
                 {
@@ -75,7 +75,7 @@ class InformeService:
 
         # PROCESOS TERMINADOS
 
-        data = informe_repository.get_cantidad_procesos_empresa_bd(2, idservicio)
+        data = informe_repository.get_cantidad_procesos_empresa_bd(2, idservicio, iddependencia)
         for result in data:
             empPterminados.append(result[1].capitalize())
             pterminados.append(
@@ -85,7 +85,7 @@ class InformeService:
                 }
             )
 
-        data = informe_repository.get_procesos_empresa_bd(2, idservicio)
+        data = informe_repository.get_procesos_empresa_bd(2, idservicio, iddependencia)
         for result in data:
             dataTerminados.append(
                 {
@@ -98,7 +98,7 @@ class InformeService:
         
         # PROCESOS Eliminados
 
-        data = informe_repository.get_cantidad_procesos_empresa_bd(3, idservicio)
+        data = informe_repository.get_cantidad_procesos_empresa_bd(3, idservicio, iddependencia)
         for result in data:
             empPeliminados.append(result[1].capitalize())
             peliminados.append(
@@ -108,7 +108,7 @@ class InformeService:
                 }
             )
 
-        data = informe_repository.get_procesos_empresa_bd(3, idservicio)
+        data = informe_repository.get_procesos_empresa_bd(3, idservicio, iddependencia)
         for result in data:
             dataEliminados.append(
                 {
@@ -148,7 +148,7 @@ class InformeService:
         print(pieChartData)
         return pieChartData
 
-    def get_cantidad_procesos_causal(self, informe_repository: InformeRepository, idservicio):
+    def get_cantidad_procesos_causal(self, informe_repository: InformeRepository, idservicio, iddependencia):
         pieChartData = {}
 
         empPactivos = []
@@ -183,7 +183,7 @@ class InformeService:
 
         # PROCESOS ACTIVOS
 
-        data = informe_repository.get_cantidad_procesos_causal_bd(1, idservicio)
+        data = informe_repository.get_cantidad_procesos_causal_bd(1, idservicio, iddependencia)
         for result in data:
             empPactivos.append(result[1])
             pactivos.append(
@@ -193,7 +193,7 @@ class InformeService:
                 }
             )
 
-        data = informe_repository.get_procesos_causal_bd(1, idservicio)
+        data = informe_repository.get_procesos_causal_bd(1, idservicio, iddependencia)
         for result in data:
             dataActivos.append(
                 {
@@ -206,7 +206,7 @@ class InformeService:
 
         # PROCESOS TERMINADOS
 
-        data = informe_repository.get_cantidad_procesos_causal_bd(2, idservicio)
+        data = informe_repository.get_cantidad_procesos_causal_bd(2, idservicio, iddependencia)
         for result in data:
             empPterminados.append(result[1])
             pterminados.append(
@@ -216,7 +216,7 @@ class InformeService:
                 }
             )
 
-        data = informe_repository.get_procesos_causal_bd(2, idservicio)
+        data = informe_repository.get_procesos_causal_bd(2, idservicio, iddependencia)
         for result in data:
             dataTerminados.append(
                 {
@@ -229,7 +229,7 @@ class InformeService:
 
         # PROCESOS ELIMINADOS
 
-        data = informe_repository.get_cantidad_procesos_causal_bd(3, idservicio)
+        data = informe_repository.get_cantidad_procesos_causal_bd(3, idservicio, iddependencia)
         for result in data:
             empPeliminados.append(result[1])
             peliminados.append(
@@ -239,7 +239,7 @@ class InformeService:
                 }
             )
 
-        data = informe_repository.get_procesos_causal_bd(3, idservicio)
+        data = informe_repository.get_procesos_causal_bd(3, idservicio, iddependencia)
         for result in data:
             dataEliminados.append(
                 {
@@ -277,7 +277,7 @@ class InformeService:
         }
         return pieChartData
     
-    def get_cantidad_procesos_estado(self, informe_repository: InformeRepository, idservicio):
+    def get_cantidad_procesos_estado(self, informe_repository: InformeRepository, idservicio, iddependencia):
         pieChartData = {}
 
         empPactivos = []
@@ -312,7 +312,7 @@ class InformeService:
 
         # PROCESOS ACTIVOS
 
-        data = informe_repository.get_cantidad_procesos_estado_bd(1, idservicio)
+        data = informe_repository.get_cantidad_procesos_estado_bd(1, idservicio, iddependencia)
         for result in data:
             empPactivos.append(result[1])
             pactivos.append(
@@ -322,7 +322,7 @@ class InformeService:
                 }
             )
 
-        data = informe_repository.get_procesos_estado_bd(1, idservicio)
+        data = informe_repository.get_procesos_estado_bd(1, idservicio, iddependencia)
         for result in data:
             dataActivos.append(
                 {
@@ -335,7 +335,7 @@ class InformeService:
 
         # PROCESOS TERMINADOS
 
-        data = informe_repository.get_cantidad_procesos_estado_bd(2, idservicio)
+        data = informe_repository.get_cantidad_procesos_estado_bd(2, idservicio, iddependencia)
         for result in data:
             empPterminados.append(result[1])
             pterminados.append(
@@ -345,7 +345,7 @@ class InformeService:
                 }
             )
 
-        data = informe_repository.get_procesos_estado_bd(2, idservicio)
+        data = informe_repository.get_procesos_estado_bd(2, idservicio, iddependencia)
         for result in data:
             dataTerminados.append(
                 {
@@ -358,7 +358,7 @@ class InformeService:
 
         # PROCESOS ELIMINADOS
 
-        data = informe_repository.get_cantidad_procesos_estado_bd(3, idservicio)
+        data = informe_repository.get_cantidad_procesos_estado_bd(3, idservicio, iddependencia)
         for result in data:
             empPeliminados.append(result[1])
             peliminados.append(
@@ -368,7 +368,7 @@ class InformeService:
                 }
             )
 
-        data = informe_repository.get_procesos_estado_bd(3, idservicio)
+        data = informe_repository.get_procesos_estado_bd(3, idservicio, iddependencia)
         for result in data:
             dataEliminados.append(
                 {
@@ -406,7 +406,7 @@ class InformeService:
         }
         return pieChartData
     
-    def get_cantidad_procesos_usuario(self, informe_repository: InformeRepository, idservicio):
+    def get_cantidad_procesos_usuario(self, informe_repository: InformeRepository, idservicio, iddependencia):
         pieChartData = {}
 
         empPactivos = []
@@ -441,7 +441,7 @@ class InformeService:
 
         # PROCESOS ACTIVOS
 
-        data = informe_repository.get_cantidad_procesos_usuario_bd(1, idservicio)
+        data = informe_repository.get_cantidad_procesos_usuario_bd(1, idservicio, iddependencia)
         for result in data:
             empPactivos.append(result[1])
             pactivos.append(
@@ -451,7 +451,7 @@ class InformeService:
                 }
             )
 
-        data = informe_repository.get_procesos_usuario_bd(1, idservicio)
+        data = informe_repository.get_procesos_usuario_bd(1, idservicio, iddependencia)
         for result in data:
             dataActivos.append(
                 {
@@ -464,7 +464,7 @@ class InformeService:
 
         # PROCESOS TERMINADOS
 
-        data = informe_repository.get_cantidad_procesos_usuario_bd(2, idservicio)
+        data = informe_repository.get_cantidad_procesos_usuario_bd(2, idservicio, iddependencia)
         for result in data:
             empPterminados.append(result[1])
             pterminados.append(
@@ -474,7 +474,7 @@ class InformeService:
                 }
             )
 
-        data = informe_repository.get_procesos_usuario_bd(2, idservicio)
+        data = informe_repository.get_procesos_usuario_bd(2, idservicio, iddependencia)
         for result in data:
             dataTerminados.append(
                 {
@@ -487,7 +487,7 @@ class InformeService:
 
         # PROCESOS ELIMINADOS
 
-        data = informe_repository.get_cantidad_procesos_usuario_bd(3, idservicio)
+        data = informe_repository.get_cantidad_procesos_usuario_bd(3, idservicio, iddependencia)
         for result in data:
             empPeliminados.append(result[1])
             peliminados.append(
@@ -497,7 +497,7 @@ class InformeService:
                 }
             )
 
-        data = informe_repository.get_procesos_usuario_bd(3, idservicio)
+        data = informe_repository.get_procesos_usuario_bd(3, idservicio, iddependencia)
         for result in data:
             dataEliminados.append(
                 {
