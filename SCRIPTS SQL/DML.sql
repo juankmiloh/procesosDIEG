@@ -1,7 +1,7 @@
--- TRUNCATE TABLE DEPENDENCIA RESTART IDENTITY CASCADE;
 -- TRUNCATE TABLE PROCESO RESTART IDENTITY CASCADE;
 -- TRUNCATE TABLE ETAPA_PROCESO RESTART IDENTITY CASCADE;
 -- TRUNCATE TABLE PROCESO_CAUSAL RESTART IDENTITY CASCADE;
+-- TRUNCATE TABLE DEPENDENCIA RESTART IDENTITY CASCADE;
 -- --------------------------
 -- DML TABLA ROL
 -- --------------------------
@@ -30,7 +30,7 @@ INSERT INTO DEPENDENCIA (NOMBRE, DESCRIPCION) VALUES ('Superintendencia Delegada
 ----------------------------
 INSERT INTO USUARIOS(NOMBRE, APELLIDO, GENERO, NICKNAME, DESCRIPCION, ROL, AVATAR, CONTRASENA, TOKEN, EMAIL, DEPENDENCIA) VALUES ('Juan', 'Herrera', 1, 'jherreraa', 'Super administrador', 1, 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif', MD5('123456'), 'jherreraa-token', 'jherreraa@superservicios.gov.co', 1);
 INSERT INTO USUARIOS(NOMBRE, APELLIDO, GENERO, NICKNAME, DESCRIPCION, ROL, AVATAR, CONTRASENA, TOKEN, EMAIL, DEPENDENCIA) VALUES ('Miguel', 'Lozada', 1, 'mlozada', 'Director de investigaciones SDEGC - Administrador', 1, 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif', MD5('123456'), 'mlozada-token', 'mlozada@superservicios.gov.co', 2);
-INSERT INTO USUARIOS(NOMBRE, APELLIDO, GENERO, NICKNAME, DESCRIPCION, ROL, AVATAR, CONTRASENA, TOKEN, EMAIL, DEPENDENCIA) VALUES ('Prueba', 'prueba', 1, 'mprueba', 'Director de investigaciones AAA - Administrador', 1, 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif', MD5('123456'), 'mprueba-token', 'mprueba@superservicios.gov.co', 3);
+INSERT INTO USUARIOS(NOMBRE, APELLIDO, GENERO, NICKNAME, DESCRIPCION, ROL, AVATAR, CONTRASENA, TOKEN, EMAIL, DEPENDENCIA) VALUES ('Delegado', 'AAA', 1, 'mprueba', 'Director de investigaciones AAA - Administrador', 1, 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif', MD5('123456'), 'mprueba-token', 'mprueba@superservicios.gov.co', 3);
 
 ----------------------------
 -- DML TABLA TIPOPERSONA
@@ -142,6 +142,12 @@ INSERT INTO SERVICIO (NOMBRE, DEPENDENCIA) VALUES ('GLP', 2);
 INSERT INTO SERVICIO (NOMBRE, DEPENDENCIA) VALUES ('Acueducto', 3);
 INSERT INTO SERVICIO (NOMBRE, DEPENDENCIA) VALUES ('Alcantarillado', 3);
 INSERT INTO SERVICIO (NOMBRE, DEPENDENCIA) VALUES ('Aseo', 3);
+
+
+----------------------------
+-- DML TABLA EMPRESA | INSERT EMPRESAS ACUEDUCTO DE PRUEBA
+----------------------------
+Insert into EMPRESA (IDEMPRESA,NOMBRE,NIT,SERVICIO) values ('1864','ACUEDUCTO BOGOTA DC','830025205','4');
 
 
 ----------------------------

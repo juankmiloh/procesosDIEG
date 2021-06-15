@@ -40,13 +40,13 @@ export const CONSTANTS = {
         {
             label: 'Proyectista',
             prop: 'usuario',
-            width: 150,
+            width: 170,
             filter: 'filterAbogado'
         },
         {
             label: 'Revisor',
             prop: 'revisor',
-            width: 150,
+            width: 170,
             filter: 'filterRevisor'
         }
     ],
@@ -86,13 +86,13 @@ export const CONSTANTS = {
         {
             label: 'Proyectista',
             prop: 'usuario',
-            width: 150,
+            width: 170,
             filter: 'filterAbogado'
         },
         {
             label: 'Revisor',
             prop: 'revisor',
-            width: 150,
+            width: 170,
             filter: 'filterRevisor'
         }
     ],

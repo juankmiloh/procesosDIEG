@@ -288,6 +288,7 @@
           >
             <template slot-scope="scope">
               <div v-if="column.prop === 'usuario'"><el-tag type="primary">{{ scope.row[column.prop] }}</el-tag></div>
+              <div v-else-if="column.prop === 'revisor'"><el-tag type="info">{{ scope.row[column.prop] }}</el-tag></div>
               <div v-else-if="column.prop === 'caducidad'"><i class="el-icon-time" /> {{ convertDate(scope.row[column.prop]) }}</div>
               <div v-else>{{ scope.row[column.prop] }}</div>
             </template>
@@ -299,6 +300,7 @@
                 v-model="busquedaExpediente"
                 size="mini"
                 placeholder="No. Expediente"
+                clearable
                 @input="buscarProcesos"
               />
             </template>
@@ -421,8 +423,8 @@ export default {
       if (this.multipleSelection.length) {
         this.downloadLoading = true
         import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['EXPEDIENTE', 'SERVICIO', 'EMPRESA', 'CADUCIDAD O FECHA VENCIMIENTO/ TÉRMINO PARA RESOLVER REP(DD-MM-AA)', 'ESTADO', 'ABOGADO']
-          const filterVal = ['expediente', 'servicio', 'empresa', 'caducidad', 'estado', 'usuario']
+          const tHeader = ['EXPEDIENTE', 'SERVICIO', 'EMPRESA', 'CADUCIDAD O FECHA VENCIMIENTO/ TÉRMINO PARA RESOLVER REP(DD-MM-AA)', 'ESTADO', 'PROYECTISTA', 'REVISOR']
+          const filterVal = ['expediente', 'servicio', 'empresa', 'caducidad', 'estado', 'usuario', 'revisor']
           const list = this.multipleSelection
           const data = this.formatJson(filterVal, list)
           excel.export_json_to_excel({

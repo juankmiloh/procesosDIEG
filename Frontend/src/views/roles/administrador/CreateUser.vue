@@ -1,11 +1,5 @@
 <template>
   <div class="createPost-container" style="background: #f7fbff;">
-    <sticky class-name="sub-navbar">
-      <div style="border: 0px solid red">
-        <span />
-      </div>
-    </sticky>
-
     <div class="app-container">
       <div>
         <el-row :gutter="20">
@@ -15,7 +9,7 @@
           </el-col>
 
           <el-col :span="14" :xs="24">
-            <el-card>
+            <el-card style="position: fixed; margin-right: 13px;">
               <div slot="header" class="clearfix">
                 <span>Crear usuario</span>
               </div>
@@ -157,7 +151,6 @@ import { mapGetters } from 'vuex'
 import { createUser } from '@/api/procesosDIEG/usuarios'
 import { updateUsuario } from '@/api/procesosDIEG/usuarios'
 import { getListRol } from '@/api/procesosDIEG/usuarios'
-import Sticky from '@/components/Sticky' // 粘性header组件
 import { CONSTANTS } from '@/constants/constants'
 import { DATA } from '@/data/ImgUser'
 import md5 from 'md5'
@@ -166,7 +159,6 @@ import ListaUsers from './components/user/ListaUsers'
 export default {
   name: 'CreateUser',
   components: {
-    Sticky,
     ListaUsers
   },
   data() {
