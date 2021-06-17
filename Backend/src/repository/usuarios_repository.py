@@ -48,7 +48,7 @@ class UsuariosRepository:
                 (DEPENDENCIA = :DEPENDENCIA_ARG OR 1 = :DEPENDENCIA_ARG)
                 AND ROL <> 3
                 AND ROL <> 4
-                AND IDUSUARIO <> 1 ORDER BY NOMBRE ASC;
+                ORDER BY NOMBRE ASC;
         '''
         return self.db.engine.execute(text(sql), DEPENDENCIA_ARG=dependencia).fetchall()
     
@@ -60,7 +60,7 @@ class UsuariosRepository:
                 (DEPENDENCIA = :DEPENDENCIA_ARG OR 1 = :DEPENDENCIA_ARG)
                 AND ROL <> 2
                 AND ROL <> 4
-                AND IDUSUARIO <> 1 ORDER BY NOMBRE ASC;
+                ORDER BY NOMBRE ASC;
         '''
         return self.db.engine.execute(text(sql), DEPENDENCIA_ARG=dependencia).fetchall()
 

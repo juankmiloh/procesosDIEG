@@ -293,7 +293,7 @@
               <div v-else>{{ scope.row[column.prop] }}</div>
             </template>
           </el-table-column>
-          <el-table-column align="center" :width="showOnlyAdmin ? 190 : ''">
+          <el-table-column align="center" :width="showOnlyAdmin ? 190 : 190">
             <!-- eslint-disable-next-line -->
             <template slot="header" slot-scope="scope">
               <el-input

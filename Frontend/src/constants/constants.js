@@ -59,22 +59,25 @@ export const CONSTANTS = {
         {
             label: 'Expediente',
             prop: 'expediente',
+            width: 156,
             filter: 'filterExpediente'
         },
         {
             label: 'Servicio',
             prop: 'servicio',
+            width: 112,
             filter: 'filterServicio'
         },
         {
             label: 'Empresa',
             prop: 'empresa',
-            width: 270,
+            width: 245,
             filter: 'filterEmpresa'
         },
         {
             label: 'Caducidad',
             prop: 'caducidad',
+            width: 135,
             filter: 'filterCaducidad'
         },
         {
