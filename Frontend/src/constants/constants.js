@@ -156,7 +156,7 @@ export const CONSTANTS = {
         }],
         fecha_caducidad: [{
             type: 'date',
-            required: true,
+            required: false,
             message: 'Ingrese una fecha válida',
             trigger: 'change'
         }]

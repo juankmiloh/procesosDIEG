@@ -155,6 +155,9 @@ class ProcesosRepository:
         return self.db.engine.execute(text(sql), IDPROCESO_ARG=idProceso).fetchall()
 
     def proceso_insert_bd(self, proceso):
+        if "fecha_caducidad" not in proceso:
+            proceso["fecha_caducidad"] = None
+
         print('-------------------------------------')
         print('OBJ PROCESO -> ', proceso)
         print('-------------------------------------')

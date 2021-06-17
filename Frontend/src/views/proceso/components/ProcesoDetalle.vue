@@ -744,7 +744,7 @@ export default {
           // modelProceso = await this.verificarDataModel(modelProceso, true)
         } else { // Sino se cargan los datos del proceso completos (Esto pasa cuando se crea un proceso nuevo)
           await getProcesoInicial(id).then(async(response) => {
-            console.log('RESPONSE inicial -> ', response)
+            // console.log('RESPONSE inicial -> ', response)
             modelProceso = response[0]
             modelProceso.tipo_sancion = 9 // Se agrega el atributo al modelo del proceso
             modelProceso.decision = 6 // Se agrega el atributo al modelo del proceso un valor por defecto
@@ -783,7 +783,7 @@ export default {
         this.loading = false
         this.showButtons = true
         this.formProceso = modelProceso
-        console.log('Model proceso -> ', this.formProceso)
+        // console.log('Model proceso -> ', this.formProceso)
         // set tagsview title
         this.setTagsViewTitle()
         // set page title
@@ -815,7 +815,7 @@ export default {
     getEmpresasProceso(modelProceso) {
       // const empresas = JSON.parse(window.localStorage.getItem('empresas')) // Se capturan los datos de las empresas
       this.datosEmpresas = this.empresas.filter((empresa) => empresa.idservicio === modelProceso.servicio) // Se obtienen las empresas asociadas al servicio publico del proceso
-      console.log('getEmpresasProceso -> ', this.datosEmpresas)
+      // console.log('getEmpresasProceso -> ', this.datosEmpresas)
     },
     setTagsViewTitle() {
       const title = 'Expediente'

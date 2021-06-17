@@ -4,7 +4,7 @@
       <el-col :span="24">
         <aside>
           <span class="text-header">
-            <b>DIRECCIÓN DE INVESTIGACIONES DE ENERGÍA Y GAS</b>
+            <b>{{ datosDependencia.nombre | uppercase }}</b>
           </span>
         </aside>
       </el-col>
@@ -42,17 +42,30 @@
 <script>
 import { mapGetters } from 'vuex'
 import logSuper from '@/assets/superservicios1.png'
+import { getDependencia } from '@/api/procesosDIEG/dependencia'
 
 export default {
   name: 'DashboardDefault',
   components: {},
   data() {
     return {
-      logo: logSuper
+      logo: logSuper,
+      datosDependencia: []
     }
   },
   computed: {
-    ...mapGetters(['name', 'avatar', 'roles', 'privilegio'])
+    ...mapGetters(['name', 'avatar', 'roles', 'privilegio', 'dependencia'])
+  },
+  created() {
+    this.getInfoDependencia()
+  },
+  methods: {
+    async getInfoDependencia() {
+      await getDependencia(this.dependencia).then((response) => {
+        // console.log('Revisores -> ', response)
+        this.datosDependencia = response[0]
+      })
+    }
   }
 }
 </script>

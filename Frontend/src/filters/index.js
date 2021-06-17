@@ -1,3 +1,5 @@
+/* jshint esversion: 6 */
+/* eslint-disable */
 // import parseTime, formatTime and set to filter
 export { parseTime, formatTime }
   from '@/utils'
@@ -58,6 +60,14 @@ export function numberFormatter(num, digits) {
  */
 export function toThousandFilter(num) {
   return (+num || 0).toString().replace(/^-?\d+/g, m => m.replace(/(?=(?!\b)(\d{3})+$)/g, ','))
+}
+
+/**
+ * Upper case
+ * @param {String} string
+ */
+export function uppercase(string) {
+  return string.toUpperCase()
 }
 
 /**
