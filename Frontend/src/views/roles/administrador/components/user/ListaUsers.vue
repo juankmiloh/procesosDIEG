@@ -159,7 +159,7 @@ export default {
     },
     async getUsuarios() {
       await getAllUsuarios(this.dependencia).then((response) => {
-        console.log(response)
+        // console.log(response)
         this.datosUsuarios = response
         this.loading = false
         this.getNicknames()

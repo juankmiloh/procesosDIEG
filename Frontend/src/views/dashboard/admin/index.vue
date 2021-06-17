@@ -1,5 +1,5 @@
 <template>
-  <div class="div-cont">
+  <div v-if="datosDependencia.nombre" class="div-cont">
     <el-row class="cont-row">
       <el-col :span="24">
         <aside>
