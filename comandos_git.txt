@@ -3,3 +3,4 @@
 -- COMANDO PARA SALTAR A LA RAMA MASTER: git checkout main
 -- COMANDO PARA BORRAR UNA RAMA: git branch -d develop
 -- COMANDO PARA INCORPORAR LOS CAMBIOS A LA RAMA MASTER Y PONERLOS EN PRODUCCION: git merge develop
+-- COMANDO PARA CREAR RAMA REMOTA DE DESARROLLO: git push --set-upstream origin develop
