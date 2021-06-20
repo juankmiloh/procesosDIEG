@@ -5,7 +5,6 @@
         <aside>
           <span class="text-header">
             <b>{{ datosDependencia.nombre | uppercase }}</b>
-            <h2>Rama de desarrollo</h2>
           </span>
         </aside>
       </el-col>
