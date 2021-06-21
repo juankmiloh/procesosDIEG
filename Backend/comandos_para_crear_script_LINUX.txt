@@ -99,7 +99,7 @@
 	StartLimitIntervalSec=0
 
 	[Service]
-	WorkingDirectory=/home/jherreraa/pruebas/procesosDIEG/Frontend/
+	WorkingDirectory=/home/jherreraa/procesosDIEG/Frontend/
 	Type=simple
 	Restart=always
 	RestartSec=1
@@ -209,7 +209,7 @@
 	sudo fuser -k 9527/tcp
 
 ---------------------------------------------------------------------------
--- COMANDOS PARA CREAR UN SERVICIO EN LINUX - Levantar servidor de pruebas PYTHON (backend)
+-- COMANDOS PARA CREAR UN SERVICIO EN LINUX - Levantar servidor de desarrollo / pruebas PYTHON (backend)
 ---------------------------------------------------------------------------
 1. Entrar al directorio:
 	cd /lib/systemd/system/
@@ -224,15 +224,15 @@
 	StartLimitIntervalSec=0
 
 	[Service]
-	WorkingDirectory=/home/jherreraa/pruebas/procesosDIEG/Backend/
+	WorkingDirectory=/home/jherreraa/procesosDIEG/Backend/
 	Type=simple
 	Restart=always
 	RestartSec=1
 	User=jherreraa
 	ExecStart=/bin/bash server_pruebas.sh start
 
-[Install]
-WantedBy=multi-user.target
+	[Install]
+	WantedBy=multi-user.target
 
 4. Comando para que el servicio se inicie con el sistema
 	sudo systemctl enable serverPruebasProcesosDIEG
@@ -242,6 +242,9 @@ WantedBy=multi-user.target
 
 6. Comando para reiniciar un servicio
 	sudo systemctl restart serverPruebasProcesosDIEG
+
+7. Comando para saber estado del servicio (Muestra la consola de node)
+	sudo systemctl status serverPruebasProcesosDIEG
 
 --------------------------------------------------------------------------------------
 
