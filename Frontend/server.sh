@@ -1,3 +1,3 @@
 #!/bin/bash
-# echo hola mundo nodejs
-npm run dev
+# echo run server de produccion frontend
+serve -s dist -l 5056

@@ -83,6 +83,41 @@
 *. COMANDO PARA MATAR UN PROCESO QUE CORRE POR UN PUERTO DETERMINADO - LINUX
 	sudo fuser -k 9527/tcp
 
+---------------------------------------------------------------------------
+-- COMANDOS PARA CREAR UN SERVICIO EN LINUX - Levantar servidor de nodejs de desarrollo / pruebas (VUEJS)
+---------------------------------------------------------------------------
+1. Entrar al directorio:
+	cd /lib/systemd/system/
+
+2. Crear el script del servicio
+	sudo nano samplePruebas.service
+
+3. Escribir en el script lo siguiente:
+	[Unit]
+	Description=Iniciar servidor de VUEJS
+	After=network.target
+	StartLimitIntervalSec=0
+
+	[Service]
+	WorkingDirectory=/home/jherreraa/pruebas/procesosDIEG/Frontend/
+	Type=simple
+	Restart=always
+	RestartSec=1
+	User=jherreraa
+	ExecStart=/bin/bash server_pruebas.sh start
+
+	[Install]
+	WantedBy=multi-user.target
+
+4. Comando para que el servicio se inicie con el sistema
+	sudo systemctl enable samplePruebas
+
+5. Comando para iniciar nuestro servicio
+	sudo systemctl start samplePruebas
+
+6. Comando para reiniciar un servicio
+	sudo systemctl restart samplePruebas
+
 --------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------
 -- COMANDOS PARA CREAR EL SCRIPT DE EJECUCION DEL SERVIDOR PYTHON (backend) EN LINUX
@@ -169,6 +204,41 @@
 
 *. COMANDO PARA MATAR UN PROCESO QUE CORRE POR UN PUERTO DETERMINADO - LINUX
 	sudo fuser -k 9527/tcp
+
+---------------------------------------------------------------------------
+-- COMANDOS PARA CREAR UN SERVICIO EN LINUX - Levantar servidor de pruebas PYTHON (backend)
+---------------------------------------------------------------------------
+1. Entrar al directorio:
+	cd /lib/systemd/system/
+
+2. Crear el script del servicio
+	sudo nano serverPruebasProcesosDIEG.service
+
+3. Escribir en el script lo siguiente:
+	[Unit]
+	Description=Iniciar servidor de PYTHON
+	After=network.target
+	StartLimitIntervalSec=0
+
+	[Service]
+	WorkingDirectory=/home/jherreraa/pruebas/procesosDIEG/Backend/
+	Type=simple
+	Restart=always
+	RestartSec=1
+	User=jherreraa
+	ExecStart=/bin/bash server_pruebas.sh start
+
+[Install]
+WantedBy=multi-user.target
+
+4. Comando para que el servicio se inicie con el sistema
+	sudo systemctl enable serverPruebasProcesosDIEG
+
+5. Comando para iniciar nuestro servicio
+	sudo systemctl start serverPruebasProcesosDIEG
+
+6. Comando para reiniciar un servicio
+	sudo systemctl restart serverPruebasProcesosDIEG
 
 --------------------------------------------------------------------------------------
 
