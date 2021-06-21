@@ -118,6 +118,9 @@
 6. Comando para reiniciar un servicio
 	sudo systemctl restart samplePruebas
 
+7. Comando para saber estado del servicio (Muestra la consola de node)
+	sudo systemctl status samplePruebas
+
 --------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------
 -- COMANDOS PARA CREAR EL SCRIPT DE EJECUCION DEL SERVIDOR PYTHON (backend) EN LINUX
