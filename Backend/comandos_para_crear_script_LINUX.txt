@@ -99,7 +99,7 @@
 	StartLimitIntervalSec=0
 
 	[Service]
-	WorkingDirectory=/home/jherreraa/procesosDIEG/Frontend/
+	WorkingDirectory=/home/jherreraa/pruebas/procesosDIEG/Frontend/
 	Type=simple
 	Restart=always
 	RestartSec=1
@@ -224,7 +224,7 @@
 	StartLimitIntervalSec=0
 
 	[Service]
-	WorkingDirectory=/home/jherreraa/procesosDIEG/Backend/
+	WorkingDirectory=/home/jherreraa/pruebas/procesosDIEG/Backend/
 	Type=simple
 	Restart=always
 	RestartSec=1
