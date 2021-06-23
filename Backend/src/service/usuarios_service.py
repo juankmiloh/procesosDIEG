@@ -6,7 +6,8 @@ from ..util.web_util import add_wrapper
 class UsuariosService:
 
     def user_image(self, usuarios_repository: UsuariosRepository, folder, image):
-        path = "assets\\"+folder+"\\"+image
+        # path = "assets\\"+folder+"\\"+image
+        path = "assets/"+folder+"/"+image
         return send_file(path)
 
     def user_avatar(self, usuarios_repository: UsuariosRepository, rq):

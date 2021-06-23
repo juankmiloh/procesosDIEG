@@ -212,7 +212,7 @@
 	sudo fuser -k 9527/tcp
 
 ---------------------------------------------------------------------------
--- COMANDOS PARA CREAR UN SERVICIO EN LINUX - Levantar servidor de desarrollo / pruebas PYTHON (backend)
+-- COMANDOS PARA CREAR UN SERVICIO EN LINUX - Levantar servidor de desarrollo / pruebas PYTHON (backend) [No olvidar crear el entorno virtual antes de ejecutar el script]
 ---------------------------------------------------------------------------
 1. Entrar al directorio:
 	cd /lib/systemd/system/
