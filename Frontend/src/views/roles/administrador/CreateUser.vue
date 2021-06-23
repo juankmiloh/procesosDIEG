@@ -188,9 +188,6 @@ export default {
         this.updateUSer = false
         this.textButton = 'Guardar'
         this.viewRefresh.action = param.updateView
-        this.$refs['formUsuario'].resetFields()
-        this.formUsuario.avatar = DATA.imageURL
-        this.imageUrl = DATA.imageURL
       } else {
         this.rulesFormUser.contrasena[0].required = false
         this.updateUSer = true
@@ -293,10 +290,9 @@ export default {
                 type: 'success',
                 duration: 2000
               })
-              this.$refs[formName].resetFields()
-              this.imageUrl = DATA.imageURL
-              this.viewRefresh = { action: true }
+              this.imageUrl = ''
             })
+            this.resetForm('formUsuario')
           } else {
             // console.log('error submit!!')
             return false

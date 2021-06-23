@@ -14,12 +14,9 @@
       :key="imagecropperKey"
       :width="300"
       :height="300"
-      :url="url+'/avatar/upload'"
       lang-type="es-MX"
       @close="close"
       @crop-success="cropSuccess"
-      @crop-upload-success="cropUploadSuccess"
-      @crop-upload-fail="cropUploadFail"
     />
   </div>
 </template>
@@ -27,6 +24,7 @@
 <script>
 import ImageCropper from '@/components/ImageCropper'
 import PanThumb from '@/components/PanThumb'
+import { DATA } from '@/data/ImgUser'
 export default {
   name: 'AvatarUpload',
   components: { ImageCropper, PanThumb },
@@ -48,7 +46,12 @@ export default {
     img: {
       deep: true,
       async handler(val) {
-        this.image = val
+        if (val) {
+          this.image = val
+        } else {
+          this.image = DATA.imageURL
+        }
+        // console.log('Imagen -> ', this.image)
       }
     }
   },
