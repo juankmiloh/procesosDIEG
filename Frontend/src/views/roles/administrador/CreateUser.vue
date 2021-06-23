@@ -9,7 +9,7 @@
           </el-col>
 
           <el-col :span="14" :xs="24">
-            <el-card style="position: fixed; margin-right: 13px;">
+            <el-card :class="x.matches ? '' : 'create-user'">
               <div slot="header" class="clearfix">
                 <span>Crear usuario</span>
               </div>
@@ -22,12 +22,8 @@
                 :inline="false"
                 class="form-user"
               >
-                <div class="demo-basic--circle" style="text-align: center; padding-bottom: 2%;">
-                  <div class="block" style="padding-bottom: 1%;"><el-avatar :size="120" :src="imageUrl" /></div>
-                  <label class="file-upload">
-                    <input type="file" @change="previewFiles">
-                    <span style="font-size: small; color: gray;">Cambiar foto</span>
-                  </label>
+                <div>
+                  <avatar :img="imageUrl" @preview-files="previewFiles" />
                 </div>
 
                 <el-row :gutter="10" style="border: 0px solid red; padding-left: 15%; padding-right: 15%;">
@@ -123,16 +119,16 @@
                   </el-col>
                   <el-col :span="12" :xs="24" style="border: 0px solid red; text-align: right;">
                     <el-form-item>
-                      <el-button
-                        style="width: 10em"
-                        type="success"
-                        @click="submitForm('formUsuario')"
-                      >{{ textButton }}</el-button>
+                      <el-button :class="x.matches ? 'btn-create-sm' : 'btn-create-md'" @click="resetForm('formUsuario')">Limpiar</el-button>
                     </el-form-item>
                   </el-col>
                   <el-col :span="12" :xs="24" style="border: 0px solid red; text-align: left;">
                     <el-form-item>
-                      <el-button style="width: 10em" @click="resetForm('formUsuario')">Limpiar</el-button>
+                      <el-button
+                        :class="x.matches ? 'btn-create-sm' : 'btn-create-md'"
+                        type="success"
+                        @click="submitForm('formUsuario')"
+                      >{{ textButton }}</el-button>
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -155,11 +151,12 @@ import { CONSTANTS } from '@/constants/constants'
 import { DATA } from '@/data/ImgUser'
 import md5 from 'md5'
 import ListaUsers from './components/user/ListaUsers'
+import Avatar from './components/user/Avatar'
 
 export default {
   name: 'CreateUser',
   components: {
-    ListaUsers
+    Avatar, ListaUsers
   },
   data() {
     return {
@@ -171,7 +168,9 @@ export default {
       dataGenero: CONSTANTS.dataGenero,
       viewRefresh: { action: false },
       textButton: 'Guardar',
-      updateUSer: false
+      updateUSer: false,
+      nicknameold: '',
+      x: ''
     }
   },
   computed: {
@@ -179,6 +178,7 @@ export default {
   },
   created() {
     this.initView()
+    this.x = window.matchMedia('(max-width: 800px)')
   },
   methods: {
     handleSetUser(param) {
@@ -197,16 +197,14 @@ export default {
         this.textButton = 'Actualizar'
         this.formUsuario = param
         this.imageUrl = param.avatar
+        this.nicknameold = param.nickname
         window.localStorage.setItem('userUpdate', param.nickname)
       }
     },
     async previewFiles(event) {
-      const file = event.target.files[0]
-      if (file) {
-        // console.log('file -> ', file)
-        this.imageUrl = await this.imgToBase64(file)
-        this.formUsuario.avatar = this.imageUrl
-        // console.log(this.imageUrl)
+      if (event) {
+        // console.log('file -> ', event)
+        this.formUsuario.avatar = event
       }
     },
     imgToBase64(file) {
@@ -308,6 +306,7 @@ export default {
             const modelUser = this.formUsuario
             modelUser.token = `${modelUser.nickname}-token`
             modelUser.genero = this.dataGenero.find((genero) => genero.nombre === modelUser.genero).idgenero
+            modelUser.nicknameold = this.nicknameold
             if (modelUser.contrasena !== '') {
               modelUser.contrasena = md5(modelUser.contrasena)
             }
@@ -341,6 +340,19 @@ export default {
 <style lang="scss" scoped>
 .control-modal {
   width: 100%;
+}
+
+.create-user {
+  position: fixed;
+  margin-right: 13px;
+}
+
+.btn-create-sm {
+  width: 100%;
+}
+
+.btn-create-md {
+  width: 13em;
 }
 </style>
 

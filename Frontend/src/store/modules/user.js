@@ -98,7 +98,8 @@ const actions = {
     // user logout
     logout({ commit, state }) {
         return new Promise((resolve, reject) => {
-            logout(state.token).then(() => {
+            logout(state.token).then((response) => {
+                // console.log('Response LOGOUT --> ', response);
                 commit('SET_TOKEN', '')
                 commit('SET_ROLES', [])
                 removeToken()

@@ -129,7 +129,7 @@ export default {
           duration: 2000
         })
       } else {
-        await deleteUsuario(this.idusuario).then(async(response) => {
+        await deleteUsuario(this.idusuario, username).then(async(response) => {
           this.deleteDialogVisible = false
           this.$notify({
             title: 'Información',

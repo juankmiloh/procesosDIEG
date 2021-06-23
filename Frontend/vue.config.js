@@ -1,3 +1,5 @@
+/* jshint esversion: 6 */
+/* eslint-disable */
 'use strict'
 const path = require('path')
 const defaultSettings = require('./src/settings.js')

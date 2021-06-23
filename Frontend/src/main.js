@@ -36,7 +36,7 @@ import * as filters from './filters' // global filters
  */
 import { mockXHR } from '../mock'
 if (process.env.NODE_ENV === 'development') { // Cambiar esta linea entre desarrollo (development) y production segun al servidor que se apunte
-    mockXHR()
+    mockXHR() // Aqui se permite utilizar el API de prueba que trae la plantilla en particular el login de usuarios (user/login)
 }
 
 Vue.use(Element, {

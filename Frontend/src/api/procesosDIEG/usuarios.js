@@ -57,6 +57,7 @@ export function createUsuario(data) {
 }
 
 export function updateUsuario(data) {
+    data.api = process.env.VUE_APP_BASE_API;
     return request({
         url: '/usuarios',
         method: 'put',
@@ -64,15 +65,16 @@ export function updateUsuario(data) {
     });
 }
 
-export function deleteUsuario(id) {
+export function deleteUsuario(id, username) {
     return request({
         url: '/usuarios',
         method: 'delete',
-        params: { 'idusuario': id }
+        params: { 'idusuario': id, 'nickname': username }
     });
 }
 
 export function createUser(data) {
+    data.api = process.env.VUE_APP_BASE_API;
     return request({
         url: '/user/create',
         method: 'post',

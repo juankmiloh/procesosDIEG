@@ -14,7 +14,7 @@ export function getInfo(token) {
     return request({
         url: '/user/info',
         method: 'get',
-        params: { 'token': token }
+        params: { 'token': token, 'api': process.env.VUE_APP_BASE_API }
     })
 }
 

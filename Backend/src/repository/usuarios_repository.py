@@ -1,5 +1,10 @@
 from sqlalchemy.sql import text
-
+import base64
+import os
+import random
+import glob
+import errno
+import shutil
 
 class UsuariosRepository:
     def __init__(self, db):
@@ -110,18 +115,31 @@ class UsuariosRepository:
         return self.db.engine.execute(text(sql), nombre_estado_sql=nombre_estado)
     
     def usuarios_create_bd(self, usuario):
+        path = 'src/assets/'+usuario['nickname']
+
         sql = '''
             INSERT INTO USUARIOS
             (NOMBRE, APELLIDO, GENERO, NICKNAME, DESCRIPCION, ROL, AVATAR, CONTRASENA, TOKEN, EMAIL, DEPENDENCIA) 
             VALUES (:NOMBRE_ARG, :APELLIDO_ARG, :GENERO_ARG, :NICKNAME_ARG, :DESCRIPCION_ARG, :ROL_ARG, :AVATAR_ARG, :CONTRASENA_ARG, :TOKEN_ARG, :EMAIL_ARG, :DEPENDENCIA_ARG);
         '''
-        return self.db.engine.execute(text(sql), NOMBRE_ARG=usuario['nombre'], APELLIDO_ARG=usuario['apellido'], GENERO_ARG=usuario['genero'], NICKNAME_ARG=usuario['nickname'], DESCRIPCION_ARG=usuario['descripcion'], ROL_ARG=usuario['rol'], AVATAR_ARG=usuario['avatar'], CONTRASENA_ARG=usuario['contrasena'], TOKEN_ARG=usuario['token'], EMAIL_ARG=usuario['email'], DEPENDENCIA_ARG=usuario['dependencia'])
+
+        if usuario['avatar'][0:4] != "http": # Si la imagen no es una URL sino un Base64
+            self.createDirAssets()
+            self.createDir(path)
+            imgPerfil = self.createImage(path, usuario, usuario['api'])
+        else: # Si la imagen es una URL
+            imgPerfil = usuario['avatar']
+
+        return self.db.engine.execute(text(sql), NOMBRE_ARG=usuario['nombre'], APELLIDO_ARG=usuario['apellido'], GENERO_ARG=usuario['genero'], NICKNAME_ARG=usuario['nickname'], DESCRIPCION_ARG=usuario['descripcion'], ROL_ARG=usuario['rol'], AVATAR_ARG=imgPerfil, CONTRASENA_ARG=usuario['contrasena'], TOKEN_ARG=usuario['token'], EMAIL_ARG=usuario['email'], DEPENDENCIA_ARG=usuario['dependencia'])
     
     def usuario_update_bd(self, usuario):
         print('-------------------------------------')
-        print('* USUARIO A ACTUALIZAR -> ', usuario['contrasena'])
+        print('* USUARIO A ACTUALIZAR -> ', usuario['nicknameold'])
         print('-------------------------------------')
-        if usuario['contrasena'] != '':    
+
+        path = 'src/assets/'+usuario['nickname']
+
+        if usuario['contrasena'] != '':
             sql = '''
                 UPDATE USUARIOS SET
                     NOMBRE = :NOMBRE_ARG,
@@ -152,10 +170,18 @@ class UsuariosRepository:
                     DEPENDENCIA = :DEPENDENCIA_ARG
                 WHERE IDUSUARIO = :IDUSUARIO_ARG;
             '''
-            
-        return self.db.engine.execute(text(sql), IDUSUARIO_ARG=usuario['idusuario'], NOMBRE_ARG=usuario['nombre'], APELLIDO_ARG=usuario['apellido'], GENERO_ARG=usuario['genero'], NICKNAME_ARG=usuario['nickname'], DESCRIPCION_ARG=usuario['descripcion'], ROL_ARG=usuario['rol'], AVATAR_ARG=usuario['avatar'], CONTRASENA_ARG=usuario['contrasena'], TOKEN_ARG=usuario['token'], EMAIL_ARG=usuario['email'], DEPENDENCIA_ARG=usuario['dependencia'])
 
-    def usuario_delete_bd(self, idusuario):
+        if usuario['avatar'][0:4] != "http": # Si la imagen no es una URL sino un Base64
+            self.createDirAssets()
+            self.delDirImage(usuario['nicknameold']) # por si cambia el nombre de usuario
+            self.createDir(path)
+            imgPerfil = self.createImage(path, usuario, usuario['api'])
+        else: # Si la imagen es una URL
+            imgPerfil = usuario['avatar']
+
+        return self.db.engine.execute(text(sql), IDUSUARIO_ARG=usuario['idusuario'], NOMBRE_ARG=usuario['nombre'], APELLIDO_ARG=usuario['apellido'], GENERO_ARG=usuario['genero'], NICKNAME_ARG=usuario['nickname'], DESCRIPCION_ARG=usuario['descripcion'], ROL_ARG=usuario['rol'], AVATAR_ARG=imgPerfil, CONTRASENA_ARG=usuario['contrasena'], TOKEN_ARG=usuario['token'], EMAIL_ARG=usuario['email'], DEPENDENCIA_ARG=usuario['dependencia'])
+
+    def usuario_delete_bd(self, idusuario, nickname):
         print('-------------------------------------')
         print('* USUARIO A ELIMINAR -> ', idusuario)
         print('-------------------------------------')
@@ -165,4 +191,58 @@ class UsuariosRepository:
         '''
         resultsql = self.db.engine.execute(text(sql), IDUSUARIO_ARG=idusuario)
 
+        self.delDirImage(nickname)
+
         return resultsql
+
+    def createDirAssets(self):
+        path = 'src/assets'
+        try:
+            os.mkdir(path) # Se crea carpeta donde se guardan las imagenes de los user
+        except OSError as e: # Se captura error si ya existe la carpeta
+            if e.errno != errno.EEXIST:
+                raise
+    
+    def createDir(self, path):
+        try:
+            os.mkdir(path) # Se crea carpeta donde se guarda la imagen
+        except OSError as e: # Se captura error si ya existe la carpeta
+            py_files = glob.glob(path+'/*.*') # Se obtienen archivos con cualquier extension (.jpeg .gif)
+
+            for py_file in py_files:
+                try:
+                    os.remove(py_file) # Si hay archivos se eliminan
+                except OSError as e:
+                    print(f"Error:{ e.strerror}")
+
+    def createImage(self, path, usuario, api):
+        aleatorio = str(random.randrange(1, 101)) # Numero que se concatena al nombre de la imagen
+        img_avatar = usuario['avatar'] # Obtenemos la imagen
+        img_split = img_avatar.split(",", 1) # Separamos el base64
+        img_headers = img_split[0].split("/") # Separamos los encabezados de la imagen
+        img_type = img_headers[1].split(";")[0] # Obtenemos el type de la imagen
+
+        base64_img = img_split[1] # Obtenemos solo el base64 sin encabezados
+        base64_img_bytes = base64_img.encode('utf-8') # Se codifica el base64
+        script_dir = os.path.dirname(path+"/") # Ruta donde se guarda la imagen
+        name_img = usuario['nickname']+aleatorio+"."+img_type # Nombre de la imagen
+        abs_file_path = os.path.join(script_dir, name_img) # Ruta de la imagen
+
+        with open(abs_file_path, "wb") as file_to_save:
+            decoded_image_data = base64.decodebytes(base64_img_bytes) # Se crea la imagen
+            file_to_save.write(decoded_image_data) # Se guarda imagen en disco
+
+        folder = usuario['nickname']
+
+        imgPerfil = api+'/user/image?folder='+folder+'&image='+name_img
+
+        return imgPerfil
+
+    def delDirImage(self, nickname):
+
+        path = 'src/assets/'+nickname
+
+        try:
+            shutil.rmtree(path)
+        except OSError as e:
+            print(f"Error:{ e.strerror}")

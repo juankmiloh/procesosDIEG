@@ -12,11 +12,27 @@ def login(usuarios_service: UsuariosService, usuarios_repository: UsuariosReposi
     usuario = request.json
     return json.dumps(usuarios_service.login_usuario(usuarios_repository, usuario))
 
+@controller.route(API_ROOT_PATH + 'avatar/upload', methods=['POST'])
+def avatar(usuarios_service: UsuariosService, usuarios_repository: UsuariosRepository):
+    rq = request.json
+    return json.dumps(usuarios_service.user_avatar(usuarios_repository, rq))
+
+@controller.route(API_ROOT_PATH + 'user/image', methods=['GET'])
+def image(usuarios_service: UsuariosService, usuarios_repository: UsuariosRepository):
+    folder = request.args.get('folder', default='', type=str)
+    image = request.args.get('image', default='', type=str)
+    return usuarios_service.user_image(usuarios_repository, folder, image)
+
 @controller.route(API_ROOT_PATH + 'user/info', methods=['GET'])
 def userinfo(usuarios_service: UsuariosService, usuarios_repository: UsuariosRepository):
     # Id proceso
     token = request.args.get('token', default='', type=str)
-    return json.dumps(usuarios_service.info_usuario(usuarios_repository, token))
+    api = request.args.get('api', default='', type=str)
+    return json.dumps(usuarios_service.info_usuario(usuarios_repository, token, api))
+
+@controller.route(API_ROOT_PATH + 'user/logout', methods=['POST'])
+def logout(usuarios_service: UsuariosService, usuarios_repository: UsuariosRepository):
+    return json.dumps(usuarios_service.logout(usuarios_repository))
     
 @controller.route(API_ROOT_PATH + 'usuarios', methods=['GET'])
 def usuarios(usuarios_service: UsuariosService, usuarios_repository: UsuariosRepository):
@@ -53,7 +69,9 @@ def listaUsuarios(usuarios_service: UsuariosService, usuarios_repository: Usuari
 def deleteUser(usuarios_service: UsuariosService, usuarios_repository: UsuariosRepository):
     # Id usuario
     idUsuario = request.args.get('idusuario', default='', type=str)
-    return json.dumps(usuarios_service.usuario_delete(usuarios_repository, idUsuario))
+    # nickname
+    nickname = request.args.get('nickname', default='', type=str)
+    return json.dumps(usuarios_service.usuario_delete(usuarios_repository, idUsuario, nickname))
 
 # Actualizar usuario
 @controller.route(API_ROOT_PATH + 'usuarios', methods=['PUT'])

@@ -5,15 +5,15 @@
 import Layout from '@/layout'
 
 const componentsRouter = {
-    // path: '/components',
-    // component: Layout,
-    // redirect: 'noRedirect',
-    // name: 'ComponentDemo',
-    // meta: {
-    //   title: 'Components',
-    //   icon: 'component'
-    // },
-    // children: [
+    path: '/components',
+    component: Layout,
+    redirect: 'noRedirect',
+    name: 'ComponentDemo',
+    meta: {
+      title: 'Components',
+      icon: 'component'
+    },
+    children: [
     //   {
     //     path: 'tinymce',
     //     component: () => import('@/views/components-demo/tinymce'),
@@ -38,12 +38,12 @@ const componentsRouter = {
     //     name: 'SplitpaneDemo',
     //     meta: { title: 'SplitPane' }
     //   },
-    //   {
-    //     path: 'avatar-upload',
-    //     component: () => import('@/views/components-demo/avatar-upload'),
-    //     name: 'AvatarUploadDemo',
-    //     meta: { title: 'Upload' }
-    //   },
+      // {
+      //   path: 'avatar-upload',
+      //   component: () => import('@/views/components-demo/avatar-upload'),
+      //   name: 'AvatarUploadDemo',
+      //   meta: { title: 'Upload' }
+      // },
     //   {
     //     path: 'dropzone',
     //     component: () => import('@/views/components-demo/dropzone'),
@@ -98,7 +98,7 @@ const componentsRouter = {
     //     name: 'DragKanbanDemo',
     //     meta: { title: 'Drag Kanban' }
     //   }
-    // ]
+    ]
 }
 
 export default componentsRouter
