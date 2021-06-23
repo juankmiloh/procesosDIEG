@@ -115,10 +115,13 @@
 5. Comando para iniciar nuestro servicio
 	sudo systemctl start samplePruebas
 
-6. Comando para reiniciar un servicio
+6. Comando para detener el servicio
+	sudo systemctl stop samplePruebas
+
+7. Comando para reiniciar un servicio
 	sudo systemctl restart samplePruebas
 
-7. Comando para saber estado del servicio (Muestra la consola de node)
+8. Comando para saber estado del servicio (Muestra la consola de node)
 	sudo systemctl status samplePruebas
 
 --------------------------------------------------------------------------------------
@@ -240,10 +243,13 @@
 5. Comando para iniciar nuestro servicio
 	sudo systemctl start serverPruebasProcesosDIEG
 
-6. Comando para reiniciar un servicio
+6. Comando para detener el servicio
+	sudo systemctl stop serverPruebasProcesosDIEG
+
+7. Comando para reiniciar un servicio
 	sudo systemctl restart serverPruebasProcesosDIEG
 
-7. Comando para saber estado del servicio (Muestra la consola de node)
+8. Comando para saber estado del servicio (Muestra la consola de node)
 	sudo systemctl status serverPruebasProcesosDIEG
 
 --------------------------------------------------------------------------------------

@@ -6,7 +6,7 @@ from ..util.web_util import add_wrapper
 class UsuariosService:
 
     def user_image(self, usuarios_repository: UsuariosRepository, folder, image):
-        path = "assets\\"+folder+"\\"+image
+        path = "assets/"+folder+"/"+image
         return send_file(path)
 
     def user_avatar(self, usuarios_repository: UsuariosRepository, rq):
@@ -131,7 +131,7 @@ class UsuariosService:
 
     def usuario_update(self, usuarios_repository: UsuariosRepository, usuario):
         usuarios_repository.usuario_update_bd(usuario)
-        return add_wrapper(['Usuario actualizado con éxito!'])
+        return add_wrapper(['Usuario actualizado 22 ed junio con éxito!'])
 
     def usuario_delete(self, usuarios_repository: UsuariosRepository, idusuario, nickname):
         usuarios_repository.usuario_delete_bd(idusuario, nickname)
