@@ -1,0 +1,3 @@
+Revisar si se puede unificar todo en un mismo API
+Revisar si se puede refactorizar el API de tarifarito con el nuevo (procesosDIEG)
+Revisar si se puede abrir una página antes del login o sola

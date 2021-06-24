@@ -70,7 +70,7 @@ const actions = {
                 const { data } = response
 
                 if (!data) {
-                    reject('Verification failed, please Login again.')
+                    reject('Error de verificación, inicie sesión de nuevo.')
                 }
 
                 const { roles, name, avatar, introduction, usuario, privilegio, dependencia, idusuario } = data

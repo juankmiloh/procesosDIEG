@@ -12,4 +12,5 @@
 *.sln
 *.local
 .venv
+venv
 src/assets

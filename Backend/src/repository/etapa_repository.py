@@ -59,10 +59,10 @@ class EtapaRepository:
                 RADICADOETAPA = :RADICADO_ARG,
                 OBSERVACIONETAPA = :OBSERVACION_ARG
 	        WHERE 
-                RADICADOETAPA = :RADICADOACTUAL_ARG
+                PROCESO = :IDPROCESO_ARG
                 AND ETAPA = :IDETAPA_ARG;
         '''
-        self.db.engine.execute(text(sql), IDETAPA_ARG=etapa["idetapa"], FECHAINICIO_ARG=etapa["fechaInicioEtapa"], FECHAFIN_ARG=etapa["fechaFinEtapa"], RADICADOACTUAL_ARG=etapa["radicadoActual"], RADICADO_ARG=etapa["radicadoEtapa"], OBSERVACION_ARG=etapa["observacionEtapa"])
+        self.db.engine.execute(text(sql), IDETAPA_ARG=etapa["idetapa"], FECHAINICIO_ARG=etapa["fechaInicioEtapa"], FECHAFIN_ARG=etapa["fechaFinEtapa"], IDPROCESO_ARG=etapa["idproceso"], RADICADO_ARG=etapa["radicadoEtapa"], OBSERVACION_ARG=etapa["observacionEtapa"])
 
         self.update_fase_proceso(etapa["idproceso"])
             
@@ -72,10 +72,13 @@ class EtapaRepository:
         print('* ETAPA A ELIMINAR -> ', etapa)
         print('-------------------------------------')
         sql = '''
-            DELETE FROM ETAPA_PROCESO
-            WHERE ETAPA = :IDETAPA_ARG AND RADICADOETAPA = :RADICADO_ARG;
+            DELETE FROM
+                ETAPA_PROCESO
+            WHERE
+                PROCESO = :IDPROCESO_ARG
+                AND ETAPA = :IDETAPA_ARG;
         '''
-        self.db.engine.execute(text(sql), IDETAPA_ARG=etapa["idetapa"], RADICADO_ARG=etapa["radicadoEtapa"])
+        self.db.engine.execute(text(sql), IDETAPA_ARG=etapa["idetapa"], IDPROCESO_ARG=etapa["idproceso"])
 
         self.update_fase_proceso(etapa["idproceso"])
 
