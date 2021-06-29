@@ -1,6 +1,7 @@
 /* jshint esversion: 6 */
 /* eslint-disable */
 // import parseTime, formatTime and set to filter
+import moment from 'moment';
 export { parseTime, formatTime }
   from '@/utils'
 
@@ -84,4 +85,20 @@ export function uppercaseFirst(string) {
  */
 export function lowercaseFirst(string) {
   return string.charAt(0).toLowerCase() + string.slice(1)
+}
+
+/**
+ * Formatear fecha
+ * @param {String} string
+ */
+ export function formatDate(string) {
+  return moment(string).format('DD/MM/YYYY');
+}
+
+/**
+* Formatear fecha
+* @param {String} string
+*/
+export function formatDateHour(string) {
+  return moment(string).format('DD/MM/YYYY hh:mm:ss');
 }

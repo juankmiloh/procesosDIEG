@@ -44,7 +44,6 @@
       v-el-drag-dialog
       :visible.sync="openModalCausal"
       :before-close="closeModalCausal"
-      width="34em"
       custom-class="dialog-class-lista"
       :show-close="false"
     >
@@ -120,7 +119,6 @@
       :visible.sync="dialogDrawer"
       direction="rtl"
       custom-class="demo-drawer"
-      size="38%"
     >
       <div style="background: #f7fbff; height: 100%;">
         <sticky class-name="sub-navbar">
@@ -145,7 +143,7 @@
                           <span style="color: #303133;"><b>{{ item.nombrecausal }}</b></span>
                         </el-col>
                         <el-col :span="3">
-                          <div style="float: right; padding-right: 2%;">
+                          <div style="float: right; padding-right: 0%;">
                             <el-button style="border: 1px solid #67C23A;" size="mini" type="success" icon="el-icon-edit" :disabled="!abogadoEditar" @click="handleEditCausal(item)"><b>Editar</b></el-button>
                           </div>
                         </el-col>
@@ -254,7 +252,8 @@ export default {
       deleteDialogVisible: false,
       causalDel: '',
       loading: false,
-      abogadoEditar: this.editar
+      abogadoEditar: this.editar,
+      x: ''
     }
   },
   watch: {
@@ -275,6 +274,9 @@ export default {
           }
         }
       }
+    },
+    created() {
+      this.x = window.matchMedia('(max-width: 800px)')
     },
     editar: {
       deep: true,
@@ -301,7 +303,7 @@ export default {
     handleDelete(data) {
       // console.log(data)
       this.causalDel = { idproceso: data.idproceso, idcausal: data.idcausal }
-      this.mensajeModalConfirm = `¿Realmente desea eliminar a <b>${data.nombrecausal}</b>?`
+      this.mensajeModalConfirm = `¿Realmente desea eliminar <b>${data.nombrecausal}</b>?`
       this.deleteDialogVisible = true
     },
     async submitDelete(confirm) {
@@ -435,22 +437,73 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.control-modal {
-  width: 23em;
-}
+  // Pantallas superiores a 800px (PC)
+  @media screen and (min-width: 800px) {
+    .control-modal {
+      width: 23em;
+    }
+  }
+
+  // Pantallas inferiores a 800px (mobile)
+  @media screen and (max-width: 800px) {
+    .control-modal {
+      width: 95%;
+    }
+  }
 </style>
 
 <style lang="scss">
-.dialog-class-lista {
-  border-radius: 10px;
+// Pantallas superiores a 800px (PC)
+@media screen and (min-width: 800px) {
+  .dialog-class-lista {
+    border-radius: 10px;
+    // width: 10%;
+  }
+
+  .dialog-class-lista .el-dialog__body {
+    padding-top: 0 !important;
+  }
+
+  .control-modal {
+    width: 23em;
+  }
 }
 
-.dialog-class-lista .el-dialog__body {
-  padding-top: 0 !important;
+// Pantallas inferiores a 800px (mobile)
+@media screen and (max-width: 800px) {
+  .dialog-class-lista {
+    width: 100%;
+  }
+
+  .dialog-class-lista .el-dialog__body {
+    padding: 0 !important;
+  }
+
+  .dialog-class-lista .el-dialog__header {
+    display: none;
+  }
+
+  .control-modal {
+    width: 95%;
+  }
 }
 </style>
 
 <style>
+  /* Pantallas superiores a 800px (PC) */
+  @media screen and (min-width: 800px) {
+    .demo-drawer {
+      width: 45% !important;
+    }
+  }
+
+  /* Pantallas inferiores a 800px (mobile) */
+  @media screen and (max-width: 800px) {
+    .demo-drawer {
+      width: 100% !important;
+    }
+  }
+
   .el-carousel__item h3 {
     color: #475669;
     font-size: 14px;

@@ -13,7 +13,7 @@ export function getEtapaProceso(id) {
     return request({
         url: '/etapa_proceso',
         method: 'get',
-        params: { 'idProceso': id }
+        params: { 'idproceso': id }
     });
 }
 

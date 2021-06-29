@@ -18,42 +18,16 @@ class ProcesosService:
                     'caducidad': str(result[2]),
                     # 'empresa': result[3].capitalize(),
                     'empresa': result[3],
-                    'estado': result[4],
-                    'servicio': result[5],
-                    'idusuario': result[6],
-                    'usuario': result[7],
-                    'idrevisor': result[8],
-                    'revisor': result[9]
+                    'servicio': result[4],
+                    'idusuario': result[5],
+                    'usuario': result[6],
+                    'idrevisor': result[7],
+                    'revisor': result[8],
+                    'estado': result[10]
                 }
             )
         return procesos
 
-    def proceso_detalle_inicial(self, procesos_repository: ProcesosRepository, idProceso):
-        proceso = []
-        data = procesos_repository.get_proceso_inicial_bd(idProceso)
-        for result in data:
-            caducidad = None
-            # print('-------------------- CADUCIDAD -----------------', result[2])
-
-            if result[6]:
-                caducidad = str(result[6])
-    
-            proceso.append(
-                {
-                    'idproceso': result[0],
-                    'expediente': result[1],
-                    'servicio': result[2],
-                    'empresa': result[3],
-                    'usuario': result[4],
-                    'estado': result[5],
-                    'caducidad': caducidad,
-                    'etapa': result[7],
-                    'proxetapa': result[8],
-                    'revisor': result[10],
-                }
-            )
-        return proceso
-    
     def proceso_detalle(self, procesos_repository: ProcesosRepository, idProceso):
         proceso = []
         data = procesos_repository.get_proceso_bd(idProceso)
@@ -61,8 +35,8 @@ class ProcesosService:
             caducidad = None
             print('-------------------- DATA PROCESO -----------------', result)
 
-            if result[9]:
-                caducidad = str(result[9])
+            if result[8]:
+                caducidad = str(result[8])
     
             proceso.append(
                 {
@@ -71,14 +45,13 @@ class ProcesosService:
                     'servicio': result[2],
                     'empresa': result[3],
                     'usuario': result[4],
-                    'estado': result[5],
-                    'tipo_sancion': result[6],
-                    'sancion': result[7],
-                    'decision': result[8],
+                    'tipo_sancion': result[5],
+                    'sancion': result[6],
+                    'decision': result[7],
                     'caducidad': caducidad,
-                    'etapa': result[10],
+                    'revisor': result[9],
+                    'estado': result[10],
                     'proxetapa': result[11],
-                    'revisor': result[13]
                 }
             )
         return proceso

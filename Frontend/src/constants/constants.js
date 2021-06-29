@@ -34,7 +34,7 @@ export const CONSTANTS = {
         {
             label: 'Estado',
             prop: 'estado',
-            width: 187,
+            width: 300,
             filter: 'filterEstado'
         },
         {
@@ -83,7 +83,7 @@ export const CONSTANTS = {
         {
             label: 'Estado',
             prop: 'estado',
-            width: 210,
+            width: 300,
             filter: 'filterEstado'
         },
         {

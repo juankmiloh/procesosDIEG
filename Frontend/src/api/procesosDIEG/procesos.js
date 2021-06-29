@@ -14,15 +14,7 @@ export function getProceso(id) {
     return request({
         url: '/proceso/detalle',
         method: 'get',
-        params: { 'idProceso': id }
-    });
-}
-
-export function getProcesoInicial(id) {
-    return request({
-        url: '/proceso/detalle/inicial',
-        method: 'get',
-        params: { 'idProceso': id }
+        params: { 'idproceso': id }
     });
 }
 

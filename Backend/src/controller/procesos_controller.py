@@ -14,18 +14,11 @@ def getListProcesos(procesos_service: ProcesosService, procesos_repository: Proc
     iddependencia = request.args.get('dependencia', default='', type=str)
     return json.dumps(procesos_service.get_procesos(procesos_repository, iddependencia))
 
-# Obtener detalle de un proceso inicial
-@controller.route(API_ROOT_PATH + 'proceso/detalle/inicial', methods=['GET'])
-def getProcesoInicial(procesos_service: ProcesosService, procesos_repository: ProcesosRepository):
-    # Id proceso
-    idProceso = request.args.get('idProceso', default='', type=str)
-    return json.dumps(procesos_service.proceso_detalle_inicial(procesos_repository, idProceso))
-
 # Obtener detalle de un proceso
 @controller.route(API_ROOT_PATH + 'proceso/detalle', methods=['GET'])
 def getProceso(procesos_service: ProcesosService, procesos_repository: ProcesosRepository):
     # Id proceso
-    idProceso = request.args.get('idProceso', default='', type=str)
+    idProceso = request.args.get('idproceso', default='', type=str)
     return json.dumps(procesos_service.proceso_detalle(procesos_repository, idProceso))
 
 # Crear un proceso

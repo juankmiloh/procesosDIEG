@@ -107,7 +107,7 @@
       :visible.sync="dialogDrawer"
       direction="rtl"
       custom-class="demo-drawer"
-      size="30%"
+      size="40%"
     >
       <div style="background: #f7fbff; height: 100%;">
         <sticky class-name="sub-navbar">

@@ -9,24 +9,29 @@ class EtapaRepository:
 
     def get_etapa_bd(self):
         sql = '''
-            SELECT * FROM ETAPA ORDER BY IDETAPA DESC;
+            SELECT * FROM ESTADO ORDER BY IDESTADO ASC;
         '''
         return self.db.engine.execute(text(sql)).fetchall()
     
     def get_etapa_proceso_bd(self, idProceso):
         sql = '''
-            SELECT 
-                EP.ETAPA,
-                EP.RADICADOETAPA,
-                E.NOMBRE,
-                EP.FECHAINICIOETAPA,
-                EP.FECHAFINETAPA,
-                EP.OBSERVACIONETAPA 
-            FROM ETAPA_PROCESO EP, ETAPA E
-            WHERE
-                EP.ETAPA = E.IDETAPA
-                AND PROCESO = :IDPROCESO_ARG
-            ORDER BY EP.ETAPA;
+            SELECT
+                ETAPA.IDESTADO,
+                ETAPA.NUMEROACTO,
+                ETAPA.RADICADO,
+                ETAPA.FECHAINICIO,
+                ETAPA.FECHAFIN,
+                ETAPA.OBSERVACION,
+                ESTADO.NOMBREESTADO,
+                ESTADO.OBLIGATORIEDAD,
+                ESTADO.FECHA_FINAL,
+                ESTADO.VARIOS_ACTOS,
+                ESTADO.OBSERVACION,
+                ESTADO.SIGUIENTEESTADO
+            FROM ETAPA_PROCESO ETAPA, ESTADO
+            WHERE IDPROCESO = :IDPROCESO_ARG
+            AND ETAPA.IDESTADO = ESTADO.IDESTADO
+            ORDER BY 1, 2;
         '''
         return self.db.engine.execute(text(sql), IDPROCESO_ARG=idProceso).fetchall()
 
