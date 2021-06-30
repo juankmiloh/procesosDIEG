@@ -6,6 +6,7 @@
     :before-close="handleCancel"
     :width="x.matches ? '80%' : '40%'"
     center
+    append-to-body
   >
     <center>
       <span v-html="mensaje" />

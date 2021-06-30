@@ -9,11 +9,11 @@ export function getListEtapas() {
     });
 }
 
-export function getEtapaProceso(id) {
+export function getEtapaProceso(id, idetapa) {
     return request({
         url: '/etapa_proceso',
         method: 'get',
-        params: { 'idproceso': id }
+        params: { 'idproceso': id, 'idetapa': idetapa }
     });
 }
 

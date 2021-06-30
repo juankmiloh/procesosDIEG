@@ -437,6 +437,26 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  /* width */
+  ::-webkit-scrollbar {
+    width: 1.5px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
   // Pantallas superiores a 800px (PC)
   @media screen and (min-width: 800px) {
     .control-modal {

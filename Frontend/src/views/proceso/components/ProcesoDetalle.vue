@@ -308,7 +308,7 @@
       custom-class="dialog-class-ldetalle dialog-color"
       :destroy-on-close="true"
     >
-      <Etapas :id="id" :expediente="formProceso.expediente" :editar="abogadoEditar" @close-modal-etapas="closeModalEtapa" />
+      <Etapas :idproceso="id" :expediente="formProceso.expediente" :editar="abogadoEditar" @close-modal-etapas="closeModalEtapa" />
     </el-dialog>
 
   </div>

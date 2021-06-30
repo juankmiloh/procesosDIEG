@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loadingEtapa" class="main-article" style="background: #f7fbff; padding-left: 50px;">
+  <div v-loading="loadingEtapas" class="main-article" style="background: #f7fbff; padding-left: 50px;">
     <el-row :gutter="30" class="header-agregar-etapa">
       <el-col v-for="etapa in etapas" :key="etapa.idtetapa" :sm="24" :md="8" style="border: 0px solid red; padding: 15px;">
         <el-card class="card-etapa" style="border: 0px solid #DCDFE6;">
@@ -35,16 +35,16 @@
                     <span style="color: #606266;"><b>Inicio</b></span>
                   </el-col>
                   <el-col :span="10" :xs="17">
-                    <span v-if="etapa['actos'][0].fechaInicio !== 'No registra'" style="color: #606266;"><i class="el-icon-time" /> {{ etapa['actos'][0].fechaInicio | formatDate }}</span>
-                    <span v-else style="color: #606266;"> {{ etapa['actos'][0].fechaInicio }}</span>
+                    <span v-if="etapa['actos'][0].fechaInicio !== null" style="color: #606266;"><i class="el-icon-time" /> {{ etapa['actos'][0].fechaInicio | formatDate }}</span>
+                    <span v-else style="color: #606266;">No registra</span>
                   </el-col>
 
                   <el-col v-if="etapa.fecha_final === 'SI'" :span="3" :xs="7">
                     <span style="color: #606266;"><b>Final</b></span>
                   </el-col>
                   <el-col v-if="etapa.fecha_final === 'SI'" :span="7" :xs="17">
-                    <span v-if="etapa['actos'][0].fechaFin !== 'No registra'" style="color: #606266;"><i class="el-icon-time" /> {{ etapa['actos'][0].fechaFin | formatDate }}</span>
-                    <span v-else style="color: #606266;"> {{ etapa['actos'][0].fechaFin }}</span>
+                    <span v-if="etapa['actos'][0].fechaFin !== null" style="color: #606266;"><i class="el-icon-time" /> {{ etapa['actos'][0].fechaFin | formatDate }}</span>
+                    <span v-else style="color: #606266;">No registra</span>
                   </el-col>
                 </el-row>
               </div>
@@ -68,7 +68,7 @@
                 type="success"
                 plain
                 icon="el-icon-edit"
-                @click="handleEditarEtapa(etapa);"
+                @click="handleEditarEtapa(etapa)"
               ><b>Editar</b></el-button>
               <el-button
                 v-show="etapa.idetapa !== 1 || !editar"
@@ -83,7 +83,6 @@
           <!-- Contenido de la card cuando la etapa tiene varios actos -->
           <el-row v-if="etapa.varios_actos === 'SI'" class="div-acto">
             <el-col :span="24" style="height: 100%;">
-              <!-- {{ acto }} -->
               <el-card shadow="never" style="border: 0px solid #F2F6FC; height: 90%; overflow-y: scroll; padding: 5% 10%; 10%; 10%;">
                 <div class="card-actuaciones">
                   <el-card v-for="acto in etapa['actos']" :key="acto.numeroacto" shadow="never" style="height: 5vh; margin-bottom: 4%;">
@@ -99,8 +98,17 @@
                 size="mini"
                 type="success"
                 plain
+                icon="el-icon-plus"
+                @click="handleAgregarActo(etapa)"
+              />
+              <el-button
+                :disabled="!editar"
+                style="border: 1px solid #67C23A"
+                size="mini"
+                type="success"
+                plain
                 icon="el-icon-zoom-in"
-                @click="handleEditarEtapa(etapa);"
+                @click="handleDetalleEtapa(etapa)"
               ><b>Detalle</b></el-button>
               <el-button
                 v-show="etapa.idetapa !== 1 || !editar"
@@ -116,111 +124,205 @@
       </el-col>
     </el-row>
 
-    <!-- Cuadro de dialogo para editar o asignar etapa -->
-    <AgregarEtapa />
+    <!-- Cuadro de dialogo para editar etapa -->
+
+    <ModalAgregar
+      :modaltitulo="tituloModalItem"
+      :modalvisible="dialogVisibleItem"
+      :modalform="formItem"
+      :domcomponents="domItem"
+      :rulesform="rulesFormItem"
+      :datamodal="dataFormItem"
+      :action="modalAction"
+      @confirmar="handleConfirmar"
+    />
+
+    <!-- Modal de confirmacion para borrar una etapa -->
+
+    <ModalDelete
+      titulo="Advertencia"
+      :mensaje="mensajeModalDelete"
+      :modalvisible="deleteDialogVisible"
+      @confirmar="submitDelete"
+    />
 
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import { CONSTANTS } from '@/constants/constants'
-// import { getListEtapas } from '@/api/procesosDIEG/etapas'
-import { getEtapaProceso } from '@/api/procesosDIEG/etapas'
+import { CONSTANTS } from './constants/constants'
+import { getEtapaProceso, deleteEtapa, getListEtapas, updateEtapa, createEtapa } from '@/api/procesosDIEG/etapas'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import moment from 'moment'
-import AgregarEtapa from './AgregarEtapa'
+import ModalAgregar from '@/components/ModalAgregar'
+import ModalDelete from '@/components/ModalConfirm'
 
 export default {
   name: 'EtapasProceso',
   directives: { elDragDialog },
-  components: { AgregarEtapa },
+  components: { ModalDelete, ModalAgregar },
   props: {
     editar: {
       type: Boolean,
       default: false
     },
-    id: {
+    idproceso: {
       type: String,
       default: ''
+    },
+    recargarlista: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      loadingEtapa: false,
-      formAgregar: CONSTANTS.formAgregarEtapa,
+      loadingEtapas: true,
       etapas: [],
-      textEditarEtapa: 'Agregar',
-      msgAgregarEtapaVisible: false
+      mensajeModalDelete: '',
+      deleteDialogVisible: false,
+      delEtapa: '',
+      formItem: CONSTANTS.formItem,
+      domItem: CONSTANTS.domItem,
+      rulesFormItem: CONSTANTS.rulesFormItem,
+      dataFormItem: CONSTANTS.dataFormItem,
+      /* Si es o no visible el cuadro de dialogo de agregar o editar etapa */
+      dialogVisibleItem: false,
+      tituloModalItem: '',
+      modalAction: ''
     }
   },
   computed: {
     ...mapGetters(['name', 'roles', 'idusuario', 'dependencia'])
+  },
+  watch: {
+    recargarlista: {
+      deep: true,
+      handler(val) {
+        // console.log('Actualizar lista -> ', val)
+        if (val) {
+          this.initView()
+        }
+      }
+    }
+  },
+  async mounted() {
+    this.formItem = {} // Permite inicializar el modelo que utiliza el modal de agregar
   },
   created() {
     this.initView()
   },
   methods: {
     async initView() {
-      this.getEtapasProceso(this.id) // Funcion para obtener las etapas del proceso
+      this.getEtapasProceso(this.idproceso) // Funcion para obtener las etapas del proceso
+      this.getEtapas()
     },
     async getEtapasProceso(idproceso) {
+      this.loadingEtapas = true
       await getEtapaProceso(idproceso).then((response) => {
-        console.log('ETAPA_PROCESO -> ', response)
+        // console.log('ETAPA_PROCESO -> ', response)
         this.etapas = response
-        // const modelResponse = response.map((data) => {
-        //   data.fechaInicioEtapa = moment(data.fechaInicioEtapa).format('YYYY/MM/DD HH:mm:ss')
-        //   if (data.fechaFinEtapa !== 'No registra') {
-        //     data.fechaFinEtapa = moment(data.fechaFinEtapa).format('YYYY/MM/DD HH:mm:ss')
-        //   }
-        //   return data
-        // })
-        // this.etapas = modelResponse
-        // console.log('NUEVO ETAPA_PROCESO -> ', this.etapas)
+        this.loadingEtapas = false
+      })
+    },
+    async getEtapas() {
+      await getListEtapas().then((response) => {
+        // console.log('Etapas --> ', response)
+        this.dataFormItem.etapa = response
       })
     },
     handleEditarEtapa(etapa) {
-      this.editarEtapa = true
-      this.textEditarEtapa = 'Actualizar'
-      this.formAgregar = CONSTANTS.formAgregarEtapa
-      if (this.$refs['formAgregar']) {
-        this.$refs['formAgregar'].resetFields()
+      // console.log('Editar etapa --> ', etapa)
+      this.domItem[0]['disabled'] = true // Se modifican las opciones del select
+      this.rulesFormItem['etapa'][0]['required'] = false // Se modifican las reglas del select
+      this.getEtapas() // Se actualiza la lista de etapas
+      this.formItem = etapa['actos'][0]
+      this.tituloModalItem = 'Editar etapa'
+      this.modalAction = 'Editar'
+      this.dialogVisibleItem = true
+    },
+    async handleConfirmar(modal) { // Funcion que captura los eventos que devuelve el modal de [editar / agregar] etapa
+      // console.log(modal)
+      if (modal.action === 'Editar') {
+        // Se realiza la acción de editar etapa
+        modal.data.idproceso = parseInt(this.idproceso)
+        await updateEtapa(modal.data).then(async(response) => {
+          // console.log('RESPONSE AGREGAR -> ', response)
+          this.$notify({
+            title: 'Buen trabajo!',
+            message: 'Etapa modificada con éxito',
+            type: 'success',
+            duration: 2000
+          })
+        })
+      } else if (modal.action === 'Agregar') {
+        // Se realiza la acción de crear etapa
+        modal.data.idproceso = parseInt(this.idproceso)
+        await this.getNumeroacto(this.idproceso, modal.data.etapa).then((res) => { modal.data.numeroacto = res })
+        await createEtapa(modal.data).then(async(response) => {
+          // console.log('RESPONSE AGREGAR -> ', response)
+          this.$notify({
+            title: 'Buen trabajo parcero!',
+            message: 'Etapa agregada con éxito',
+            type: 'success',
+            duration: 2000
+          })
+        })
       }
-      this.msgAgregarEtapaVisible = true
-      // console.log('clickAgregarEtapa -> ', this.$refs['formAgregar'])
-      const modelEditarEtapa = {}
-      try {
-        modelEditarEtapa.idetapa = etapa.idetapa
-        modelEditarEtapa.radicadoActual = etapa.radicadoEtapa
-        modelEditarEtapa.radicadoEtapa = etapa.radicadoEtapa
-        modelEditarEtapa.etapa = etapa.nombreEtapa
-        modelEditarEtapa.observacionEtapa = etapa.observacionEtapa
-        modelEditarEtapa.fechaInicioEtapa = moment(etapa.fechaInicioEtapa).format('YYYY/MM/DD HH:mm:ss')
-        if (etapa.fechaFinEtapa !== 'No registra') {
-          modelEditarEtapa.fechaFinEtapa = moment(etapa.fechaFinEtapa).format('YYYY/MM/DD HH:mm:ss')
+      this.dialogVisibleItem = false
+      this.formItem = {} // Se reinicia el modelo del modal (importante)
+      this.dataFormItem.etapa = [] // Permite reiniciar el arreglo de etapas del modal (Debido a que los datos quedan cacheados)
+      this.getEtapasProceso(this.idproceso) // Se actualiza la lista de etapas
+    },
+    async getNumeroacto(idproceso, idetapa) {
+      let numeroacto = 0
+      await getEtapaProceso(idproceso, idetapa).then((response) => {
+        // console.log('ETAPA_PROCESO -> ', response)
+        if (response.length) {
+          // console.log('tiene actos')
+          numeroacto = response[0]['actos'].length + 1
         } else {
-          modelEditarEtapa.fechaFinEtapa = null
+          // console.log('No tiene actos')
+          numeroacto = 1
         }
-        this.formAgregar = modelEditarEtapa
-        // console.log('handleEditarEtapa -> ', this.formAgregar)
-      } catch (error) {
-        // console.log(error)
-      }
+      })
+      return numeroacto
     },
-    closeModalAgregar() {
-      this.formAgregar = CONSTANTS.formAgregarEtapa
-      if (this.$refs['formAgregar']) {
-        this.$refs['formAgregar'].resetFields()
-      }
-      this.msgAgregarEtapaVisible = false
-      this.loadingEtapa = false
-      // console.log('closeModalAgregar -> ', this.$refs['formAgregar'])
-    },
-    handleBorrarEtapa(data) {
-      this.delradEtapa = data.radicadoEtapa
-      this.delIdetapa = data.idetapa
-      this.delEtapa = data.nombreEtapa
+    async handleBorrarEtapa(etapa) {
+      // console.log('Borrar etapa --> ', etapa)
+      this.delEtapa = etapa.idetapa
+      this.mensajeModalDelete = `¿Realmente desea eliminar la etapa <b>${etapa.nombre}</b>?`
       this.deleteDialogVisible = true
+    },
+    async submitDelete(response) {
+      // console.log(response)
+      if (response) {
+        const model = { idproceso: this.idproceso, idetapa: this.delEtapa }
+        await deleteEtapa(model).then(async(response) => {
+          this.$notify({
+            title: 'Información',
+            message: 'Se ha eliminado la etapa',
+            type: 'success',
+            duration: 2000
+          })
+        })
+        this.getEtapasProceso(this.idproceso)
+      }
+      this.deleteDialogVisible = false
+    },
+    handleAgregarActo(acto) {
+      // console.log('Agregar acto --> ', acto)
+      this.domItem[0]['disabled'] = true // Se modifican las opciones del select (con el fin de no modificar el componente de agregar)
+      this.rulesFormItem['etapa'][0]['required'] = false // Se modifican las reglas del select
+      this.getEtapas() // Se actualiza la lista de etapas
+      this.formItem.etapa = acto['actos'][0]['etapa']
+      const cantidadactos = acto['actos'].length
+      this.tituloModalItem = `Agregar acto # ${cantidadactos + 1}`
+      this.modalAction = 'Agregar'
+      this.dialogVisibleItem = true
+    },
+    handleDetalleEtapa(etapa) {
+      console.log('Detalle etapa --> ', etapa)
     }
   }
 }

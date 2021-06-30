@@ -5,12 +5,12 @@
     :before-close="handleCancel"
     :width="x.matches ? '' : '40%'"
     :fullscreen="x.matches ? true : false"
-    center
     custom-class="dialog-class"
-    :show-close="false"
+    :show-close="true"
     :destroy-on-close="true"
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
+    :close-on-click-modal="true"
+    :close-on-press-escape="true"
+    append-to-body
   >
     <sticky class-name="sub-navbar">
       <div style="border: 0px solid red; color: white; text-align: center">
@@ -44,6 +44,8 @@
               v-model="model[component.prop]"
               autocomplete="off"
               :placeholder="component.placeholder"
+              :maxlength="component.maxlength"
+              :show-word-limit="component.showwordlimit"
               class="control-modal"
               @keyup.enter.native="handleForm('modalform')"
             />
@@ -68,6 +70,22 @@
               @keyup.enter.native="handleForm('modalform')"
             />
           </span>
+          <span v-if="component.type === 'datetime'">
+            <el-date-picker
+              v-model="model[component.prop]"
+              type="datetime"
+              :placeholder="component.placeholder"
+              class="control-modal"
+            />
+          </span>
+          <span v-if="component.type === 'date'">
+            <el-date-picker
+              v-model="model[component.prop]"
+              type="date"
+              :placeholder="component.placeholder"
+              class="control-modal"
+            />
+          </span>
           <span v-if="component.type === 'textarea'">
             <el-input
               v-model="model[component.prop]"
@@ -84,17 +102,14 @@
               :placeholder="component.placeholder"
               class="control-modal"
               clearable
-              :disabled="action === 'Editar' ? true : false"
+              :disabled="component.disabled"
             >
-              <span v-if="action === 'Editar'">
-                <el-option :label="model.item" :value="model.iditem" />
-              </span>
-              <span v-else> <!-- Opciones para cuando es agregar -->
+              <span>
                 <el-option
                   v-for="item in datamodal[component.prop]"
                   :key="item.id"
-                  :label="item.label"
-                  :value="item.value"
+                  :label="item.nombre"
+                  :value="item.id"
                 />
               </span>
             </el-select>
@@ -104,7 +119,6 @@
           <el-button @click="handleCancel()">Cancelar</el-button>
           <el-button
             type="success"
-            :loading="loading"
             @click="handleForm('modalform')"
           >{{ action }}</el-button>
         </el-form-item>
@@ -154,8 +168,7 @@ export default {
   data() {
     return {
       model: {},
-      x: '',
-      loading: false
+      x: ''
     }
   },
   watch: {
@@ -164,7 +177,6 @@ export default {
       handler(val) {
         // console.log('Modelo agregar -> ', val)
         this.model = val
-        this.loading = false
       }
     }
   },
@@ -178,8 +190,7 @@ export default {
         if (valid) {
           // Devolvemos el object del form y cerramos el dialogo
           // console.log('MODELO -> ', this.modalform)
-          this.loading = true
-          this.$emit('confirmar', { response: true, action: this.action, data: this.modalform })
+          this.$emit('confirmar', { response: true, action: this.action, data: this.model })
         } else {
           console.log('error submit!!')
           return false
@@ -187,7 +198,8 @@ export default {
       })
     },
     handleCancel() {
-      if (this.action === 'Agregar') {
+      // console.log(this.action)
+      if (this.action === 'Agregar') { // Se deja a solo agregar ya que cuando es editar se daña el formulario
         this.$refs['modalform'].resetFields()
       }
       this.$emit('confirmar', { response: false })
@@ -195,6 +207,23 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+
+// Pantallas superiores a 800px (PC)
+@media screen and (min-width: 800px) {
+  .control-modal {
+    width: 85%;
+  }
+}
+
+// Pantallas inferiores a 800px (mobile)
+@media screen and (max-width: 800px) {
+  .control-modal {
+    width: 95%;
+  }
+}
+</style>
 
 <style lang="scss">
 
@@ -207,10 +236,6 @@ export default {
   .dialog-class .el-dialog__body {
     padding-top: 0 !important;
   }
-
-  .control-modal {
-    width: 85%;
-  }
 }
 
 // Pantallas inferiores a 800px (mobile)
@@ -221,10 +246,6 @@ export default {
 
   .dialog-class .el-dialog__header {
     display: none;
-  }
-
-  .control-modal {
-    width: 95%;
   }
 }
 </style>

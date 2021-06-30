@@ -127,7 +127,7 @@
                 <el-card class="box-card" style="overflow-y: scroll; height: 70vh;">
                   <el-card v-for="item in datosTerceros" :key="item.idtercero" style="width: 100%; margin-bottom: 3%;">
                     <div slot="header" class="clearfix">
-                      <span style="color: #303133;"><b>{{ item.nombre }}</b></span>
+                      <span style="color: #606266;"><b>{{ item.nombre }}</b></span>
                       <div style="float: right;">
                         <el-button size="mini" type="danger" icon="el-icon-delete" :disabled="!abogadoEditar" @click="handleDelete(item)" />
                       </div>
@@ -372,19 +372,39 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.control-modal {
-  width: 23em;
-}
+  /* width */
+  ::-webkit-scrollbar {
+    width: 1.5px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+  .control-modal {
+    width: 23em;
+  }
 </style>
 
 <style lang="scss">
-.dialog-class-lista {
-  border-radius: 10px;
-}
+  .dialog-class-lista {
+    border-radius: 10px;
+  }
 
-.dialog-class-lista .el-dialog__body {
-  padding-top: 0 !important;
-}
+  .dialog-class-lista .el-dialog__body {
+    padding-top: 0 !important;
+  }
 </style>
 
 <style>

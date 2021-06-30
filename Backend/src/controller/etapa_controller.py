@@ -16,7 +16,8 @@ def etapa(etapa_service: EtapaService, etapa_repository: EtapaRepository):
 def getEtapaProceso(etapa_service: EtapaService, etapa_repository: EtapaRepository):
     # Id proceso
     idProceso = request.args.get('idproceso', default='', type=str)
-    return json.dumps(etapa_service.get_etapa_proceso(etapa_repository, idProceso))
+    idEtapa = request.args.get('idetapa', default=0, type=str)
+    return json.dumps(etapa_service.get_etapa_proceso(etapa_repository, idProceso, idEtapa))
 
 # Crear una etapa
 @controller.route(API_ROOT_PATH + 'etapas', methods=['POST'])

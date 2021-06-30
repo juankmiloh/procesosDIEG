@@ -1,6 +1,4 @@
-from sqlalchemy.sql.elements import Null
 from ..repository import EtapaRepository
-from ..util.web_util import format_date
 from ..util.web_util import add_wrapper
 
 class EtapaService:
@@ -11,8 +9,8 @@ class EtapaService:
         for result in data:
             etapa.append(
                 {
-                    'idetapa': result[0],
-                    'nombre': result[1],
+                    'id': result[0],
+                    'nombre': str(result[0]) + " - " + result[1],
                     'obligatoriedad': result[2],
                     'fecha_final': result[3],
                     'varios_actos': result[4],
@@ -22,23 +20,22 @@ class EtapaService:
             )
         return etapa
 
-    def get_etapa_proceso(self, etapa_repository: EtapaRepository, idproceso):
+    def get_etapa_proceso(self, etapa_repository: EtapaRepository, idproceso, idEtapa):
         etapas = []
         etapaAnterior = 0
         etapaActual = 0
-        fechafin = ''
         index = -1
-        data = etapa_repository.get_etapa_proceso_bd(idproceso)
+        data = etapa_repository.get_etapa_proceso_bd(idproceso, idEtapa)
         for result in data:
             etapaActual = result[0]
             fechafin = result[4]
-            if fechafin is None:
-                fechafin = 'No registra'
+            if fechafin is None: 
+                fechafin = None # Se reasigna el valor porque no toma el 'None (null)' desde el front
             else:
-                fechafin = str(result[4])
+                fechafin = str(result[4]) # Se convierte a string para poder retornar la fecha
             fechainicio = result[3]
             if fechainicio is None:
-                fechainicio = 'No registra'
+                fechainicio = None
             else:
                 fechainicio = str(result[3])
             
@@ -53,6 +50,7 @@ class EtapaService:
                         'observacion': result[10],
                         'siguiente_estado': result[11],
                         'actos': [{
+                            'etapa': result[0],
                             'numeroacto': result[1],
                             'radicado': result[2],
                             'fechaInicio': fechainicio,
@@ -66,6 +64,7 @@ class EtapaService:
             else:
                 etapas[index]['actos'].append(
                     {
+                        'etapa': result[0],
                         'numeroacto': result[1],
                         'radicado': result[2],
                         'fechaInicio': str(result[3]),

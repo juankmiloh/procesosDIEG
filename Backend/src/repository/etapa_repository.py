@@ -13,7 +13,7 @@ class EtapaRepository:
         '''
         return self.db.engine.execute(text(sql)).fetchall()
     
-    def get_etapa_proceso_bd(self, idProceso):
+    def get_etapa_proceso_bd(self, idProceso, idEtapa):
         sql = '''
             SELECT
                 ETAPA.IDESTADO,
@@ -30,46 +30,54 @@ class EtapaRepository:
                 ESTADO.SIGUIENTEESTADO
             FROM ETAPA_PROCESO ETAPA, ESTADO
             WHERE IDPROCESO = :IDPROCESO_ARG
+            AND (ETAPA.IDESTADO = :IDESTADO_ARG OR 0 = :IDESTADO_ARG)
             AND ETAPA.IDESTADO = ESTADO.IDESTADO
             ORDER BY 1, 2;
         '''
-        return self.db.engine.execute(text(sql), IDPROCESO_ARG=idProceso).fetchall()
+        return self.db.engine.execute(text(sql), IDPROCESO_ARG=idProceso, IDESTADO_ARG=idEtapa).fetchall()
 
     def etapa_insert_bd(self, etapa):
         print('-------------------------------------')
         print('OBJ ETAPA -> ', etapa)
         print('-------------------------------------')
-        sql = '''
-            INSERT INTO ETAPA_PROCESO(ETAPA, PROCESO, FECHAINICIOETAPA, FECHAFINETAPA, RADICADOETAPA, OBSERVACIONETAPA)
-            VALUES (:ETAPA_ARG, :IDPROCESO_ARG, :FECHAINICIO_ARG, :FECHAFIN_ARG, :RADICADO_ARG, :OBSERVACION_ARG);
-        '''
-        self.db.engine.execute(text(sql), ETAPA_ARG=etapa["etapa"], IDPROCESO_ARG=etapa["idproceso"], FECHAINICIO_ARG=etapa["fechaInicioEtapa"], FECHAFIN_ARG=etapa["fechaFinEtapa"], RADICADO_ARG=etapa["radicadoEtapa"], OBSERVACION_ARG=etapa["observacionEtapa"])
+        if "fechaInicio" not in etapa:
+            etapa["fechaInicio"] = None
+        if "fechaFin" not in etapa:
+            etapa["fechaFin"] = None
+        if "observacion" not in etapa:
+            etapa["observacion"] = None
 
-        self.update_fase_proceso(etapa["idproceso"])
+        sql = '''
+            INSERT INTO ETAPA_PROCESO(IDPROCESO, IDESTADO, NUMEROACTO, RADICADO, FECHAINICIO, FECHAFIN, OBSERVACION, FECHAREGISTRO)
+            VALUES (:IDPROCESO_ARG, :IDESTADO_ARG, :NUMEROACTO_ARG, :RADICADO_ARG, :FECHAINICIO_ARG, :FECHAFIN_ARG, :OBSERVACION_ARG, CURRENT_TIMESTAMP);
+        '''
+        self.db.engine.execute(text(sql), IDPROCESO_ARG=etapa["idproceso"], IDESTADO_ARG=etapa["etapa"], NUMEROACTO_ARG=etapa["numeroacto"], RADICADO_ARG=etapa["radicado"], FECHAINICIO_ARG=etapa["fechaInicio"], FECHAFIN_ARG=etapa["fechaFin"], OBSERVACION_ARG=etapa["observacion"])
+
+        # self.update_fase_proceso(etapa["idproceso"])
 
     def etapa_update_bd(self, etapa):
         print('-------------------------------------')
         print('* ETAPA A ACTUALIZAR -> ', etapa)
         print('-------------------------------------')
 
-        if etapa["fechaFinEtapa"] == 'Invalid date':
-            etapa["fechaFinEtapa"] = None
+        if etapa["fechaFin"] == 'No registra':
+            etapa["fechaFin"] = None
 
         sql = '''
             UPDATE 
                 ETAPA_PROCESO
 	        SET 
-                FECHAINICIOETAPA= :FECHAINICIO_ARG,
-                FECHAFINETAPA = :FECHAFIN_ARG,
-                RADICADOETAPA = :RADICADO_ARG,
-                OBSERVACIONETAPA = :OBSERVACION_ARG
+                RADICADO = :RADICADO_ARG,
+                FECHAINICIO = :FECHAINICIO_ARG,
+                FECHAFIN = :FECHAFIN_ARG,
+                OBSERVACION = :OBSERVACION_ARG
 	        WHERE 
-                PROCESO = :IDPROCESO_ARG
-                AND ETAPA = :IDETAPA_ARG;
+                IDPROCESO = :IDPROCESO_ARG
+                AND IDESTADO = :IDESTADO_ARG;
         '''
-        self.db.engine.execute(text(sql), IDETAPA_ARG=etapa["idetapa"], FECHAINICIO_ARG=etapa["fechaInicioEtapa"], FECHAFIN_ARG=etapa["fechaFinEtapa"], IDPROCESO_ARG=etapa["idproceso"], RADICADO_ARG=etapa["radicadoEtapa"], OBSERVACION_ARG=etapa["observacionEtapa"])
+        self.db.engine.execute(text(sql), IDPROCESO_ARG=etapa["idproceso"], IDESTADO_ARG=etapa["etapa"], FECHAINICIO_ARG=etapa["fechaInicio"], FECHAFIN_ARG=etapa["fechaFin"], RADICADO_ARG=etapa["radicado"], OBSERVACION_ARG=etapa["observacion"])
 
-        self.update_fase_proceso(etapa["idproceso"])
+        # self.update_fase_proceso(etapa["idproceso"])
             
                         
     def etapa_delete_bd(self, etapa):
@@ -80,12 +88,12 @@ class EtapaRepository:
             DELETE FROM
                 ETAPA_PROCESO
             WHERE
-                PROCESO = :IDPROCESO_ARG
-                AND ETAPA = :IDETAPA_ARG;
+                IDPROCESO = :IDPROCESO_ARG
+                AND IDESTADO = :IDESTADO_ARG;
         '''
-        self.db.engine.execute(text(sql), IDETAPA_ARG=etapa["idetapa"], IDPROCESO_ARG=etapa["idproceso"])
+        self.db.engine.execute(text(sql), IDPROCESO_ARG=etapa["idproceso"], IDESTADO_ARG=etapa["idetapa"])
 
-        self.update_fase_proceso(etapa["idproceso"])
+        # self.update_fase_proceso(etapa["idproceso"])
 
     def update_fase_proceso(self, idproceso):
         sql = '''

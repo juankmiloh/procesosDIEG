@@ -29,26 +29,20 @@
       </sticky>
     </div>
 
-    <!-- Cuadro de dialogo para editar o asignar etapa -->
-    <!-- <AgregarEtapa
+    <!-- Cuadro de dialogo para agregar etapa -->
+    <ModalAgregar
       :modaltitulo="tituloModalItem"
       :modalvisible="dialogVisibleItem"
-    /> -->
-
-    <el-dialog
-      v-el-drag-dialog
-      :visible.sync="msgAgregarEtapaVisible"
-      :before-close="closeModalAgregar"
-      width="34em"
-      custom-class="dialog-agregar-etapa"
-      :destroy-on-close="true"
-      append-to-body
-    >
-      <AgregarEtapa />
-    </el-dialog>
+      :modalform="formItem"
+      :domcomponents="domItem"
+      :rulesform="rulesFormItem"
+      :datamodal="dataFormItem"
+      :action="modalAction"
+      @confirmar="handleConfirmar"
+    />
 
     <!-- Listado de etapas -->
-    <ListaEtapas :id="id" :editar="editar" />
+    <ListaEtapas :idproceso="idproceso" :editar="editar" :recargarlista="recargarlista" />
 
   </div>
 </template>
@@ -57,20 +51,21 @@
 import { mapGetters } from 'vuex'
 import Sticky from '@/components/Sticky' // 粘性header组件
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { CONSTANTS } from '@/constants/constants'
+import { CONSTANTS } from './constants/constants'
 import ListaEtapas from './ListaEtapas'
-import AgregarEtapa from './AgregarEtapa'
+import ModalAgregar from '@/components/ModalAgregar'
+import { getListEtapas, getEtapaProceso, createEtapa } from '@/api/procesosDIEG/etapas'
 
 export default {
   name: 'Etapas',
-  components: { Sticky, ListaEtapas, AgregarEtapa },
+  components: { Sticky, ListaEtapas, ModalAgregar },
   directives: { elDragDialog },
   props: {
     editar: {
       type: Boolean,
       default: false
     },
-    id: {
+    idproceso: {
       type: String,
       default: ''
     },
@@ -81,17 +76,24 @@ export default {
   },
   data() {
     return {
-      formAgregar: CONSTANTS.formAgregarEtapa,
-      textEditarEtapa: 'Agregar',
+      formItem: CONSTANTS.formItem,
+      domItem: CONSTANTS.domItem,
+      rulesFormItem: CONSTANTS.rulesFormItem,
+      dataFormItem: CONSTANTS.dataFormItem,
       /* Si es o no visible el cuadro de dialogo de agregar o editar etapa */
-      msgAgregarEtapaVisible: false,
-      x: ''
+      dialogVisibleItem: false,
+      tituloModalItem: '',
+      modalAction: '',
+      x: '',
+      recargarlista: false,
+      datosEtapaProceso: []
     }
   },
   computed: {
     ...mapGetters(['name', 'roles', 'idusuario', 'dependencia'])
   },
   async mounted() {
+    this.formItem = {} // Permite inicializar el modelo que utiliza el modal de agregar
     this.x = window.matchMedia('(max-width: 800px)')
   },
   created() {
@@ -99,6 +101,7 @@ export default {
   },
   methods: {
     async initView() {
+      this.cargarEtapas()
     },
     btnClose() {
       if (this.x.matches) {
@@ -107,26 +110,77 @@ export default {
         return 'Cerrar'
       }
     },
+    cargarEtapas() {
+      this.getEtapasProceso()
+      this.getEtapas()
+    },
+    async getEtapasProceso() {
+      await getEtapaProceso(this.idproceso).then((response) => {
+        // console.log('ETAPAs DEL PROCESO -> ', response)
+        this.datosEtapaProceso = response
+      })
+    },
+    async getEtapas() {
+      await getListEtapas().then((response) => {
+        // console.log('Etapas --> ', response)
+        const datosEtapa = response
+        for (const iterator of this.datosEtapaProceso) {
+          datosEtapa.filter((etapa) => {
+            if (etapa.id === iterator.idetapa) { // Verifica si la etapa ya esta en el proceso y se elimina del arreglo de etapas que se muestra en el select de etapas
+              const posEtapa = datosEtapa.indexOf(etapa) // Obtiene la posicion de la etapa en el arreglo
+              datosEtapa.splice(posEtapa, 1) // Elimina la posicion de la etapa del arreglo
+            }
+          })
+        }
+        this.dataFormItem.etapa = datosEtapa
+      })
+    },
     closeModalEtapa() {
       this.$emit('close-modal-etapas')
     },
     clickAgregarEtapa() {
-      this.editarEtapa = false
-      this.textEditarEtapa = 'Agregar'
-      this.formAgregar = {}
-      if (this.$refs['formAgregar']) {
-        this.$refs['formAgregar'].resetFields()
-      }
-      this.msgAgregarEtapaVisible = true
+      this.domItem[0]['disabled'] = false // Se modifican las opciones del select
+      this.rulesFormItem['etapa'][0]['required'] = true // Se modifican las reglas del select
+      this.tituloModalItem = 'Agregar etapa'
+      this.modalAction = 'Agregar'
+      this.dialogVisibleItem = true
+      this.cargarEtapas()
     },
-    closeModalAgregar() {
-      this.formAgregar = CONSTANTS.formAgregarEtapa
-      if (this.$refs['formAgregar']) {
-        this.$refs['formAgregar'].resetFields()
+    async handleConfirmar(modal) { // Funcion que captura los eventos que devuelve el modal de agregar etapa
+      // console.log(modal)
+      if (modal.response) {
+        // Se realiza la acción de crear etapa
+        modal.data.idproceso = parseInt(this.idproceso)
+        await this.getNumeroacto(this.idproceso, modal.data.etapa).then((res) => { modal.data.numeroacto = res })
+        await createEtapa(modal.data).then(async(response) => {
+          // console.log('RESPONSE AGREGAR -> ', response)
+          this.$notify({
+            title: 'Buen trabajo parcero!',
+            message: 'Etapa agregada con éxito',
+            type: 'success',
+            duration: 2000
+          })
+          this.recargarlista = true // Permite actualizar la vista de la lista de etapas (importante)
+        })
       }
-      this.msgAgregarEtapaVisible = false
-      this.loadingEtapa = false
-      // console.log('closeModalAgregar -> ', this.$refs['formAgregar'])
+      this.dialogVisibleItem = false
+      this.formItem = {} // Se reinicia el modelo del modal (importante)
+      this.dataFormItem.etapa = [] // Permite reiniciar el arreglo de etapas del modal (Debido a que los datos quedan cacheados)
+      this.recargarlista = false // Permite actualizar la vista de la lista de etapas, reinicia la variable (observable de lista etapas)
+    },
+    async getNumeroacto(idproceso, idetapa) {
+      let numeroacto = 0
+      await getEtapaProceso(idproceso, idetapa).then((response) => {
+        // console.log('ETAPA_PROCESO -> ', response)
+        if (response.length) {
+          // console.log('tiene actos')
+          numeroacto = response[0]['actos'].length + 1
+        } else {
+          // console.log('No tiene actos')
+          numeroacto = 1
+        }
+      })
+      return numeroacto
     }
   }
 }

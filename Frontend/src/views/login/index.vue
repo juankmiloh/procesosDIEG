@@ -73,7 +73,7 @@
 
     <div class="footer-login">
       <span class="textoFooter">
-        SDEGC | CIAD - SUPERSERVICIOS ©&nbsp;2020
+        ::. . SUPERSERVICIOS - DIEG ©&nbsp;2021 . .::
       </span>
     </div>
   </el-container>

@@ -226,34 +226,6 @@ export const CONSTANTS = {
             trigger: 'change'
         }]
     },
-    formAgregarEtapa: {
-        etapa: '',
-        radicadoEtapa: '',
-        fechaInicioEtapa: null,
-        fechaFinEtapa: null,
-        observacionEtapa: ''
-    },
-    rulesFormEtapa: {
-        etapa: [{
-            required: true,
-            message: 'Seleccione una etapa',
-            trigger: 'change'
-        }],
-        radicadoEtapa: [
-            { required: true, message: 'Ingrese un radicado', trigger: 'blur' },
-            { min: 14, max: 14, message: 'La longitud del radicado debe ser de 14 caracteres', trigger: 'blur' }
-        ],
-        fechaInicioEtapa: [{
-            required: true,
-            message: 'Ingrese una fecha válida',
-            trigger: 'change'
-        }],
-        observacionEtapa: [{
-            required: false,
-            message: 'Ingrese una observación',
-            trigger: 'blur'
-        }]
-    },
     formUser: {
         nombre: '',
         apellido: '',
