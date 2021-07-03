@@ -94,6 +94,20 @@ class EtapaRepository:
         self.db.engine.execute(text(sql), IDPROCESO_ARG=etapa["idproceso"], IDESTADO_ARG=etapa["idetapa"])
 
         # self.update_fase_proceso(etapa["idproceso"])
+    
+    def acto_delete_bd(self, acto):
+        print('-------------------------------------')
+        print('* ACTO A ELIMINAR -> ', acto)
+        print('-------------------------------------')
+        sql = '''
+            DELETE FROM
+                ETAPA_PROCESO
+            WHERE
+                IDPROCESO = :IDPROCESO_ARG
+                AND IDESTADO = :IDESTADO_ARG
+                AND NUMEROACTO = :ACTO_ARG;
+        '''
+        self.db.engine.execute(text(sql), IDPROCESO_ARG=acto["idproceso"], IDESTADO_ARG=acto["etapa"], ACTO_ARG=acto["numeroacto"])
 
     def update_fase_proceso(self, idproceso):
         sql = '''

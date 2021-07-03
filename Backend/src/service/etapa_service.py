@@ -86,3 +86,7 @@ class EtapaService:
     def etapa_delete(self, etapa_repository: EtapaRepository, etapa):
         etapa_repository.etapa_delete_bd(etapa)
         return add_wrapper(['Etapa borrada con éxito!'])
+    
+    def acto_delete(self, etapa_repository: EtapaRepository, acto):
+        etapa_repository.acto_delete_bd(acto)
+        return add_wrapper(['Acto borrada con éxito!'])

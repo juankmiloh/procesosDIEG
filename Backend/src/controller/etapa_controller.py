@@ -38,3 +38,10 @@ def deleteEtapa(etapa_service: EtapaService, etapa_repository: EtapaRepository):
     # Datos etapa
     dataEtapa = request.json
     return json.dumps(etapa_service.etapa_delete(etapa_repository, dataEtapa))
+
+# Eliminar un acto
+@controller.route(API_ROOT_PATH + 'actos', methods=['DELETE'])
+def deleteActo(etapa_service: EtapaService, etapa_repository: EtapaRepository):
+    # Datos acto
+    dataActo = request.json
+    return json.dumps(etapa_service.acto_delete(etapa_repository, dataActo))

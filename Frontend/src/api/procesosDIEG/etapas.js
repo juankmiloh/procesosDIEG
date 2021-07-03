@@ -40,3 +40,11 @@ export function deleteEtapa(etapa) {
         data: etapa
     });
 }
+
+export function deleteActo(acto) {
+    return request({
+        url: '/actos',
+        method: 'delete',
+        data: acto
+    });
+}

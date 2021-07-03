@@ -146,6 +146,16 @@
       @confirmar="submitDelete"
     />
 
+    <!-- Modal Drawer para listar los actos de un proceso -->
+
+    <ListaActos
+      :idproceso="idproceso"
+      :editar="editar"
+      :drawervisible="drawVisible"
+      :datosactos="dataActos"
+      @confirmar="closeDrawer"
+    />
+
   </div>
 </template>
 
@@ -156,11 +166,12 @@ import { getEtapaProceso, deleteEtapa, getListEtapas, updateEtapa, createEtapa }
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import ModalAgregar from '@/components/ModalAgregar'
 import ModalDelete from '@/components/ModalConfirm'
+import ListaActos from './ListaActos'
 
 export default {
   name: 'EtapasProceso',
   directives: { elDragDialog },
-  components: { ModalDelete, ModalAgregar },
+  components: { ModalDelete, ModalAgregar, ListaActos },
   props: {
     editar: {
       type: Boolean,
@@ -189,7 +200,9 @@ export default {
       /* Si es o no visible el cuadro de dialogo de agregar o editar etapa */
       dialogVisibleItem: false,
       tituloModalItem: '',
-      modalAction: ''
+      modalAction: '',
+      drawVisible: false,
+      dataActos: {}
     }
   },
   computed: {
@@ -262,7 +275,7 @@ export default {
         await createEtapa(modal.data).then(async(response) => {
           // console.log('RESPONSE AGREGAR -> ', response)
           this.$notify({
-            title: 'Buen trabajo parcero!',
+            title: 'Buen trabajo!',
             message: 'Etapa agregada con éxito',
             type: 'success',
             duration: 2000
@@ -277,10 +290,13 @@ export default {
     async getNumeroacto(idproceso, idetapa) {
       let numeroacto = 0
       await getEtapaProceso(idproceso, idetapa).then((response) => {
-        // console.log('ETAPA_PROCESO -> ', response)
+        console.log('ETAPA_PROCESO -> ', response)
         if (response.length) {
           // console.log('tiene actos')
-          numeroacto = response[0]['actos'].length + 1
+          const cantidadactos = response[0]['actos'].length
+          const consecutivoactos = response[0]['actos'][cantidadactos - 1]['numeroacto']
+          numeroacto = consecutivoactos + 1
+          console.log('numeroacto -> ', numeroacto)
         } else {
           // console.log('No tiene actos')
           numeroacto = 1
@@ -311,18 +327,25 @@ export default {
       this.deleteDialogVisible = false
     },
     handleAgregarActo(acto) {
-      // console.log('Agregar acto --> ', acto)
+      console.log('Agregar acto --> ', acto)
       this.domItem[0]['disabled'] = true // Se modifican las opciones del select (con el fin de no modificar el componente de agregar)
       this.rulesFormItem['etapa'][0]['required'] = false // Se modifican las reglas del select
       this.getEtapas() // Se actualiza la lista de etapas
       this.formItem.etapa = acto['actos'][0]['etapa']
       const cantidadactos = acto['actos'].length
-      this.tituloModalItem = `Agregar acto # ${cantidadactos + 1}`
+      const consecutivoactos = acto['actos'][cantidadactos - 1]['numeroacto']
+      this.tituloModalItem = `Agregar acto # ${consecutivoactos + 1}`
       this.modalAction = 'Agregar'
       this.dialogVisibleItem = true
     },
     handleDetalleEtapa(etapa) {
       console.log('Detalle etapa --> ', etapa)
+      this.drawVisible = true
+      this.dataActos = etapa
+    },
+    closeDrawer() {
+      this.drawVisible = false
+      this.getEtapasProceso(this.idproceso)
     }
   }
 }
