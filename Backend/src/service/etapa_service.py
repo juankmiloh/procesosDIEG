@@ -22,12 +22,8 @@ class EtapaService:
 
     def get_etapa_proceso(self, etapa_repository: EtapaRepository, idproceso, idEtapa):
         etapas = []
-        etapaAnterior = 0
-        etapaActual = 0
-        index = -1
         data = etapa_repository.get_etapa_proceso_bd(idproceso, idEtapa)
         for result in data:
-            etapaActual = result[0]
             fechafin = result[4]
             if fechafin is None: 
                 fechafin = None # Se reasigna el valor porque no toma el 'None (null)' desde el front
@@ -39,53 +35,56 @@ class EtapaService:
             else:
                 fechainicio = str(result[3])
             
-            if etapaActual != etapaAnterior:
-                etapas.append(
-                    {
-                        'idetapa': result[0],
-                        'nombre': result[6],
-                        'obligatoriedad': result[7],
-                        'fecha_final': result[8],
-                        'varios_actos': result[9],
-                        'observacion': result[10],
-                        'siguiente_estado': result[11],
-                        'actos': [{
-                            'etapa': result[0],
-                            'numeroacto': result[1],
-                            'radicado': result[2],
-                            'fechaInicio': fechainicio,
-                            'fechaFin': fechafin,
-                            'observacion': result[5]
-                        }]
-                    }
-                )
-                etapaAnterior = etapaActual
-                index = index + 1
-            else:
-                etapas[index]['actos'].append(
-                    {
-                        'etapa': result[0],
-                        'numeroacto': result[1],
-                        'radicado': result[2],
-                        'fechaInicio': str(result[3]),
-                        'fechaFin': fechafin,
-                        'observacion': result[5]
-                    }
-                )
+            etapas.append(
+                {
+                    'etapa': result[0],
+                    'numeroacto': result[1],
+                    'radicado': result[2],
+                    'fechaInicio': fechainicio,
+                    'fechaFin': fechafin,
+                    'observacion': result[5],
+                    'nombre': result[6],
+                    'nombre_acto': 'Acto # ' + str(result[1]),
+                    'obligatoriedad': result[7],
+                    'fecha_final': result[8],
+                    'varios_actos': result[9],
+                    'campo_observacion': result[10],
+                    'siguiente_estado': result[11]
+                }
+            )
 
         return etapas
 
     def etapa_insert(self, etapa_repository: EtapaRepository, etapa):
-        etapa_repository.etapa_insert_bd(etapa)
+        data = etapa_repository.etapa_insert_bd(etapa)
+        self.updateNumeroActos(etapa_repository, data, etapa)
         return add_wrapper(['Etapa registrada con éxito!'])
 
     def etapa_update(self, etapa_repository: EtapaRepository, dataEtapa):
-        etapa_repository.etapa_update_bd(dataEtapa)
+        data = etapa_repository.etapa_update_bd(dataEtapa)
+        self.updateNumeroActos(etapa_repository, data, dataEtapa)
         return add_wrapper(['Etapa actualizada con éxito!'])
 
     def etapa_delete(self, etapa_repository: EtapaRepository, etapa):
-        etapa_repository.etapa_delete_bd(etapa)
+        data = etapa_repository.etapa_delete_bd(etapa)
+        self.updateNumeroActos(etapa_repository, data, etapa)
         return add_wrapper(['Etapa borrada con éxito!'])
+
+    # Funcion que actualiza el numero de acto de acuerdo al orden de la fecha de inicio (es decir el acto con menor fecha de inicio sera el # 1)
+    def updateNumeroActos(self, etapa_repository: EtapaRepository, data, etapa):
+        contador = 1
+        for result in data:
+            idproceso = result[0]
+            idetapa = result[1]
+            numeroacto = result[2]
+            fecharegistro = result[7]
+            if contador != numeroacto:
+                print('CONTADOR --> ', contador)
+                print('REGISTRO --> ', numeroacto)
+                etapa_repository.updateNumeroActoEtapa(idproceso, idetapa, numeroacto, fecharegistro, contador)
+                contador += 1
+            else:
+                contador += 1
     
     def acto_delete(self, etapa_repository: EtapaRepository, acto):
         etapa_repository.acto_delete_bd(acto)

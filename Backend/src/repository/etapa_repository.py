@@ -32,7 +32,7 @@ class EtapaRepository:
             WHERE IDPROCESO = :IDPROCESO_ARG
             AND (ETAPA.IDESTADO = :IDESTADO_ARG OR 0 = :IDESTADO_ARG)
             AND ETAPA.IDESTADO = ESTADO.IDESTADO
-            ORDER BY 1, 2;
+            ORDER BY FECHAINICIO ASC, FECHAREGISTRO;
         '''
         return self.db.engine.execute(text(sql), IDPROCESO_ARG=idProceso, IDESTADO_ARG=idEtapa).fetchall()
 
@@ -55,6 +55,8 @@ class EtapaRepository:
 
         # self.update_fase_proceso(etapa["idproceso"])
 
+        return self.getNumerosActos(etapa)  
+
     def etapa_update_bd(self, etapa):
         print('-------------------------------------')
         print('* ETAPA A ACTUALIZAR -> ', etapa)
@@ -73,12 +75,14 @@ class EtapaRepository:
                 OBSERVACION = :OBSERVACION_ARG
 	        WHERE 
                 IDPROCESO = :IDPROCESO_ARG
-                AND IDESTADO = :IDESTADO_ARG;
+                AND IDESTADO = :IDESTADO_ARG
+                AND NUMEROACTO = :ACTO_ARG;
         '''
-        self.db.engine.execute(text(sql), IDPROCESO_ARG=etapa["idproceso"], IDESTADO_ARG=etapa["etapa"], FECHAINICIO_ARG=etapa["fechaInicio"], FECHAFIN_ARG=etapa["fechaFin"], RADICADO_ARG=etapa["radicado"], OBSERVACION_ARG=etapa["observacion"])
+        self.db.engine.execute(text(sql), IDPROCESO_ARG=etapa["idproceso"], IDESTADO_ARG=etapa["etapa"], ACTO_ARG=etapa["numeroacto"], FECHAINICIO_ARG=etapa["fechaInicio"], FECHAFIN_ARG=etapa["fechaFin"], RADICADO_ARG=etapa["radicado"], OBSERVACION_ARG=etapa["observacion"])
 
         # self.update_fase_proceso(etapa["idproceso"])
-            
+
+        return self.getNumerosActos(etapa)            
                         
     def etapa_delete_bd(self, etapa):
         print('-------------------------------------')
@@ -89,11 +93,35 @@ class EtapaRepository:
                 ETAPA_PROCESO
             WHERE
                 IDPROCESO = :IDPROCESO_ARG
-                AND IDESTADO = :IDESTADO_ARG;
+                AND IDESTADO = :IDESTADO_ARG
+                AND NUMEROACTO = :ACTO_ARG;
         '''
-        self.db.engine.execute(text(sql), IDPROCESO_ARG=etapa["idproceso"], IDESTADO_ARG=etapa["idetapa"])
+        self.db.engine.execute(text(sql), IDPROCESO_ARG=etapa["idproceso"], IDESTADO_ARG=etapa["etapa"], ACTO_ARG=etapa["numeroacto"])
 
         # self.update_fase_proceso(etapa["idproceso"])
+
+        return self.getNumerosActos(etapa) # devuelve el listado de actos de un proceso ordenados por fecha de inicio
+
+    # Funcion que devuelve el listado de actos de un proceso ordenados por fecha de inicio
+    def getNumerosActos(self, etapa):
+        sql = '''
+            SELECT * FROM ETAPA_PROCESO WHERE IDPROCESO = :IDPROCESO_ARG AND IDESTADO = :IDESTADO_ARG ORDER BY FECHAINICIO;
+        '''
+        return self.db.engine.execute(text(sql), IDPROCESO_ARG=etapa["idproceso"], IDESTADO_ARG=etapa["etapa"]).fetchall()
+
+    def updateNumeroActoEtapa(self, idproceso, etapa, numeroactoactual, fecharegistro, nuevonumeroacto):
+        sql = '''
+            UPDATE 
+                ETAPA_PROCESO
+	        SET 
+                NUMEROACTO = :ACTONUEVO_ARG
+	        WHERE 
+                IDPROCESO = :IDPROCESO_ARG
+                AND IDESTADO = :IDESTADO_ARG
+                AND NUMEROACTO = :ACTOACTUAL_ARG
+                AND FECHAREGISTRO = :FECHAREGISTRO_ARG;
+        '''
+        self.db.engine.execute(text(sql), IDPROCESO_ARG=idproceso, IDESTADO_ARG=etapa, ACTOACTUAL_ARG=numeroactoactual, FECHAREGISTRO_ARG=fecharegistro, ACTONUEVO_ARG=nuevonumeroacto)
     
     def acto_delete_bd(self, acto):
         print('-------------------------------------')

@@ -116,19 +116,21 @@ export default {
     },
     async getEtapasProceso() {
       await getEtapaProceso(this.idproceso).then((response) => {
-        // console.log('ETAPAs DEL PROCESO -> ', response)
+        console.log('ETAPAs DEL PROCESO -> ', response)
         this.datosEtapaProceso = response
       })
     },
     async getEtapas() {
       await getListEtapas().then((response) => {
-        // console.log('Etapas --> ', response)
+        console.log('Etapas --> ', response)
         const datosEtapa = response
         for (const iterator of this.datosEtapaProceso) {
           datosEtapa.filter((etapa) => {
-            if (etapa.id === iterator.idetapa) { // Verifica si la etapa ya esta en el proceso y se elimina del arreglo de etapas que se muestra en el select de etapas
-              const posEtapa = datosEtapa.indexOf(etapa) // Obtiene la posicion de la etapa en el arreglo
-              datosEtapa.splice(posEtapa, 1) // Elimina la posicion de la etapa del arreglo
+            if (etapa.id === iterator.etapa) { // Verifica si la etapa ya esta en el proceso
+              if (iterator.varios_actos === 'NO') { // Verifica que no tenga varios actos y se elimina del arreglo de etapas que se muestra en el select de etapas
+                const posEtapa = datosEtapa.indexOf(etapa) // Obtiene la posicion de la etapa en el arreglo
+                datosEtapa.splice(posEtapa, 1) // Elimina la posicion de la etapa del arreglo
+              }
             }
           })
         }
@@ -171,15 +173,16 @@ export default {
     async getNumeroacto(idproceso, idetapa) {
       let numeroacto = 0
       await getEtapaProceso(idproceso, idetapa).then((response) => {
-        // console.log('ETAPA_PROCESO -> ', response)
+        console.log('ETAPA_PROCESO -> ', response)
         if (response.length) {
           // console.log('tiene actos')
-          numeroacto = response[0]['actos'].length + 1
+          numeroacto = response.length + 1
         } else {
           // console.log('No tiene actos')
           numeroacto = 1
         }
       })
+      console.log('numeroacto --> ', numeroacto)
       return numeroacto
     }
   }

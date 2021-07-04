@@ -1,22 +1,23 @@
 <template>
   <div v-loading="loadingEtapas" class="main-article" style="background: #f7fbff; padding-left: 50px;">
     <el-row :gutter="30" class="header-agregar-etapa">
-      <el-col v-for="etapa in etapas" :key="etapa.idtetapa" :sm="24" :md="8" style="border: 0px solid red; padding: 15px;">
+      <el-col v-for="(etapa, index) in etapas" :key="etapa.idtetapa" :sm="24" :md="8" style="border: 0px solid red; padding: 15px;">
         <el-card class="card-etapa" style="border: 0px solid #DCDFE6;">
           <div slot="header" class="clearfix" style="border: 0px solid red; padding: 0;">
             <div style="border-radius: 3px;padding-top: 2%;padding-right: 4%;height: 8vh;background: linear-gradient(38deg, rgba(255,255,255,1) 84%, rgba(33,133,208,1) 85%, rgba(33,133,208,1) 86%);">
               <el-row>
                 <el-col :span="24" style="border: 0px solid red; text-align: right; color: white;">
-                  <b>{{ etapa.idetapa }}</b>
+                  <b>{{ index + 1 }}</b>
                 </el-col>
                 <el-col :span="24" style="border: 0px solid red; text-align: center; color: #2184d0;">
-                  <b>{{ etapa.nombre }}</b>
+                  <b>{{ etapa.nombre }}</b><br>
+                  <b v-if="etapa.varios_actos === 'SI'">[{{ etapa.nombre_acto }}]</b>
                 </el-col>
               </el-row>
             </div>
           </div>
           <!-- Contenido de la card cuando la etapa NO tiene varios actos -->
-          <el-row v-if="etapa.varios_actos === 'NO'" class="div-acto">
+          <el-row class="div-acto">
             <el-col :span="24" style="border: 0px solid; padding: 5% 10%;">
               <div class="text item" style="padding-top: 3%;">
                 <el-row>
@@ -24,7 +25,7 @@
                     <span style="color: #606266;"><b>Radicado</b></span>
                   </el-col>
                   <el-col :span="18" :xs="17">
-                    <span style="color: #606266;">{{ etapa['actos'][0].radicado }}</span>
+                    <span style="color: #606266;">{{ etapa.radicado }}</span>
                   </el-col>
                 </el-row>
                 <el-divider />
@@ -35,7 +36,7 @@
                     <span style="color: #606266;"><b>Inicio</b></span>
                   </el-col>
                   <el-col :span="10" :xs="17">
-                    <span v-if="etapa['actos'][0].fechaInicio !== null" style="color: #606266;"><i class="el-icon-time" /> {{ etapa['actos'][0].fechaInicio | formatDate }}</span>
+                    <span v-if="etapa.fechaInicio !== null" style="color: #606266;"><i class="el-icon-time" /> {{ etapa.fechaInicio | formatDate }}</span>
                     <span v-else style="color: #606266;">No registra</span>
                   </el-col>
 
@@ -43,16 +44,16 @@
                     <span style="color: #606266;"><b>Final</b></span>
                   </el-col>
                   <el-col v-if="etapa.fecha_final === 'SI'" :span="7" :xs="17">
-                    <span v-if="etapa['actos'][0].fechaFin !== null" style="color: #606266;"><i class="el-icon-time" /> {{ etapa['actos'][0].fechaFin | formatDate }}</span>
+                    <span v-if="etapa.fechaFin !== null" style="color: #606266;"><i class="el-icon-time" /> {{ etapa.fechaFin | formatDate }}</span>
                     <span v-else style="color: #606266;">No registra</span>
                   </el-col>
                 </el-row>
               </div>
               <el-divider />
-              <div v-if="etapa.observacion === 'SI'" class="text item">
+              <div v-if="etapa.campo_observacion === 'SI'" class="text item">
                 <span style="color: #606266;"><b>Observación</b></span><br><br>
                 <el-input
-                  v-model="etapa['actos'][0].observacion"
+                  v-model="etapa.observacion"
                   type="textarea"
                   class="control-modal"
                   rows="8"
@@ -71,47 +72,7 @@
                 @click="handleEditarEtapa(etapa)"
               ><b>Editar</b></el-button>
               <el-button
-                v-show="etapa.idetapa !== 1 || !editar"
-                size="mini"
-                type="danger"
-                plain
-                icon="el-icon-delete"
-                @click="handleBorrarEtapa(etapa)"
-              />
-            </el-col>
-          </el-row>
-          <!-- Contenido de la card cuando la etapa tiene varios actos -->
-          <el-row v-if="etapa.varios_actos === 'SI'" class="div-acto">
-            <el-col :span="24" style="height: 100%;">
-              <el-card shadow="never" style="border: 0px solid #F2F6FC; height: 90%; overflow-y: scroll; padding: 5% 10%; 10%; 10%;">
-                <div class="card-actuaciones">
-                  <el-card v-for="acto in etapa['actos']" :key="acto.numeroacto" shadow="never" style="height: 5vh; margin-bottom: 4%;">
-                    <span style="color: #606266; font-size: small;"><i class="el-icon-caret-right" /><b>Acto # {{ acto.numeroacto }}:</b> Radicado {{ acto.radicado }}</span>
-                  </el-card>
-                </div>
-              </el-card>
-            </el-col>
-            <el-col :span="24" class="bottom">
-              <el-button
-                :disabled="!editar"
-                style="border: 1px solid #67C23A"
-                size="mini"
-                type="success"
-                plain
-                icon="el-icon-plus"
-                @click="handleAgregarActo(etapa)"
-              />
-              <el-button
-                :disabled="!editar"
-                style="border: 1px solid #67C23A"
-                size="mini"
-                type="success"
-                plain
-                icon="el-icon-zoom-in"
-                @click="handleDetalleEtapa(etapa)"
-              ><b>Detalle</b></el-button>
-              <el-button
-                v-show="etapa.idetapa !== 1 || !editar"
+                v-show="etapa.etapa !== 1 || !editar"
                 size="mini"
                 type="danger"
                 plain
@@ -193,6 +154,7 @@ export default {
       mensajeModalDelete: '',
       deleteDialogVisible: false,
       delEtapa: '',
+      delNumeroActo: '',
       formItem: CONSTANTS.formItem,
       domItem: CONSTANTS.domItem,
       rulesFormItem: CONSTANTS.rulesFormItem,
@@ -249,7 +211,7 @@ export default {
       this.domItem[0]['disabled'] = true // Se modifican las opciones del select
       this.rulesFormItem['etapa'][0]['required'] = false // Se modifican las reglas del select
       this.getEtapas() // Se actualiza la lista de etapas
-      this.formItem = etapa['actos'][0]
+      this.formItem = etapa
       this.tituloModalItem = 'Editar etapa'
       this.modalAction = 'Editar'
       this.dialogVisibleItem = true
@@ -293,10 +255,7 @@ export default {
         console.log('ETAPA_PROCESO -> ', response)
         if (response.length) {
           // console.log('tiene actos')
-          const cantidadactos = response[0]['actos'].length
-          const consecutivoactos = response[0]['actos'][cantidadactos - 1]['numeroacto']
-          numeroacto = consecutivoactos + 1
-          console.log('numeroacto -> ', numeroacto)
+          numeroacto = response.length + 1
         } else {
           // console.log('No tiene actos')
           numeroacto = 1
@@ -306,14 +265,15 @@ export default {
     },
     async handleBorrarEtapa(etapa) {
       // console.log('Borrar etapa --> ', etapa)
-      this.delEtapa = etapa.idetapa
+      this.delEtapa = etapa.etapa
+      this.delNumeroActo = etapa.numeroacto
       this.mensajeModalDelete = `¿Realmente desea eliminar la etapa <b>${etapa.nombre}</b>?`
       this.deleteDialogVisible = true
     },
     async submitDelete(response) {
       // console.log(response)
       if (response) {
-        const model = { idproceso: this.idproceso, idetapa: this.delEtapa }
+        const model = { idproceso: this.idproceso, etapa: this.delEtapa, numeroacto: this.delNumeroActo }
         await deleteEtapa(model).then(async(response) => {
           this.$notify({
             title: 'Información',

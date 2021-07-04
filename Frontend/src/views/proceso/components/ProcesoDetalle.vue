@@ -511,7 +511,8 @@ export default {
     showModalEtapas() {
       this.showButtons = false
     },
-    closeModalEtapa() {
+    async closeModalEtapa() {
+      await this.fetchData(this.id)
       this.msgEtapasVisible = false
       this.showButtons = true
     },
