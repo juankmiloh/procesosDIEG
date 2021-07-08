@@ -231,7 +231,7 @@ export const asyncRoutes = [{
         component: Layout,
         alwaysShow: true, // will always show the root menu
         name: 'Expedientes',
-        redirect: '/procesos',
+        redirect: '/procesos/expedientes',
         meta: {
             title: 'Expedientes',
             icon: 'form',
