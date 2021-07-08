@@ -17,6 +17,14 @@ export function getCausalProceso(id) {
     });
 }
 
+export function getCantidadCausalProceso(id) {
+    return request({
+        url: '/cantidad_causal_proceso',
+        method: 'get',
+        params: { 'idproceso': id }
+    });
+}
+
 export function createCausal(data) {
     return request({
         url: '/causal',

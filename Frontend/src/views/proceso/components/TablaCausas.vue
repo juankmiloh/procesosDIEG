@@ -28,8 +28,15 @@
             </div>
             <transition name="el-fade-in-linear">
               <div v-show="datosCausal.length" class="card-causa">
-                <el-card v-for="item in datosCausal" :key="item.idcausal" shadow="never" style="height: 5vh; margin-bottom: 2%;">
-                  <span style="color: #606266; font-size: small;">■ {{ item.nombrecausal }}</span>
+                <el-card v-for="item in cantidadCausasProceso" :key="item.idcausal" shadow="never" style="height: 5vh; margin-bottom: 2%;">
+                  <el-row>
+                    <el-col :span="22">
+                      <span style="color: #606266; font-size: small;">■ {{ item.nombrecausal }}</span>
+                    </el-col>
+                    <el-col :span="2">
+                      <span style="color: #d9534f; font-size: medium; ">{{ item.cantidad }}</span>
+                    </el-col>
+                  </el-row>
                 </el-card>
               </div>
             </transition>
@@ -136,7 +143,7 @@
             <transition name="el-fade-in-linear">
               <el-col v-show="countCausal > 0" v-loading="loading" :span="24">
                 <el-card class="box-card" style="overflow-y: scroll; height: 70vh;">
-                  <el-card v-for="item in datosCausal" :key="item.idcausal" style="width: 100%; margin-bottom: 3%;">
+                  <el-card v-for="item in datosCausal" :key="item.fecha_registro" style="width: 100%; margin-bottom: 3%;">
                     <div slot="header" class="clearfix">
                       <el-row>
                         <el-col :span="18">
@@ -210,7 +217,7 @@ import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import Sticky from '@/components/Sticky' // 粘性header组件
 import ModalDelete from '@/components/ModalConfirm'
 import { CONSTANTS } from '../constants/constants'
-import { getCausalProceso } from '@/api/procesosDIEG/causal'
+import { getCausalProceso, getCantidadCausalProceso } from '@/api/procesosDIEG/causal'
 import { createCausal } from '@/api/procesosDIEG/causal'
 import { updateCausal } from '@/api/procesosDIEG/causal'
 import { deleteCausal } from '@/api/procesosDIEG/causal'
@@ -253,7 +260,8 @@ export default {
       causalDel: '',
       loading: false,
       abogadoEditar: this.editar,
-      x: ''
+      x: '',
+      cantidadCausasProceso: []
     }
   },
   watch: {
@@ -289,6 +297,7 @@ export default {
   },
   async created() {
     await this.getCausal(this.idproceso)
+    await this.getCantidadCausal(this.idproceso)
     this.getCausales()
   },
   methods: {
@@ -319,6 +328,7 @@ export default {
           })
           await this.getCausal(this.idproceso)
           this.getCausales()
+          this.getCantidadCausal(this.idproceso)
           this.deleteDialogVisible = false
         })
       } else {
@@ -374,6 +384,7 @@ export default {
               })
               await this.getCausal(this.idproceso)
               this.getCausales()
+              this.getCantidadCausal(this.idproceso)
             }, (err) => {
               console.log(err)
               this.$notify({
@@ -397,6 +408,7 @@ export default {
               this.textActionCausal = 'Agregar'
               await this.getCausal(this.idproceso)
               this.getCausales()
+              this.getCantidadCausal(this.idproceso)
             }, (err) => {
               console.log(err)
             })
@@ -407,7 +419,7 @@ export default {
     },
     async getCausal(idproceso) {
       await getCausalProceso(idproceso).then((response) => {
-        // console.log('CANTIDAD CAUSALES -> ', response.length)
+        console.log('CANTIDAD CAUSALES -> ', response)
         this.countCausal = response.length
         this.datosCausal = response
         if (this.countCausal > 0) {
@@ -418,17 +430,23 @@ export default {
         this.loading = false
       })
     },
+    async getCantidadCausal(idproceso) {
+      await getCantidadCausalProceso(idproceso).then((response) => {
+        console.log('CANTIDAD CAUSALES PROCESO -> ', response)
+        this.cantidadCausasProceso = response
+      })
+    },
     async getCausales() {
       await getListCausal().then((response) => {
         this.listaCausal = response
-        for (const iterator of this.datosCausal) {
-          this.listaCausal.filter((causa) => {
-            if (causa.idcausal === iterator.idcausal) { // Verifica si la causa ya esta en el proceso y se elimina del arreglo de causas que se muestra en el select de causas
-              const posEtapa = this.listaCausal.indexOf(causa)
-              this.listaCausal.splice(posEtapa, 1)
-            }
-          })
-        }
+        // for (const iterator of this.datosCausal) {
+        //   this.listaCausal.filter((causa) => {
+        //     if (causa.idcausal === iterator.idcausal) { // Verifica si la causa ya esta en el proceso y se elimina del arreglo de causas que se muestra en el select de causas
+        //       const posEtapa = this.listaCausal.indexOf(causa)
+        //       this.listaCausal.splice(posEtapa, 1)
+        //     }
+        //   })
+        // }
         // console.log('this.listaCausal - > ', this.listaCausal)
       })
     }
@@ -477,7 +495,7 @@ export default {
 @media screen and (min-width: 800px) {
   .dialog-class-lista {
     border-radius: 10px;
-    // width: 10%;
+    width: 35%;
   }
 
   .dialog-class-lista .el-dialog__body {

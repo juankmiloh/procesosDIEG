@@ -27,7 +27,22 @@ class CausalService:
                     'idcausal': result[1],
                     'f_hechos': str(result[2]),
                     'descripcion': result[3],
-                    'nombrecausal': result[4]
+                    'fecha_registro': str(result[4]),
+                    'nombrecausal': result[5]
+                }
+            )
+        return causal
+    
+    def get_cantidad_causal_proceso(self, causal_repository: CausalRepository, idproceso):
+        causal = []
+        data = causal_repository.get_cantidad_causal_proceso_bd(idproceso)
+        for result in data:                
+            causal.append(
+                {
+                    'idproceso': result[0],
+                    'idcausal': result[1],
+                    'nombrecausal': result[2],
+                    'cantidad': result[3]
                 }
             )
         return causal

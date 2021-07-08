@@ -107,16 +107,6 @@
       @confirmar="submitDelete"
     />
 
-    <!-- Modal Drawer para listar los actos de un proceso -->
-
-    <ListaActos
-      :idproceso="idproceso"
-      :editar="editar"
-      :drawervisible="drawVisible"
-      :datosactos="dataActos"
-      @confirmar="closeDrawer"
-    />
-
   </div>
 </template>
 
@@ -127,12 +117,11 @@ import { getEtapaProceso, deleteEtapa, getListEtapas, updateEtapa, createEtapa }
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import ModalAgregar from '@/components/ModalAgregar'
 import ModalDelete from '@/components/ModalConfirm'
-import ListaActos from './ListaActos'
 
 export default {
   name: 'EtapasProceso',
   directives: { elDragDialog },
-  components: { ModalDelete, ModalAgregar, ListaActos },
+  components: { ModalDelete, ModalAgregar },
   props: {
     editar: {
       type: Boolean,
