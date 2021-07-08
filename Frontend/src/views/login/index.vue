@@ -73,7 +73,7 @@
 
     <div class="footer-login">
       <span class="textoFooter">
-        ::. . SUPERSERVICIOS - DIEG ©&nbsp;2021 . .::
+        ::. . SUPERSERVICIOS - DIEG v2.0 ©&nbsp;2021 . .::
       </span>
     </div>
   </el-container>
