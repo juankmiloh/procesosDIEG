@@ -508,7 +508,7 @@ export default {
       await getListEmpresas(modelProceso.servicio).then((response) => {
         this.datosEmpresas = response.items
       })
-      console.log('getEmpresasProceso -> ', this.datosEmpresas)
+      // console.log('getEmpresasProceso -> ', this.datosEmpresas)
     },
     setTagsViewTitle() {
       const title = 'Expediente'
@@ -566,7 +566,7 @@ export default {
     },
     submitForm() {
       let modelProceso = this.formProceso
-      console.log('THISFORMPROCESO -> ', modelProceso)
+      // console.log('THISFORMPROCESO -> ', modelProceso)
       this.$refs.formProceso.validate(async(valid) => {
         if (valid) {
           this.loading = true
