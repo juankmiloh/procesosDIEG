@@ -289,9 +289,9 @@ export default {
     editar: {
       deep: true,
       handler(val) {
-        console.log('antes !abogadoEditar" -> ', this.editar)
+        // console.log('antes !abogadoEditar" -> ', this.editar)
         this.abogadoEditar = val
-        console.log('despues !abogadoEditar" -> ', this.editar)
+        // console.log('despues !abogadoEditar" -> ', this.editar)
       }
     }
   },
@@ -419,7 +419,7 @@ export default {
     },
     async getCausal(idproceso) {
       await getCausalProceso(idproceso).then((response) => {
-        console.log('CANTIDAD CAUSALES -> ', response)
+        // console.log('CANTIDAD CAUSALES -> ', response)
         this.countCausal = response.length
         this.datosCausal = response
         if (this.countCausal > 0) {
@@ -432,7 +432,7 @@ export default {
     },
     async getCantidadCausal(idproceso) {
       await getCantidadCausalProceso(idproceso).then((response) => {
-        console.log('CANTIDAD CAUSALES PROCESO -> ', response)
+        // console.log('CANTIDAD CAUSALES PROCESO -> ', response)
         this.cantidadCausasProceso = response
       })
     },
