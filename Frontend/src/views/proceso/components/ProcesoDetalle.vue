@@ -335,7 +335,6 @@
 import Sticky from '@/components/Sticky' // 粘性header组件
 import { mapGetters } from 'vuex'
 import { getProceso } from '@/api/procesosDIEG/procesos'
-import { getAllEmpresas } from '@/api/procesosDIEG/empresas'
 import { getListUsuarios, getListRevisores } from '@/api/procesosDIEG/usuarios'
 import { getListServicios } from '@/api/procesosDIEG/servicios'
 import { getListEstado } from '@/api/procesosDIEG/estado'
@@ -411,7 +410,6 @@ export default {
         this.showOnlyAdmin = true
         this.abogadoEditar = true
       }
-      await this.getEmpresas()
       this.getUsuarios()
       this.getRevisores()
       this.getServicios()
@@ -420,11 +418,6 @@ export default {
       this.getDecision()
       await this.getEtapas()
       await this.fetchData(this.id)
-    },
-    async getEmpresas() {
-      await getAllEmpresas().then((response) => {
-        this.empresas = response.items
-      })
     },
     async getUsuarios() {
       await getListUsuarios(this.dependencia).then((response) => {
@@ -480,7 +473,7 @@ export default {
           modelProceso = response[0]
           if (!modelProceso.decision) { // Sino se cargan los datos del proceso completos (Esto pasa cuando se crea un proceso nuevo)
             modelProceso.tipo_sancion = 9 // Se agrega el atributo al modelo del proceso
-            modelProceso.decision = 6 // Se agrega el atributo al modelo del proceso un valor por defecto
+            modelProceso.decision = 7 // Se agrega el atributo al modelo del proceso un valor por defecto
             modelProceso.sancion = 0 // Se agrega el atributo al modelo del proceso
           }
           this.getEmpresasProceso(modelProceso)
@@ -510,9 +503,12 @@ export default {
         return err
       })
     },
-    getEmpresasProceso(modelProceso) {
-      this.datosEmpresas = this.empresas.filter((empresa) => empresa.idservicio === modelProceso.servicio) // Se obtienen las empresas asociadas al servicio publico del proceso
-      // console.log('getEmpresasProceso -> ', this.datosEmpresas)
+    async getEmpresasProceso(modelProceso) {
+      // this.datosEmpresas = this.empresas.filter((empresa) => empresa.idservicio === modelProceso.servicio) // Se obtienen las empresas asociadas al servicio publico del proceso
+      await getListEmpresas(modelProceso.servicio).then((response) => {
+        this.datosEmpresas = response.items
+      })
+      console.log('getEmpresasProceso -> ', this.datosEmpresas)
     },
     setTagsViewTitle() {
       const title = 'Expediente'
