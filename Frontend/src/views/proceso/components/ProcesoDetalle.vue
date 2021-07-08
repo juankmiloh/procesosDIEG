@@ -411,7 +411,7 @@ export default {
         this.showOnlyAdmin = true
         this.abogadoEditar = true
       }
-      this.getEmpresas()
+      await this.getEmpresas()
       this.getUsuarios()
       this.getRevisores()
       this.getServicios()
