@@ -157,7 +157,13 @@ export const CONSTANTS = {
             message: 'Seleccione un revisor',
             trigger: 'change'
         }],
-        fecha_caducidad: [{
+        fecha_caducidad_sancion: [{
+            type: 'date',
+            required: false,
+            message: 'Ingrese una fecha válida',
+            trigger: 'change'
+        }],
+        fecha_caducidad_recurso: [{
             type: 'date',
             required: false,
             message: 'Ingrese una fecha válida',
@@ -170,7 +176,8 @@ export const CONSTANTS = {
         empresa: '',
         usuario: '',
         revisor: '',
-        fecha_caducidad: null
+        fecha_caducidad_sancion: null,
+        fecha_caducidad_recurso: null
     },
     formUsuario: {
         idproceso: '',
@@ -182,7 +189,8 @@ export const CONSTANTS = {
         expediente: '',
         tipo_sancion: '',
         decision: '',
-        sancion: '',
+        caducidadsancion: '',
+        caducidadrecurso: '',
         causa: [],
         descripcion: ''
     },

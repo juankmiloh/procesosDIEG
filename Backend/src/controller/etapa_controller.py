@@ -7,6 +7,7 @@ from ..service import EtapaService
 from ..repository import EtapaRepository
 from ..util.constants import API_ROOT_PATH
 
+# Obtener listado de estados (etapas)
 @controller.route(API_ROOT_PATH + 'etapas', methods=['GET'])
 def etapa(etapa_service: EtapaService, etapa_repository: EtapaRepository):
     return json.dumps(etapa_service.get_etapa(etapa_repository))

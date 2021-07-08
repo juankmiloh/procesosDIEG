@@ -10,7 +10,7 @@ class EtapaService:
             etapa.append(
                 {
                     'id': result[0],
-                    'nombre': str(result[0]) + " - " + result[1],
+                    'nombre': result[1],
                     'obligatoriedad': result[2],
                     'fecha_final': result[3],
                     'varios_actos': result[4],

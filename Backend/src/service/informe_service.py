@@ -328,7 +328,7 @@ class InformeService:
                 {
                     'idproceso': result[0],
                     'expediente': result[1],
-                    'estado': result[2].capitalize(),
+                    'estado': result[3].capitalize(),
                     'fase': 'Activo'
                 }
             )
@@ -351,7 +351,7 @@ class InformeService:
                 {
                     'idproceso': result[0],
                     'expediente': result[1],
-                    'estado': result[2].capitalize(),
+                    'estado': result[3].capitalize(),
                     'fase': 'Terminado'
                 }
             )
@@ -374,7 +374,7 @@ class InformeService:
                 {
                     'idproceso': result[0],
                     'expediente': result[1],
-                    'estado': result[2].capitalize(),
+                    'estado': result[3].capitalize(),
                     'fase': 'Eliminado'
                 }
             )

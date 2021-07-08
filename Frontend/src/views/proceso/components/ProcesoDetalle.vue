@@ -184,11 +184,28 @@
               <el-col :md="24" class="input-caducidad" style="border: 0px solid blue">
                 <el-card class="box-card">
                   <div slot="header" class="clearfix">
-                    <span>Caducidad</span>
+                    <span>Caducidad sanción</span>
                   </div>
-                  <el-form-item label="" prop="caducidad">
+                  <el-form-item label="" prop="caducidadsancion">
                     <el-date-picker
-                      v-model="formProceso.caducidad"
+                      v-model="formProceso.caducidadsancion"
+                      :disabled="!abogadoEditar"
+                      type="date"
+                      placeholder="Seleccione una fecha"
+                      class="control-modal"
+                    />
+                  </el-form-item>
+                </el-card>
+              </el-col>
+
+              <el-col :md="24" class="input-caducidad" style="border: 0px solid blue; padding-top: 10px">
+                <el-card class="box-card">
+                  <div slot="header" class="clearfix">
+                    <span>Caducidad recurso</span>
+                  </div>
+                  <el-form-item label="" prop="caducidadrecurso">
+                    <el-date-picker
+                      v-model="formProceso.caducidadrecurso"
                       :disabled="!abogadoEditar"
                       type="date"
                       placeholder="Seleccione una fecha"
@@ -247,7 +264,7 @@
                         </el-row>
                       </el-form-item>
                     </el-col>
-                    <el-col :span="24" style="border: 0px solid;">
+                    <!-- <el-col :span="24" style="border: 0px solid;">
                       <el-form-item label="" prop="prox_etapa">
                         <el-row>
                           <el-col :span="24">
@@ -263,7 +280,7 @@
                           </el-col>
                         </el-row>
                       </el-form-item>
-                    </el-col>
+                    </el-col> -->
                   </el-row>
                 </el-card>
               </el-col>

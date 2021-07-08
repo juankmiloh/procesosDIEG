@@ -32,7 +32,7 @@
       v-el-drag-dialog
       :visible.sync="msgAgregarVisible"
       :before-close="closeModalAgregar"
-      width="34em"
+      width="36em"
       custom-class="dialog-class-lista"
       :show-close="false"
     >
@@ -49,7 +49,7 @@
           ref="formAgregar"
           :model="formAgregar"
           :rules="rulesFormProceso"
-          label-width="120px"
+          label-width="145px"
           class="demo-ruleForm"
         >
           <el-form-item label="Expediente" prop="radicado">
@@ -130,9 +130,17 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="Caducidad" prop="fecha_caducidad" clearable>
+          <el-form-item label="Caducidad sanción" prop="fecha_caducidad_sancion" clearable>
             <el-date-picker
-              v-model="formAgregar.fecha_caducidad"
+              v-model="formAgregar.fecha_caducidad_sancion"
+              type="date"
+              placeholder="Seleccione la fecha"
+              class="control-modal"
+            />
+          </el-form-item>
+          <el-form-item label="Caducidad recurso" prop="fecha_caducidad_recurso" clearable>
+            <el-date-picker
+              v-model="formAgregar.fecha_caducidad_recurso"
               type="date"
               placeholder="Seleccione la fecha"
               class="control-modal"

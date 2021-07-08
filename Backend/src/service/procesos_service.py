@@ -15,15 +15,16 @@ class ProcesosService:
                 {
                     'idproceso': result[0],
                     'expediente': result[1],
-                    'caducidad': str(result[2]),
+                    'caducidadsancion': str(result[2]),
+                    'caducidadrecurso': str(result[3]),
                     # 'empresa': result[3].capitalize(),
-                    'empresa': result[3],
-                    'servicio': result[4],
-                    'idusuario': result[5],
-                    'usuario': result[6],
-                    'idrevisor': result[7],
-                    'revisor': result[8],
-                    'estado': result[10]
+                    'empresa': result[4],
+                    'servicio': result[5],
+                    'idusuario': result[6],
+                    'usuario': result[7],
+                    'idrevisor': result[8],
+                    'revisor': result[9],
+                    'estado': result[11]
                 }
             )
         return procesos
@@ -32,11 +33,14 @@ class ProcesosService:
         proceso = []
         data = procesos_repository.get_proceso_bd(idProceso)
         for result in data:
-            caducidad = None
+            caducidadsancion = None
+            caducidadrecurso = None
             print('-------------------- DATA PROCESO -----------------', result)
 
             if result[8]:
-                caducidad = str(result[8])
+                caducidadsancion = str(result[8])
+            if result[9]:
+                caducidadrecurso = str(result[9])
     
             proceso.append(
                 {
@@ -48,10 +52,11 @@ class ProcesosService:
                     'tipo_sancion': result[5],
                     'sancion': result[6],
                     'decision': result[7],
-                    'caducidad': caducidad,
-                    'revisor': result[9],
-                    'estado': result[10],
-                    'proxetapa': result[11],
+                    'caducidadsancion': caducidadsancion,
+                    'caducidadrecurso': caducidadrecurso,
+                    'revisor': result[10],
+                    'estado': result[11],
+                    'proxetapa': result[12],
                 }
             )
         return proceso

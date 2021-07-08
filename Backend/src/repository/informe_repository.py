@@ -102,87 +102,37 @@ class InformeRepository:
     
     def get_cantidad_procesos_estado_bd(self, fase, idservicio, iddependencia):
         sql = '''
-            SELECT COUNT(*), ESTADO FROM
+            SELECT COUNT(*), ESTADO FROM 
             (
-                SELECT 
-                    P.IDPROCESO,
-                    P.RADICADOPROCESO AS EXPEDIENTE,
-                    P.FECHACADUCIDAD AS CADUCIDAD,
-                    EMP.NOMBRE AS EMPRESA,
-                    ES.NOMBREESTADO AS ESTADO,
-                    S.NOMBRE AS SERVICIO,
-                    U.IDUSUARIO AS IDUSUARIO,
-                    U.NOMBRE || ' ' || U.APELLIDO AS USUARIO,
-                    EP.ETAPA
-                FROM
-                    EMPRESA EMP, SERVICIO S, PROCESO P, USUARIOS U, ETAPA_PROCESO EP, ETAPA E, ESTADO ES
-                WHERE
-                    (U.DEPENDENCIA = :DEPENDENCIA_ARG OR 1 = :DEPENDENCIA_ARG)
+                SELECT
+                    EP.IDPROCESO,
+                    MAX(EP.IDESTADO),
+                    (SELECT NOMBREESTADO FROM ESTADO WHERE IDESTADO = MAX(EP.IDESTADO)) AS ESTADO
+                FROM ETAPA_PROCESO EP, PROCESO P 
+                WHERE 
+                    P.IDPROCESO = EP.IDPROCESO
+                    AND (P.DEPENDENCIA = :DEPENDENCIA_ARG OR 1 = :DEPENDENCIA_ARG)
                     AND P.FASE = :FASE_ARG
                     AND (P.IDSERVICIO = :IDSERVICIO_ARG OR 0 = :IDSERVICIO_ARG)
-                    AND P.IDPROCESO = EP.PROCESO
-                    AND EP.ETAPA = E.IDETAPA
-                    AND E.IDESTADO = ES.IDESTADO
-                    AND P.EMPRESA = EMP.IDEMPRESA
-                    AND EMP.SERVICIO = S.IDSERVICIO
-                    AND P.IDSERVICIO = S.IDSERVICIO
-                    AND P.USUARIOASIGNADO = U.IDUSUARIO
-            ) PROCESO,
-            (
-                SELECT 
-                    P.IDPROCESO,
-                    MIN(EP.ETAPA) AS IDETAPA
-                FROM PROCESO P, ETAPA_PROCESO EP
-                WHERE
-                    P.IDPROCESO = EP.PROCESO
-                GROUP BY P.IDPROCESO
-            ) ETAPA
-            WHERE
-                PROCESO.IDPROCESO = ETAPA.IDPROCESO
-                AND PROCESO.ETAPA = ETAPA.IDETAPA
+                GROUP BY EP.IDPROCESO
+            ) MAX_ESTADO
             GROUP BY ESTADO;
         '''
         return self.db.engine.execute(text(sql), FASE_ARG=fase, IDSERVICIO_ARG=idservicio, DEPENDENCIA_ARG=iddependencia).fetchall()
     
     def get_procesos_estado_bd(self, fase, idservicio, iddependencia):
         sql = '''
-            SELECT PROCESO.IDPROCESO, PROCESO.EXPEDIENTE, ESTADO FROM
-            (
-                SELECT 
-                    P.IDPROCESO,
-                    P.RADICADOPROCESO AS EXPEDIENTE,
-                    P.FECHACADUCIDAD AS CADUCIDAD,
-                    EMP.NOMBRE AS EMPRESA,
-                    ES.NOMBREESTADO AS ESTADO,
-                    S.NOMBRE AS SERVICIO,
-                    U.IDUSUARIO AS IDUSUARIO,
-                    U.NOMBRE || ' ' || U.APELLIDO AS USUARIO,
-                    EP.ETAPA
-                FROM
-                    EMPRESA EMP, SERVICIO S, PROCESO P, USUARIOS U, ETAPA_PROCESO EP, ETAPA E, ESTADO ES
-                WHERE
-                    (U.DEPENDENCIA = :DEPENDENCIA_ARG OR 1 = :DEPENDENCIA_ARG)
-                    AND P.FASE = :FASE_ARG
-                    AND (P.IDSERVICIO = :IDSERVICIO_ARG OR 0 = :IDSERVICIO_ARG)
-                    AND P.IDPROCESO = EP.PROCESO
-                    AND EP.ETAPA = E.IDETAPA
-                    AND E.IDESTADO = ES.IDESTADO
-                    AND P.EMPRESA = EMP.IDEMPRESA
-                    AND EMP.SERVICIO = S.IDSERVICIO
-                    AND P.IDSERVICIO = S.IDSERVICIO
-                    AND P.USUARIOASIGNADO = U.IDUSUARIO
-            ) PROCESO,
-            (
-                SELECT 
-                    P.IDPROCESO,
-                    MIN(EP.ETAPA) AS IDETAPA
-                FROM PROCESO P, ETAPA_PROCESO EP
-                WHERE
-                    P.IDPROCESO = EP.PROCESO
-                GROUP BY P.IDPROCESO
-            ) ETAPA
-            WHERE
-                PROCESO.IDPROCESO = ETAPA.IDPROCESO
-                AND PROCESO.ETAPA = ETAPA.IDETAPA;
+            SELECT
+                EP.IDPROCESO,
+                P.RADICADOPROCESO,
+                MAX(EP.IDESTADO),
+                (SELECT NOMBREESTADO FROM ESTADO WHERE IDESTADO = MAX(EP.IDESTADO)) AS ESTADO
+            FROM ETAPA_PROCESO EP, PROCESO P 
+            WHERE 
+                P.IDPROCESO = EP.IDPROCESO
+                AND (P.DEPENDENCIA = :DEPENDENCIA_ARG OR 1 = :DEPENDENCIA_ARG)
+                AND P.FASE = :FASE_ARG
+                AND (P.IDSERVICIO = :IDSERVICIO_ARG OR 0 = :IDSERVICIO_ARG)
+            GROUP BY EP.IDPROCESO, P.RADICADOPROCESO;
         '''
         return self.db.engine.execute(text(sql), FASE_ARG=fase, IDSERVICIO_ARG=idservicio, DEPENDENCIA_ARG=iddependencia).fetchall()

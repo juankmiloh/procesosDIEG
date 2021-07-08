@@ -53,7 +53,7 @@ class EtapaRepository:
         '''
         self.db.engine.execute(text(sql), IDPROCESO_ARG=etapa["idproceso"], IDESTADO_ARG=etapa["etapa"], NUMEROACTO_ARG=etapa["numeroacto"], RADICADO_ARG=etapa["radicado"], FECHAINICIO_ARG=etapa["fechaInicio"], FECHAFIN_ARG=etapa["fechaFin"], OBSERVACION_ARG=etapa["observacion"])
 
-        # self.update_fase_proceso(etapa["idproceso"])
+        self.update_fase_proceso(etapa["idproceso"])
 
         return self.getNumerosActos(etapa)  
 
@@ -80,7 +80,7 @@ class EtapaRepository:
         '''
         self.db.engine.execute(text(sql), IDPROCESO_ARG=etapa["idproceso"], IDESTADO_ARG=etapa["etapa"], ACTO_ARG=etapa["numeroacto"], FECHAINICIO_ARG=etapa["fechaInicio"], FECHAFIN_ARG=etapa["fechaFin"], RADICADO_ARG=etapa["radicado"], OBSERVACION_ARG=etapa["observacion"])
 
-        # self.update_fase_proceso(etapa["idproceso"])
+        self.update_fase_proceso(etapa["idproceso"])
 
         return self.getNumerosActos(etapa)            
                         
@@ -98,7 +98,7 @@ class EtapaRepository:
         '''
         self.db.engine.execute(text(sql), IDPROCESO_ARG=etapa["idproceso"], IDESTADO_ARG=etapa["etapa"], ACTO_ARG=etapa["numeroacto"])
 
-        # self.update_fase_proceso(etapa["idproceso"])
+        self.update_fase_proceso(etapa["idproceso"])
 
         return self.getNumerosActos(etapa) # devuelve el listado de actos de un proceso ordenados por fecha de inicio
 
@@ -139,27 +139,21 @@ class EtapaRepository:
 
     def update_fase_proceso(self, idproceso):
         sql = '''
-            SELECT E.NOMBRE FROM ETAPA_PROCESO EP, ETAPA E WHERE PROCESO=:IDPROCESO_ARG AND EP.ETAPA=E.IDETAPA;
+            SELECT COUNT(*) FROM (SELECT EP.IDESTADO FROM ETAPA_PROCESO EP, ESTADO E WHERE IDPROCESO=:IDPROCESO_ARG AND E.IDESTADO = EP.IDESTADO AND E.OBLIGATORIEDAD = 'SI' GROUP BY EP.IDESTADO) ETAPASPROCESO;
         '''
-        resultsql = self.db.engine.execute(text(sql), IDPROCESO_ARG=idproceso).fetchall()
-
-        countEtapas = 0
-        terminado = False
-        fase = 0
+        countEtapasProceso = self.db.engine.execute(text(sql), IDPROCESO_ARG=idproceso).fetchall()
         
-        for result in resultsql:
-            etapa = result[0]
-            if etapa != 'Memorando de devolución':
-                if etapa != 'Memorando de alcance':
-                    print('------------ ETAPA ----', etapa, '----------------')
-                    countEtapas = countEtapas + 1
-                    if etapa == 'Archivo':
-                        terminado = True
+        sql = '''
+            SELECT COUNT(*) FROM ESTADO WHERE OBLIGATORIEDAD = 'SI';
+        '''
+        countEtapas = self.db.engine.execute(text(sql), IDPROCESO_ARG=idproceso).fetchall()
 
-        print('------------ CANTIDAD ETAPAS ----', countEtapas, '----------------')
-        print('------------ TERMINADO ----', terminado, '----------------')
+        fase = 0
 
-        if countEtapas >= 13 and terminado:
+        print('------------ CANTIDAD ETAPAS PROCESO ----', countEtapasProceso, '----------------')
+        print('------------ CANTIDAD ETAPAS BD ----', countEtapas, '----------------')
+
+        if countEtapasProceso == countEtapas:
             print('------------ PROCESO TERMINADO ----------------')
             fase = 2 # Proceso terminado
         else:
@@ -169,3 +163,36 @@ class EtapaRepository:
                 UPDATE PROCESO SET FASE=:FASE_ARG WHERE IDPROCESO=:IDPROCESO_ARG;
             '''
         self.db.engine.execute(text(sql), IDPROCESO_ARG=idproceso, FASE_ARG=fase)
+    
+    # def update_fase_proceso(self, idproceso):
+    #     sql = '''
+    #         SELECT E.NOMBRE FROM ETAPA_PROCESO EP, ETAPA E WHERE PROCESO=:IDPROCESO_ARG AND EP.ETAPA=E.IDETAPA;
+    #     '''
+    #     resultsql = self.db.engine.execute(text(sql), IDPROCESO_ARG=idproceso).fetchall()
+
+    #     countEtapas = 0
+    #     terminado = False
+    #     fase = 0
+        
+    #     for result in resultsql:
+    #         etapa = result[0]
+    #         if etapa != 'Memorando de devolución':
+    #             if etapa != 'Memorando de alcance':
+    #                 print('------------ ETAPA ----', etapa, '----------------')
+    #                 countEtapas = countEtapas + 1
+    #                 if etapa == 'Archivo':
+    #                     terminado = True
+
+    #     print('------------ CANTIDAD ETAPAS ----', countEtapas, '----------------')
+    #     print('------------ TERMINADO ----', terminado, '----------------')
+
+    #     if countEtapas >= 13 and terminado:
+    #         print('------------ PROCESO TERMINADO ----------------')
+    #         fase = 2 # Proceso terminado
+    #     else:
+    #         fase = 1 # Proceso En curso
+
+    #     sql = '''
+    #             UPDATE PROCESO SET FASE=:FASE_ARG WHERE IDPROCESO=:IDPROCESO_ARG;
+    #         '''
+    #     self.db.engine.execute(text(sql), IDPROCESO_ARG=idproceso, FASE_ARG=fase)
