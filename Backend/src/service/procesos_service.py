@@ -9,7 +9,7 @@ class ProcesosService:
         procesos = []
         data = procesos_repository.get_procesos_bd(iddependencia)
         for result in data:
-            # print('-------------------- CADUCIDAD -----------------', result[2])
+            # print('-------------------- CADUCIDAD -----------------', result)
     
             procesos.append(
                 {

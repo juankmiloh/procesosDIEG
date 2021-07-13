@@ -247,9 +247,9 @@ export default {
     editar: {
       deep: true,
       handler(val) {
-        console.log('antes !abogadoEditar" -> ', this.editar)
+        // console.log('antes !abogadoEditar" -> ', this.editar)
         this.abogadoEditar = val
-        console.log('despues !abogadoEditar" -> ', this.editar)
+        // console.log('despues !abogadoEditar" -> ', this.editar)
       }
     }
   },

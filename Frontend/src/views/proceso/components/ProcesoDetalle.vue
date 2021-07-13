@@ -347,6 +347,7 @@ import { CONSTANTS } from '@/constants/constants'
 import SwitchTerceros from './SwitchTerceros'
 import TablaCausas from './TablaCausas'
 import Etapas from './Etapas'
+import moment from 'moment'
 
 export default {
   name: 'ProcesoDetalle',
@@ -467,10 +468,19 @@ export default {
     async fetchData(id) {
       let modelProceso = {}
       await getProceso(id).then(async(response) => {
-        // console.log('RESPONSE PROCESO -> ', response)
         if (response.length > 0) { // Se obtienen los datos del proceso si ya esta diligenciado en su totalidad
-          console.log('RESPONSE proceso completo -> ', response)
+          // console.log('RESPONSE proceso completo -> ', response)
           modelProceso = response[0]
+          if (modelProceso.caducidadsancion) {
+            modelProceso.caducidadsancion = new Date(moment(modelProceso.caducidadsancion).format('YYYY/MM/DD HH:mm:ss'))
+          } else {
+            modelProceso.caducidadsancion = null
+          }
+          if (modelProceso.caducidadrecurso) {
+            modelProceso.caducidadrecurso = new Date(moment(modelProceso.caducidadrecurso).format('YYYY/MM/DD HH:mm:ss'))
+          } else {
+            modelProceso.caducidadrecurso = null
+          }
           if (!modelProceso.decision) { // Sino se cargan los datos del proceso completos (Esto pasa cuando se crea un proceso nuevo)
             modelProceso.tipo_sancion = 9 // Se agrega el atributo al modelo del proceso
             modelProceso.decision = 7 // Se agrega el atributo al modelo del proceso un valor por defecto
@@ -487,8 +497,6 @@ export default {
         if (modelProceso.proxetapa === null) {
           this.prox_etapa = 'No aplica'
         }
-        this.loading = false
-        this.showButtons = true
         this.formProceso = modelProceso
         // console.log('Model proceso -> ', this.formProceso)
         // set tagsview title
@@ -498,6 +506,8 @@ export default {
         if (this.$refs['formProceso']) {
           this.$refs['formProceso'].resetFields()
         }
+        this.showButtons = true
+        this.loading = false
         // console.log('fetchData 3 -> ', this.$refs['formProceso'])
       }).catch((err) => {
         return err

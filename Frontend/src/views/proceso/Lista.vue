@@ -297,7 +297,7 @@
             <template slot-scope="scope">
               <div v-if="column.prop === 'usuario'"><el-tag type="primary">{{ scope.row[column.prop] }}</el-tag></div>
               <div v-else-if="column.prop === 'revisor'"><el-tag type="info">{{ scope.row[column.prop] }}</el-tag></div>
-              <div v-else-if="column.prop === 'caducidad'"><i class="el-icon-time" /> {{ convertDate(scope.row[column.prop]) }}</div>
+              <div v-else-if="column.prop === 'caducidadsancion'"><i class="el-icon-time" /> {{ convertDate(scope.row[column.prop]) }}</div>
               <div v-else>{{ scope.row[column.prop] }}</div>
             </template>
           </el-table-column>
@@ -343,12 +343,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { CONSTANTS } from '@/constants/constants'
-import {
-  getListProcesos,
-  createProceso,
-  updateProcesoUsuario,
-  deleteProceso
-} from '@/api/procesosDIEG/procesos'
+import { getListProcesos, createProceso, updateProcesoUsuario, deleteProceso } from '@/api/procesosDIEG/procesos'
 import { getListUsuarios, getListRevisores } from '@/api/procesosDIEG/usuarios'
 import { getListServicios } from '@/api/procesosDIEG/servicios'
 import { getListEmpresas } from '@/api/procesosDIEG/empresas'
@@ -373,7 +368,7 @@ export default {
       filterEmpresa: [],
       filterServicio: [],
       filterEstado: [],
-      filterCaducidad: [],
+      filterCaducidadsancion: [],
       filterAbogado: [],
       filterRevisor: [],
       datosProcesos: [],
@@ -432,7 +427,7 @@ export default {
         this.downloadLoading = true
         import('@/vendor/Export2Excel').then(excel => {
           const tHeader = ['EXPEDIENTE', 'SERVICIO', 'EMPRESA', 'CADUCIDAD O FECHA VENCIMIENTO/ TÉRMINO PARA RESOLVER REP(DD-MM-AA)', 'ESTADO', 'PROYECTISTA', 'REVISOR']
-          const filterVal = ['expediente', 'servicio', 'empresa', 'caducidad', 'estado', 'usuario', 'revisor']
+          const filterVal = ['expediente', 'servicio', 'empresa', 'caducidadsancion', 'estado', 'usuario', 'revisor']
           const list = this.multipleSelection
           const data = this.formatJson(filterVal, list)
           excel.export_json_to_excel({
@@ -468,6 +463,7 @@ export default {
     },
     async getProcesos() {
       await getListProcesos(this.dependencia).then((response) => {
+        // console.log('Lista de proecesos -> ', response)
         let procesos = []
         if (this.roles[0] === 'administrador') {
           procesos = response
@@ -477,18 +473,18 @@ export default {
           procesos = response.filter((proceso) => proceso.idusuario === this.idusuario)
         }
         procesos = procesos.map((proceso) => {
-          if (proceso.caducidad !== 'None') {
-            const mes = moment(proceso.caducidad).format('MM')
-            const ano = moment(proceso.caducidad).format('YYYY')
-            proceso.textCaducidad = ano + '-' + mes
-            proceso.valueCaducidad = mes + '/' + ano
-            proceso.caducidad = new Date(moment(proceso.caducidad).format('YYYY/MM/DD HH:mm:ss')) // Se transforma la caducidad a tipo fecha
+          if (proceso.caducidadsancion !== 'None') {
+            const mes = moment(proceso.caducidadsancion).format('MM')
+            const ano = moment(proceso.caducidadsancion).format('YYYY')
+            proceso.textCaducidadsancion = ano + '-' + mes
+            proceso.valueCaducidadsancion = mes + '/' + ano
+            proceso.caducidadsancion = new Date(moment(proceso.caducidadsancion).format('YYYY/MM/DD HH:mm:ss')) // Se transforma la caducidadsancion a tipo fecha
           } else {
-            proceso.textCaducidad = 'No registra'
-            proceso.valueCaducidad = 'No registra'
-            proceso.caducidad = 'No registra'
+            proceso.textCaducidadsancion = 'No registra'
+            proceso.valueCaducidadsancion = 'No registra'
+            proceso.caducidadsancion = 'No registra'
           }
-          // console.log(proceso.caducidad)
+          // console.log(proceso.caducidadsancion)
           return proceso
         })
         window.localStorage.setItem('procesos', JSON.stringify(procesos))
@@ -505,7 +501,7 @@ export default {
         this.filterEmpresa.push({ text: item.empresa, value: item.empresa })
         this.filterServicio.push({ text: item.servicio, value: item.servicio })
         this.filterEstado.push({ text: item.estado, value: item.estado })
-        this.filterCaducidad.push({ text: item.textCaducidad, value: item.valueCaducidad })
+        this.filterCaducidadsancion.push({ text: item.textCaducidadsancion, value: item.valueCaducidadsancion })
         this.filterAbogado.push({ text: item.usuario, value: item.usuario })
         this.filterRevisor.push({ text: item.revisor, value: item.revisor })
       })
@@ -513,8 +509,8 @@ export default {
       this.filters.filterEmpresa = this.getUniqueListBy(this.filterEmpresa, 'text')
       this.filters.filterServicio = this.getUniqueListBy(this.filterServicio, 'text')
       this.filters.filterEstado = this.getUniqueListBy(this.filterEstado, 'text')
-      this.filters.filterCaducidad = this.getUniqueListBy(this.filterCaducidad, 'text')
-      this.filters.filterCaducidad = this.orderByDate(this.filters.filterCaducidad)
+      this.filters.filterCaducidadsancion = this.getUniqueListBy(this.filterCaducidadsancion, 'text')
+      this.filters.filterCaducidadsancion = this.orderByDate(this.filters.filterCaducidadsancion)
       this.filters.filterAbogado = this.getUniqueListBy(this.filterAbogado, 'text')
       this.filters.filterRevisor = this.getUniqueListBy(this.filterRevisor, 'text')
     },
@@ -569,7 +565,7 @@ export default {
     filterHandler(value, row, column) {
       const property = column['property']
       let valueProperty = row[property]
-      if (property === 'caducidad') {
+      if (property === 'caducidadsancion') {
         if (valueProperty !== 'No registra') {
           valueProperty = moment(valueProperty).format('DD/MM/YYYY').substring(3, 10)
         }
@@ -639,7 +635,7 @@ export default {
           // console.log(this.formAgregar)
           this.loading = true
           this.formAgregar.dependencia = this.dependencia
-          console.log('FORMAGREGAR -> ', this.formAgregar)
+          // console.log('FORMAGREGAR -> ', this.formAgregar)
           createProceso(this.formAgregar).then((response) => {
             this.$notify({
               title: 'Buen trabajo!',

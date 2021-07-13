@@ -27,9 +27,9 @@ export const CONSTANTS = {
         },
         {
             label: 'Caducidad',
-            prop: 'caducidad',
+            prop: 'caducidadsancion',
             width: 135,
-            filter: 'filterCaducidad'
+            filter: 'filterCaducidadsancion'
         },
         {
             label: 'Estado',
@@ -76,9 +76,9 @@ export const CONSTANTS = {
         },
         {
             label: 'Caducidad',
-            prop: 'caducidad',
+            prop: 'caducidadsancion',
             width: 135,
-            filter: 'filterCaducidad'
+            filter: 'filterCaducidadsancion'
         },
         {
             label: 'Estado',
@@ -132,6 +132,15 @@ export const CONSTANTS = {
         { text: 'Gas', value: 'Gas' },
         { text: 'GLP', value: 'GLP' },
     ],
+    formAgregar: {
+        radicado: '',
+        servicio: '',
+        empresa: '',
+        usuario: '',
+        revisor: '',
+        fecha_caducidad_sancion: null,
+        fecha_caducidad_recurso: null
+    },
     rulesFormProceso: {
         radicado: [
             { required: true, message: 'Ingrese un expediente', trigger: 'blur' },
@@ -169,15 +178,6 @@ export const CONSTANTS = {
             message: 'Ingrese una fecha válida',
             trigger: 'change'
         }]
-    },
-    formAgregar: {
-        radicado: '',
-        servicio: '',
-        empresa: '',
-        usuario: '',
-        revisor: '',
-        fecha_caducidad_sancion: null,
-        fecha_caducidad_recurso: null
     },
     formUsuario: {
         idproceso: '',
@@ -223,12 +223,12 @@ export const CONSTANTS = {
             message: 'Seleccione una causal',
             trigger: 'change'
         }],
-        fecha_hechos: [{
-            required: true,
+        caducidadsancion: [{
+            required: false,
             message: 'Ingrese una fecha válida',
             trigger: 'change'
         }],
-        caducidad: [{
+        caducidadrecurso: [{
             required: false,
             message: 'Ingrese una fecha válida',
             trigger: 'change'

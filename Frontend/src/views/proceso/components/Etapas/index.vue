@@ -116,13 +116,13 @@ export default {
     },
     async getEtapasProceso() {
       await getEtapaProceso(this.idproceso).then((response) => {
-        console.log('ETAPAs DEL PROCESO -> ', response)
+        // console.log('ETAPAs DEL PROCESO -> ', response)
         this.datosEtapaProceso = response
       })
     },
     async getEtapas() {
       await getListEtapas().then((response) => {
-        console.log('Etapas --> ', response)
+        // console.log('Etapas --> ', response)
         const datosEtapa = response
         for (const iterator of this.datosEtapaProceso) {
           datosEtapa.filter((etapa) => {
@@ -173,7 +173,7 @@ export default {
     async getNumeroacto(idproceso, idetapa) {
       let numeroacto = 0
       await getEtapaProceso(idproceso, idetapa).then((response) => {
-        console.log('ETAPA_PROCESO -> ', response)
+        // console.log('ETAPA_PROCESO -> ', response)
         if (response.length) {
           // console.log('tiene actos')
           numeroacto = response.length + 1
@@ -182,7 +182,7 @@ export default {
           numeroacto = 1
         }
       })
-      console.log('numeroacto --> ', numeroacto)
+      // console.log('numeroacto --> ', numeroacto)
       return numeroacto
     }
   }

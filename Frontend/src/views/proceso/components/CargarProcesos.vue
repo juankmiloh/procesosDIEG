@@ -87,8 +87,8 @@ export default {
       let procesosError = 0
       while (this.tableData.length) {
         const element = this.tableData[0]
-        if (!isNaN(element.fecha_caducidad)) { // Si es un numero
-          element.fecha_caducidad = moment(this.numeroAFecha(element.fecha_caducidad, true)).format('DD/MM/YYYY')
+        if (!isNaN(element.fecha_caducidad_sancion)) { // Si es un numero
+          element.fecha_caducidad_sancion = moment(this.numeroAFecha(element.fecha_caducidad_sancion, true)).format('DD/MM/YYYY')
         }
         await createProceso(element).then((response) => {
           procesosCargados += 1
